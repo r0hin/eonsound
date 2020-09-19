@@ -1,4 +1,4 @@
-## Eonsound
+## EonSound
 #### Beautiful web-based music player
 
 <br><br>

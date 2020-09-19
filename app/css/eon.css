@@ -1,0 +1,45 @@
+:root {
+    --eon-primary: rgb(233, 162, 255);
+    --eon-secondary: rgb(164, 241, 255);
+
+    --bg-primary: #0E131E;
+    --bg-secondary: #121722;
+
+
+    --content-primary: #fff
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--content-primary);
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 0.8em;
+    height: 0.8em;
+    border-radius: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: var(--s-1);
+    border-radius: 12px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--c-1); 
+    width: 1em;
+    height: 1em;
+    border-radius: 12px;
+    transition: all 0.5s;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--c-2); 
+    cursor: pointer;
+    border-radius: 0px;
+    transition: all 0.5s;
+}
