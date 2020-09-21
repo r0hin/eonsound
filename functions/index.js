@@ -6,6 +6,8 @@ const fs = require('fs')
 const path = require('path');
 const os = require('os');
 const tmpdir = os.tmpdir();
+const { promisify } = require('util')
+const unlinkAsync = promisify(fs.unlink)
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
@@ -93,9 +95,28 @@ exports.requestSong = functions.https.onCall(async (data, context) => {
 
     // Check the storage for the song
 
-    console.log(tmpdir);
-    
-    // const { stdout, stderr } = await exec('npm run dl ' + data.trackURL);
+    var db = admin.firestore()
+    doc = await db.collection('music').doc(data.trackID).get()
 
+    if (doc.exists && doc.data().downloaded) {
+        return `https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`
+    }
+
+    // console.log(tmpdir + '/');
+    
+    const { stdout, stderr } = await exec('npm run dl ' + data.trackURL);
+    localPath = stderr.split('Saving Song to: ').pop().split('\n✔ Song:').shift()
+
+    var bucket = admin.storage().bucket();
+    await bucket.upload(localPath, { destination: `music/${data.trackID}.mp3` })
+
+    await unlinkAsync(localPath) 
+    
+    var db = admin.firestore()
+    await db.collection('music').doc(data.trackID).set({
+        downloaded: true
+    })
+
+    return `https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`
 
 })
