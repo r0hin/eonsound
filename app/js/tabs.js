@@ -6,6 +6,10 @@ function tabe(tab, el) {
     
     // Switch to the tab
 
+    hideAlbum()
+    hideArtist()
+    hidePlaylist()
+
     $(`.tab`).addClass('hidden')
     $(`#${tab}-tab`).removeClass('hidden')
 
@@ -15,12 +19,26 @@ function tabe(tab, el) {
     // Check first time
 
     if (sessionStorage.getItem(`first-time-${tab}`) == 'true') {
+        sessionStorage.setItem(`first-time-${tab}`, 'false')
         switch (tab) {
             case 'hot':
                 // Hot stuff
                 break;
             case 'library':
                 // Library stuff
+
+                if (typeof(user) == "undefined") {
+                    interval = window.setInterval(() => {
+                        if (typeof(user) !== "undefined") {
+                            loadLibrary()
+                            window.clearInterval(interval)
+                        }
+                    }, 200)
+                }
+                else {
+                    loadLibrary()
+                }
+
                 break;
             case 'account':
                 // Account stuff

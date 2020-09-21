@@ -48,9 +48,15 @@ async function appContent() {
     window.cacheuser = doc.data()
 
     $('#pfpimg1').get(0).src = cacheuser.url
+    $('#pfpimg2').get(0).src = cacheuser.url
     $('#pfpimg1').removeClass('hidden')
     // Show toolbar now to ensure things remain smooth.
     $('#toolbar').removeClass('hidden')
+
+    $('#name1').html(`${cacheuser.name}<span id="username1" class="chip">${cacheuser.username}</span>`)
+
+
+
 }
 
 async function createUser() {
@@ -141,4 +147,13 @@ async function refreshCode() {
 
     const data = await result.json()
     window.spotifyCode = data.access_token
+}
+
+function logout() {
+    Snackbar.show({text: "Logging out..."})
+    window.setTimeout(() => {
+        firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+        })
+    }, 1500)
 }

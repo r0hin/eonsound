@@ -24,6 +24,24 @@
 <body>
     <!-- Preflight Modals-->
     
+    <div class="modal fade" id="newPlaylist" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3>New Playlist</h3>
+                <br>
+                <div class="floating-label textfield-box">
+                    <label for="playlistnamebox">Name</label>
+                    <input class="form-control" id="playlistnamebox" placeholder="My Playlist" type="text">
+                  </div>
+                
+            </div>
+            <div class="modalfooter">
+                <button type="button" class="btn-text-primary" data-dismiss="modal">dismiss</button>
+                <button onclick="createPlaylist()" type="button" class="btn-contained-primary" data-dismiss="modal">create</button>
+            </div>
+        </div>
+    </div></div>
+
     <div class="modal fade bd-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm" role="document"><div class="modal-content"><div class="modalheader"><h3>Error</h3></div><div class="modalbody"><p id="erorrModalMsg"></p><button type="button" class="btn-contained-primary block" data-dismiss="modal">dismiss</button></div></div></div></div>
     <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eonloaderelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><div class="progress-circular"><div class="progress-circular-wrapper"><div class="progress-circular-inner"><div class="progress-circular-left"><div class="progress-circular-spinner"></div></div><div class="progress-circular-gap"></div><div class="progress-circular-right"><div class="progress-circular-spinner"></div></div></div></div></div></center></div></div></div></div>
     <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="material-icons doneicon">done</i></h1></center></div></div></div></div>
@@ -45,6 +63,7 @@
             </div>
         </div>
     </div>
+
     <div id="finish_profile" class="hidden animated fadeIn slow">
         <div class="card centered animated fadeInUp">
             <div class="card-body">
@@ -70,11 +89,7 @@
             </div>
         </div>
     </div>
-    <div id="now_playing" class="shadow-sm playing_collapsed">
 
-        <button onclick="expand_music(this)" class="expand_collapsed" id="expand_btn"><i class="material-icons">chevron_left</i></button>
-
-    </div>
     <div id="navigation">
         <ul id="navigation_list">
             <li class="nav_item">
@@ -95,12 +110,12 @@
         </ul>
     </div>
 
-    <!-- CONTENT -->
-
     <div class="content_expanded" id="content">
 
+        <button onclick="expand_music(this)" class="expand_collapsed" id="expand_btn"><i class="material-icons">chevron_left</i></button>
+
         <div id="profile_card">
-            <img class="hidden animated zoomIn" id="pfpimg1" alt="Profile could not load.">
+            <img onclick="tabe('account')" class="hidden animated zoomIn" id="pfpimg1" alt="Profile could not load.">
         </div>
 
         <div id="toolbar" class="hidden animated fadeInRight">
@@ -113,10 +128,15 @@
             </div>
         </div>
 
+        <div id="media_view">
+
+        </div>
+
         <div id="search-tab" class="tab hidden animated fadeIn">
+            <br>
             <h1 class="title bold">Search</h1>
             <p class="animated fadeInUp" id="queryStr">...</p>
-            <br><br>
+            <br>
             <div id="searchResults">
                 <center> <h3>Albums</h3> </center>
                 <div id="search_albums"></div>
@@ -133,15 +153,87 @@
             <br><br><br>
             <br><br><br>
         </div>
+
         <div id="hot-tab" class="tab hidden animated fadeIn">
+            <br>
             <h1 class="title bold">Home</h1>
         </div>
+
         <div id="library-tab" class="tab hidden animated fadeIn">
-            <h1 class="title bold">Library</h1>
+            <br>
+            <h1 class="title bold">Library</h1> 
+            <button data-toggle="modal" data-target="#newPlaylist" class="btn-contained-primary newpl">New Playlist</button>
+            <br><br>
+            <div id="user_playlists"></div>
+            <div id="user_playlist_view"></div>
+
         </div>
+
         <div id="account-tab" class="tab hidden animated fadeIn">
+            <br>
             <h1 class="title bold">Account</h1>
+
+            <br>
+
+            <div class="row">
+                <div class="col-sm">
+                    <br><br>
+                    <center>
+                        <img id="pfpimg2" src="" alt="Unable to load">
+                    </center>
+                </div>
+                <div class="col-sm">
+                    <br><br>
+                    <center>
+                        <h3 id="name1"></h3>
+                        <div class="dropdown">
+                            <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown" aria-expanded="false">edit profile</button>
+                            <div class="dropdown-menu menu">
+                                <a class="dropdown-item waves-effect">Change Profile Photo</a>
+                                <a class="dropdown-item waves-effect">Change Description</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item waves-effect">Forgot Password</a>
+                                <a class="dropdown-item waves-effect">Change Email</a>
+                                <a class="dropdown-item waves-effect">Account Metadata</a>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+                <div class="col-sm">
+                    <br><br>
+                    <center>
+
+                    </center>
+                </div>
+                <div class="col-sm">
+                    <br><br>
+                    <center>
+                        <button onclick="logout()" class="btn-contained-danger">Log Out</button>
+                    </center>
+                </div>
+            </div>
+
         </div>
+    </div>
+
+    <div id="now_playing" class="shadow-sm playing_collapsed">
+    </div>
+
+    <div class="hidden animated" id="play_status">
+        <div class="progress-circular">
+            <div class="progress-circular-wrapper">
+              <div class="progress-circular-inner">
+                <div class="progress-circular-left">
+                  <div class="progress-circular-spinner"></div>
+                </div>
+                <div class="progress-circular-gap"></div>
+                <div class="progress-circular-right">
+                  <div class="progress-circular-spinner"></div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <p>Working...</p>
     </div>
 
 
@@ -155,6 +247,8 @@
     <!-- Waves --> <script src="https://eastcoastgang.github.io/style/release/cdn/waves.min.js"></script>
     <!-- East --> <script src="https://eastcoastgang.github.io/style/release/east.js"></script><script>injectDark()</script>
 
+    <!-- Images Loaded --> <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
@@ -163,8 +257,9 @@
     
     <!-- App --> <script src="js/app.js"></script>
     <!-- Playing --> <script src="js/playing.js"></script>
-    <!-- Tabs --> <script src="js/tabs.js"></script>
     <!-- Search --> <script src="js/search.js"></script>
+    <!-- Library --> <script src="js/library.js"></script>
+    <!-- Tabs --> <script src="js/tabs.js"></script>
 
 </body>
 </html>

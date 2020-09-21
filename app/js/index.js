@@ -26,7 +26,7 @@ function switchLogup(el) {
     $(el).attr('onclick', 'switchLogin(this)')
     $(el).html('Login')
     $('#signtitle').html('Create an account')
-    $('#submitbtn').attr('onclick', 'login()')
+    $('#submitbtn').attr('onclick', 'signup()')
 
 }
 
@@ -35,7 +35,7 @@ function switchLogin(el) {
     $(el).attr('onclick', 'switchLogup(this)')
     $(el).html('Create an Account')
     $('#signtitle').html('Sign In')
-    $('#submitbtn').attr('onclick', 'signup()')
+    $('#submitbtn').attr('onclick', 'login()')
 
 }
 

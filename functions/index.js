@@ -6,6 +6,8 @@ const fs = require('fs')
 const path = require('path');
 const os = require('os');
 const tmpdir = os.tmpdir();
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 
 exports.createAccount = functions.https.onCall(async (data, context) => {
@@ -86,3 +88,14 @@ exports.createAccount = functions.https.onCall(async (data, context) => {
     });
         
 });
+
+exports.requestSong = functions.https.onCall(async (data, context) => {
+
+    // Check the storage for the song
+
+    console.log(tmpdir);
+    
+    // const { stdout, stderr } = await exec('npm run dl ' + data.trackURL);
+
+
+})
