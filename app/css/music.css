@@ -95,6 +95,8 @@
     text-align: center;
     display: inline-block;
     margin: 0px 12px 0px 12px;
+
+    cursor: pointer;
 }
 
 .track h4 {
@@ -149,6 +151,8 @@
 #now_playing {
     position: fixed;
     background-color: var(--bg-secondary);
+    text-align: center;
+    padding-top: 82px;
     
     top: 0px;
     right: 0px;
@@ -157,7 +161,13 @@
     width: 300px;
     transition: all 0.5s;
     z-index: 20;
-  }
+}
+
+#now_playing img {
+    width: 80%;
+    border-radius: 12px;
+    
+}
 
 #play_status {
     position: fixed;

@@ -119,7 +119,7 @@
         </div>
 
         <div id="toolbar" class="hidden animated fadeInRight">
-            <button onclick="showSearch(this)" class="toolbar-btn btn-text-primary">
+            <button id="searchBtn" onclick="showSearch(this)" class="toolbar-btn btn-text-primary">
                 <i class="material-icons">search</i>
             </button>
             <div class="searchboxfield hidden animated floating-label textfield-box">
@@ -217,6 +217,14 @@
     </div>
 
     <div id="now_playing" class="shadow-sm playing_collapsed">
+        <img id="playing_album_art" class="invisible animated slower" alt="">
+        <h2 id="playing_song_name"></h2>
+        <p id="playing_song_artist"></p>
+        <br><br>
+        <audio controls autoplay id="player" class="invisible animated slower"></audio>
+        <br><br>
+        <div id="queue"></div>
+
     </div>
 
     <div class="hidden animated" id="play_status">

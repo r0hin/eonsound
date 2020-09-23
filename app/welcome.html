@@ -30,41 +30,44 @@
    <!-- Content -->
 
   <div class="entry animated zoomIn slower">
-    <center class="animated fadeOutUp" style="animation-delay: 1.5s;">
-      <br><br><br>
-      <i class="material-icons gradicon entryicon animated pulse infinite faster ">library_music</i>
-    </center>
-    <center class="animated fadeInUp" style="animation-delay: 1.5s;">
-    <h2>Welcome to EonSound!
-      <p>Music streaming.. Evolved.</p>
-    </h2>
-
-    <div class="animated fadeInUp" style="animation-delay: 2s;">
-      <br><br><br>
-      <p class="animated zoomIn slower" style="animation-delay: 1.5s;"><b id="signtitle">Create an Account</b></p>
-
-      <div class="eform">
-        <div class="floating-label textfield-box">
-          <label for="emailbox">Email</label>
-          <input class="form-control" id="emailbox" type="text">
-        </div>
-        <br>
-        <div class="floating-label textfield-box">
-          <label for="passbox">Password</label>
-          <input class="form-control" id="passbox" type="password">
-        </div>
-        <br><br>
-        <button id="submitbtn" onclick="signup()" class="btn-contained-primary animated backInUp slower">Submit</button>
-        <br><br>
-        <p>Or <a onclick="switchLogin(this)" class="btn-text-primary">Login</a> instead</p>
-      </div>
-      
+    <center class="animated fadeInUp" style="animation-delay: 2.5s;">
       <br><br>
-      <audio src="assets/welcome_backgrond.mp3" autoplay controls class="animated backInUp" style="animation-delay: 3s;"></audio>
-
-    </div>
-
-  </center>
+      <img class="logo_welcome animated pulse slower infinite" src="assets/eonsound.png"/>
+      <br><br>
+      <h2>Welcome!</h2>
+      <p>Music streaming.. Evolved.</p>
+    </center>
+    <center>
+      <div class="animated fadeInUp" style="animation-delay: 2s;">
+        <br><br><br>
+        <p class="animated zoomIn slower" style="animation-delay: 1.5s;"><b id="signtitle">Create an Account</b></p>
+  
+        <div class="eform">
+          <div class="floating-label textfield-box">
+            <label for="emailbox">Email</label>
+            <input class="form-control" id="emailbox" type="text">
+          </div>
+          <br>
+          <div class="floating-label textfield-box">
+            <label for="passbox">Password</label>
+            <input class="form-control" id="passbox" type="password">
+          </div>
+          <br><br>
+          <button id="submitbtn" onclick="signup()" class="btn-contained-primary animated backInUp slower">Submit</button>
+          <br><br>
+          <p>Or <a onclick="switchLogin(this)" class="btn-text-primary">Login</a> instead</p>
+        </div>
+        
+        <br><br>
+        <audio src="assets/welcome_backgrond.mp3" controls autoplay class="animated backInUp" style="animation-delay: 3s;"></audio>
+        <br><br>
+      </div>
+    </center>
+    <center class="animated fadeOutUp slower centered" style="animation-delay: 1.5s;">
+      <br><br><br>
+      <div class="animated zoomIn" style="animation-delay: 0.5;"></div>
+      <i class=" material-icons gradicon entryicon animated pulse infinite faster ">library_music</i>
+    </center>
   </div>
 
 
@@ -85,7 +88,9 @@
     <!-- Style --> <script src="js/index.js"></script>
   
 
-    <script> injectDark();  </script>
+    <script> injectDark();  
+
+    </script>
 
 </body>
 </html>

@@ -8,9 +8,9 @@ const os = require('os');
 const tmpdir = os.tmpdir();
 const { promisify } = require('util')
 const unlinkAsync = promisify(fs.unlink)
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-
+const fetch = require('node-fetch');
+const simpleYT = require('simpleyt')
+const YoutubeMp3Downloader = require("youtube-mp3-downloader");
 
 exports.createAccount = functions.https.onCall(async (data, context) => {
     
@@ -91,7 +91,10 @@ exports.createAccount = functions.https.onCall(async (data, context) => {
         
 });
 
-exports.requestSong = functions.https.onCall(async (data, context) => {
+exports.requestSong = functions.runWith({
+    timeoutSeconds: 300,
+    memory: '2GB'
+}).https.onCall(async (data, context) => {
 
     // Check the storage for the song
 
@@ -102,21 +105,73 @@ exports.requestSong = functions.https.onCall(async (data, context) => {
         return `https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`
     }
 
-    // console.log(tmpdir + '/');
-    
-    const { stdout, stderr } = await exec('npm run dl ' + data.trackURL);
-    localPath = stderr.split('Saving Song to: ').pop().split('\n✔ Song:').shift()
+    res = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'post',
+        body: 'grant_type=client_credentials',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Authorization": 'Basic ' + (new Buffer.from('b2b0e41d0a3e4464b12eba666a1de36d' + ':' + 'cc01c7911b4c41689b971034ff973587').toString('base64'))
+        },
 
-    var bucket = admin.storage().bucket();
-    await bucket.upload(localPath, { destination: `music/${data.trackID}.mp3` })
-
-    await unlinkAsync(localPath) 
-    
-    var db = admin.firestore()
-    await db.collection('music').doc(data.trackID).set({
-        downloaded: true
     })
 
-    return `https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`
+    body = await res.json()
+    token = body.access_token
+    console.log(token);
+
+    res = await fetch('https://api.spotify.com/v1/tracks/' + data.trackID, {
+        method: 'get',
+        headers: { 
+            'Authorization': 'Bearer ' + token
+        },
+    })
+
+    body = await res.json()
+    name = body.name
+    artist = body.artists[0].name
+
+    search = await simpleYT(`${artist} ${name}`, {
+        filter: 'video',
+    }) 
+
+    videoURL = search[0].uri
+    var YD = new YoutubeMp3Downloader({
+        "outputPath": tmpdir,    // Output file location (default: the home directory)
+        "youtubeVideoQuality": "highestaudio",  // Desired video quality (default: highestaudio)
+    });
+
+    console.log(videoURL);
+
+    return new Promise((resolve, reject) => {
+        // Split for the ID
+        YD.download(videoURL.split('https://www.youtube.com/watch?v=').pop())
+
+        YD.on("error", function(error) {
+            functions.logger.log(error)
+            return 'error'
+          });
+      
+        YD.on("progress", function(progress) {
+        console.log(JSON.stringify(progress));
+        });
+      
+        YD.on("finished", async (err, localPath) => {
+            var bucket = admin.storage().bucket();
+            await bucket.upload(localPath.file, { destination: `music/${data.trackID}.mp3` })
+            functions.logger.log('I made it here!')
+            
+            await unlinkAsync(localPath.file) 
+            functions.logger.log('I made it here!')
+        
+            var db = admin.firestore()
+            await db.collection('music').doc(data.trackID).set({
+                downloaded: true
+            })
+
+            functions.logger.log('I made it here!')
+
+            resolve(`https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`)
+        });
+    })
 
 })

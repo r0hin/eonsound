@@ -189,12 +189,11 @@
 }
 
 #toolbar {
-  float: right;
-  margin-top: 4px;
-  margin-right: 12px;
+  float: right; padding-right: 0px;
+  margin-top: 4px; margin-right: 12px;
   position: relative;
+
   z-index: 2;
-  padding-right: 0px;
   transition: all 1s;
 }
 
@@ -281,4 +280,12 @@
   overflow-y: scroll;
   top: 0px;
   position: absolute;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.logo_welcome {
+  max-width: 300px;
 }
