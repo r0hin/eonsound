@@ -1,16 +1,20 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
+const spawn = require('child-process-promise').spawn;
 const request = require('request');
 const fs = require('fs')
 const path = require('path');
 const os = require('os');
+const mkdirp = require('mkdirp');
 const tmpdir = os.tmpdir();
 const { promisify } = require('util')
 const unlinkAsync = promisify(fs.unlink)
 const fetch = require('node-fetch');
 const simpleYT = require('simpleyt')
 const YoutubeMp3Downloader = require("youtube-mp3-downloader");
+
+const JPEG_EXTENSION = '.png';
 
 exports.createAccount = functions.https.onCall(async (data, context) => {
     
@@ -174,4 +178,38 @@ exports.requestSong = functions.runWith({
         });
     })
 
+})
+
+exports.profilePhoto = functions.storage.object().onFinalize(async (object) => {
+    const filePath = object.name;
+    const baseFileName = path.basename(filePath, path.extname(filePath));
+    const fileDir = path.dirname(filePath);
+    const JPEGFilePath = path.normalize(path.format({dir: fileDir, name: baseFileName, ext: JPEG_EXTENSION}));
+    const tempLocalFile = path.join(os.tmpdir(), filePath);
+    const tempLocalDir = path.dirname(tempLocalFile);
+    const tempLocalJPEGFile = path.join(os.tmpdir(), JPEGFilePath);
+
+    if (filePath.includes('logos/')) {
+        console.log(filePath);
+        if (object.contentType.startsWith('image/png')) {
+            console.log('Already a PNG.');
+            return null;
+        }
+
+        const bucket = admin.storage().bucket(object.bucket);
+
+        await mkdirp(tempLocalDir);
+
+        await bucket.file(filePath).download({destination: tempLocalFile});
+
+        await spawn('convert', [tempLocalFile, tempLocalJPEGFile]);
+
+        await bucket.upload(tempLocalJPEGFile, {destination: JPEGFilePath});
+
+        await bucket.upload(tempLocalJPEGFile, {destination: JPEGFilePath});
+
+        fs.unlinkSync(tempLocalJPEGFile);
+        fs.unlinkSync(tempLocalFile);;
+        functions.logger.log("Converted Image")
+    }
 })

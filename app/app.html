@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <!--=== CSS ===-->
@@ -13,6 +15,8 @@
 
     <!-- East --> <link rel="stylesheet" href="https://eastcoastgang.github.io/style/release/east.css">
     <!-- Baloo 2 Font --> <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Plyr --> <link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
+
 
     <!-- EonSound --> <link rel="stylesheet" href="css/eon.css">
     <!-- App --> <link rel="stylesheet" href="css/app.css">
@@ -190,7 +194,7 @@
                         <div class="dropdown">
                             <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown" aria-expanded="false">edit profile</button>
                             <div class="dropdown-menu menu">
-                                <a class="dropdown-item waves-effect">Change Profile Photo</a>
+                                <a onclick="preparenpicchange()" class="dropdown-item waves-effect">Change Profile Photo</a>
                                 <a class="dropdown-item waves-effect">Change Description</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item waves-effect">Forgot Password</a>
@@ -198,6 +202,7 @@
                                 <a class="dropdown-item waves-effect">Account Metadata</a>
                             </div>
                         </div>
+                        <div class="invisible" id="pfpghost"></div>
                     </center>
                 </div>
                 <div class="col-sm">
@@ -219,10 +224,33 @@
 
     <div id="now_playing" class="shadow-sm playing_collapsed">
         <img id="playing_album_art" class="invisible animated slower" alt="">
+        <br><br>
         <h2 id="playing_song_name"></h2>
         <p id="playing_song_artist"></p>
-        <br><br>
-        <audio controls autoplay id="player" class="invisible animated slower"></audio>
+        <br>
+        <div id="audio_container" class="audio_container invisible animated slower">
+            <audio id="player" autoplay controls> </audio>
+        </div>
+        <br>
+        <div>
+            <!-- Forward and backward buttons -->
+            <div class="row">
+                <div class="col-sm">
+                    <center>
+                        <button onclick="skipPrevious()" class="btn-text-primary iconbtn">
+                            <i class="material-icons">skip_previous</i>
+                        </button>
+                    </center>
+                </div>
+                <div class="col-sm">
+                    <center>
+                        <button onclick="skipNext()" class="btn-text-primary iconbtn">
+                            <i class="material-icons">skip_next</i>
+                        </button>
+                    </center>
+                </div>
+            </div>
+        </div>
         <br><br>
         <div id="queue"></div>
 
@@ -257,11 +285,13 @@
     <!-- East --> <script src="https://eastcoastgang.github.io/style/release/east.js"></script><script>injectDark()</script>
 
     <!-- Images Loaded --> <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+    <!-- Plyr --> <script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-functions.js"></script>
     
     <!-- App --> <script src="js/app.js"></script>

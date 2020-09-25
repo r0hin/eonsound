@@ -157,3 +157,42 @@ function logout() {
         })
     }, 1500)
 }
+
+function preparenpicchange() {
+    u = document.createElement("input")
+    u.id = 'newpicel'
+    u.style.display = 'none'
+    u.setAttribute("type", "file");
+    u.setAttribute("accept", "image/*");
+    document.getElementById('pfpghost').appendChild(u)
+    $("#newpicel").change(function(){
+        changepfp()
+    });
+    $('#newpicel').click()
+}
+
+async function changepfp() {
+    
+    toggleloader()
+    file = document.getElementById('newpicel').files[0]
+    ext = file.name.split('.').pop()
+
+    var storageRef = firebase.storage().ref();
+    var fileRef = storageRef.child(`logos/${user.uid}.${ext}`);
+
+    await fileRef.put(file)
+
+    window.setTimeout(() => {
+        toggleloader()
+        showcomplete()
+
+        // Change existing records
+        document.getElementById('pfpimg1').src = "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/logos%2F" + user.uid + "." + ext + "?alt=media&" + new Date().getTime();
+        document.getElementById('pfpimg2').src = "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/logos%2F" + user.uid + "." + ext + "?alt=media&" + new Date().getTime();
+
+
+
+    }, 800)
+
+    $('#newpicel').remove()
+}

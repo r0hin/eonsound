@@ -250,3 +250,12 @@
 .musicRightContent p {
     margin-bottom: 0px;
 }
+
+.audio_container {
+    padding: 24px;
+    max-width: 100%;
+}
+
+.audio_container .plyr--full-ui {
+    border-radius: 12px;
+}

@@ -67,6 +67,7 @@ async function loadLibrary() {
                 <div class="col-8 playlist_full_bar1">
                     
                 <ul class="list-group musicList">
+                    ${songsSnippet}
                 </ul>
 
                 </div>

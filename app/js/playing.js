@@ -1,10 +1,14 @@
 sessionStorage.setItem('errorAvoid', 'false')
 window.musicQueue = []
 window.musicHistory = []
+window.musicActive = {'none': 'none'}
 
 $("#player").bind("ended", function() {
     endedSong()
 });
+
+const player = new Plyr('audio', {});
+window.player = player;
 
 function expand_music(el) {
     $(el).attr('onclick', 'collapse_music(this)')
@@ -76,7 +80,7 @@ async function play(trackURL, trackID) {
     // Put the result into the queue and updateselection
     musicQueue.push({id: trackID, url: track.data, meta: data})
 
-    if (musicQueue.length > 1) {
+    if (musicActive.none !== 'none') {
         Snackbar.show({text: "Added to queue"})
     }
     else {
@@ -95,16 +99,20 @@ async function play(trackURL, trackID) {
 
 }
 
-function playSong(song) {
+function playSong(song, backwards) {
     // Song contains .id, .url, and .meta
 
-    // Move first value of queue to history
-    musicHistory.push(musicQueue[0])
-
-    pendingSong = musicQueue[0]
-
-    // Delete first value
-    musicQueue.splice(0, 1);
+    if (backwards) {
+        // Playing it directly from the input
+        musicActive = song
+        pendingSong = song
+    }
+    else {
+        // Playing it from beggining of queue
+        musicActive = musicQueue[0]
+        pendingSong = musicQueue[0]
+        musicQueue.splice(0, 1);
+    }
 
     // Set song details
     $('#playing_album_art').attr('src', pendingSong.meta.album.images[0].url)
@@ -117,9 +125,9 @@ function playSong(song) {
     }
     $('#playing_song_artist').html(snippet_track_artists)
 
-    $('#player').attr('src', `${song.url}`)
-    $('#player').removeClass('invisible'); $('#player').removeClass('zoomOut')
-    $('#player').addClass('zoomIn')
+    $('#player').attr('src', `${pendingSong.url}`)
+    $('#audio_container').removeClass('invisible'); $('#audio_container').removeClass('zoomOut')
+    $('#audio_container').addClass('zoomIn')
 
     // Ensure music sidebar is expanded.
     expand_music(document.getElementById('expand_btn'))
@@ -127,12 +135,50 @@ function playSong(song) {
 }
 
 function endedSong() {
+
+    // Move active song to history
+    musicHistory.push(musicActive)
+    musicActive = {'none': 'none'}
+
+    if (musicQueue.length == 0) {
+        queueOver()
+        return;
+    }
+
+    playSong({
+        id: musicQueue[0].id,
+        url: musicQueue[0].url,
+        meta: musicQueue[0].meta,
+    })
+
     console.log('Song ended. Moving to next in queue.');
 }
 
 function queueOver() {
-    $('#player').removeClass('zoomIn')
-    $('#player').addClass('zoomOut')
+    $('#audio_container').removeClass('zoomIn')
+    $('#audio_container').addClass('zoomOut')
     $('#playing_album_art').removeClass('zoomIn')
     $('#playing_album_art').addClass('zoomOut')
+}
+
+function skipNext() {
+    endedSong()
+}
+
+function skipPrevious() {
+
+    // Delete last element of history, to move it to first of queue
+    // Twice as a dummy element to keep active song in front of next song.
+
+    if (musicActive.none !== 'none') {
+        // Song is playing, move it to first of queue
+        musicQueue.unshift(musicActive)
+    }
+
+    // Play last element of history
+    playSong(musicHistory[musicHistory.length - 1], true)
+
+    // Delete last element of history
+    musicHistory.splice(musicHistory.length - 1, 1);
+
 }
