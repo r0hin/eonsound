@@ -10,8 +10,7 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: false
     },
-    titleBarStyle: "hidden",
-    trafficLightPosition: {x: 12, y: 42},
+    titleBarStyle: "hiddenInset",
   })
 
   // and load the index.html of the app.

@@ -1,5 +1,5 @@
 #search_albums {
-    overflow: auto;
+    overflow-x: scroll;
     white-space: nowrap;
     width: 100%;
 }
@@ -190,4 +190,63 @@
 .play_collapsed {
     right: 312px !important;
     transition: all 1.5s;
+}
+
+.list-group-item:first-child {
+    border-radius: 24px 24px 0px 0px;
+}
+
+.list-group-item:last-child {
+    border-radius: 0px 0px 24px 24px;
+    border-bottom: 0px solid white;
+}
+
+.musicList li{
+    box-shadow: none;
+    border-bottom: 0.5px solid var(--bg-primary);
+    background-color: var(--bg-tertiary);
+    color: #fff;
+    cursor: pointer;
+    padding: 12px;
+}
+
+.musicList li:hover{
+    color: #fff;
+}
+
+.musicItem {
+    float: left;
+}
+
+.musicItemRight {
+    float: right;
+}
+
+.musicItemCover {
+    width: 64px !important; height: 64px !important;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.musicItemContent {
+    position: absolute;
+    top: 50%; left: 86px;
+    width: 100%;
+    transform: translate(0, -50%);
+    line-height: 0px;
+}
+
+.musicItemContent h3 {
+    margin-bottom: 6px;
+}
+
+.musicRightContent {
+    position: absolute;
+    top: 50%; right: 48px;
+    transform: translate(0, -50%);
+    line-height: 0px;
+}
+
+.musicRightContent p {
+    margin-bottom: 0px;
 }

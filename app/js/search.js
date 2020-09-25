@@ -215,7 +215,6 @@ async function loadAlbum(id) {
     g.id = "media_" + id
     g.classList.add('album_view'); g.classList.add('hidden'); g.classList.add('animated'); g.classList.add('faster')
 
-    console.log(id);
     // Get album data
     const result = await fetch(`https://api.spotify.com/v1/albums/${id}`, {
         method: 'GET',
@@ -225,11 +224,46 @@ async function loadAlbum(id) {
     })
 
     const data = await result.json()
+    console.log(data);
     refreshCode()
 
     snippet_album_artists = ''
     for (let i = 0; i < data.artists.length; i++) {
         snippet_album_artists += `${data.artists[i].name} `   
+    }
+
+    songSnippet = ''
+
+    for (let i = 0; i < data.tracks.items.length; i++) {
+        const track = data.tracks.items[i];
+        
+        trackArtistSnippet = ''
+        for (let k = 0; k < track.artists.length; k++) {
+            trackArtistSnippet = trackArtistSnippet + ' ' + track.artists[k].name
+            
+        }
+
+        songSnippet = songSnippet + `
+        <li onclick="play('${track.external_urls.spotify}', '${track.id}')" class="list-group-item waves-effect">
+            <div class="musicItem">
+                <img src="${data.images[0].url}" class="musicItemCover" alt="">
+                <div class="musicItemContent">
+                    <h3>${track.name}</h3>
+                    <br>
+                    <p>${trackArtistSnippet}</p>
+                </div>
+            </div>
+
+            <div class="musicItemRight">
+                <div class="musicRightContent">
+                    <p>${track.track_number}</p>
+                </div>
+            </div>
+
+        </li>
+    `
+
+
     }
 
     g.innerHTML = `
@@ -250,7 +284,11 @@ async function loadAlbum(id) {
                 </center>
             </div>
             <div class="col-8 playlist_full_bar1">
-                
+                <br><br>
+                <ul class="list-group musicList">
+                    ${songSnippet}
+                </ul>
+                <br><br> <br><br> <br><br>
             </div>
         </div>
     </div>

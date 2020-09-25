@@ -63,7 +63,7 @@
         <br><br>
       </div>
     </center>
-    <center class="animated fadeOutUp slower centered" style="animation-delay: 1.5s;">
+    <center id="skiddo" class="animated fadeOutUp slower centered" style="animation-delay: 1.5s;">
       <br><br><br>
       <div class="animated zoomIn" style="animation-delay: 0.5;"></div>
       <i class=" material-icons gradicon entryicon animated pulse infinite faster ">library_music</i>
@@ -89,7 +89,9 @@
   
 
     <script> injectDark();  
-
+window.setTimeout(() => {
+  $('#skiddo').remove()
+}, 2500)
     </script>
 
 </body>

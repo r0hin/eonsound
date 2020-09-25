@@ -41,6 +41,9 @@ async function loadLibrary() {
         f.classList.add('playlist_view')
         f.classList.add('hidden'); f.classList.add('animated'); f.classList.add('faster')
         f.id = query.docs[i].id
+
+        songsSnippet = ''
+
         f.innerHTML = `
         <div class="content_media content_expanded">
             <button onclick="hidePlaylist('${query.docs[i].id}')" class="btn-text-primary iconbtn exitbtn">
@@ -63,6 +66,9 @@ async function loadLibrary() {
                 </div>
                 <div class="col-8 playlist_full_bar1">
                     
+                <ul class="list-group musicList">
+                </ul>
+
                 </div>
             </div>
         </div>
@@ -92,3 +98,4 @@ async function hidePlaylist(id) {
         $(`#${id}`).addClass('hidden')
     }, 500)
 }
+

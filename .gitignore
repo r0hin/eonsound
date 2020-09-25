@@ -2,3 +2,4 @@
 node_modules
 .firebase/hosting.YXBw.cache
 firebase-debug.log
+dist
