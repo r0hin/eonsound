@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="manifest" href="assets/site.webmanifest">
+    <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
     <title>Document</title>
     <!--=== CSS ===-->
     <!-- Animate 4.0.0 Compat Ver --> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.compat.min.css">
@@ -195,7 +201,6 @@
                             <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown" aria-expanded="false">edit profile</button>
                             <div class="dropdown-menu menu">
                                 <a onclick="preparenpicchange()" class="dropdown-item waves-effect">Change Profile Photo</a>
-                                <a class="dropdown-item waves-effect">Change Description</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item waves-effect">Forgot Password</a>
                                 <a class="dropdown-item waves-effect">Change Email</a>
@@ -222,17 +227,53 @@
         </div>
     </div>
 
+    <div class="bottom_sheet animated faster fadeOutDown hidden" id="librarySheet">
+        <div class="bottom_sheet_content">
+          <h2>Add to Library</h2>
+          <br>
+          <div class="row">
+            <div class="col-sm">
+                <center>
+                    <button class="btn-outlined-primary iconbtn iconbtn-outlined">
+                        <i class="material-icons">library_add</i>
+                    </button>
+                    <br><br>
+                    <h4>Add to Library</h4>
+                </center>
+            </div>
+            <div class="col-sm">
+                <center>
+                    <button class="btn-outlined-primary iconbtn iconbtn-outlined">
+                        <i class="material-icons">playlist_add</i>
+                    </button>
+                    <br><br>
+                    <h4>Add to Playlist</h4>
+                </center>
+            </div>
+            <div class="col-sm">
+                <center>
+                    <button class="btn-outlined-primary iconbtn iconbtn-outlined">
+                        <i class="material-icons">note</i>
+                    </button>
+                    <br><br>
+                    <h4>Update Note</h4>
+                </center>
+            </div>
+          </div>
+        </div>
+      </div>
+
     <div id="now_playing" class="shadow-sm playing_collapsed">
         <img id="playing_album_art" class="invisible animated slower" alt="">
         <br><br>
-        <h2 id="playing_song_name"></h2>
+        <h2 id="playing_song_name">Not Playing</h2>
         <p id="playing_song_artist"></p>
         <br>
         <div id="audio_container" class="audio_container invisible animated slower">
             <audio id="player" autoplay controls> </audio>
         </div>
         <br>
-        <div>
+        <div class="invisible animated" id="queueButtons">
             <!-- Forward and backward buttons -->
             <div class="row">
                 <div class="col-sm">
@@ -240,6 +281,38 @@
                         <button onclick="skipPrevious()" class="btn-text-primary iconbtn">
                             <i class="material-icons">skip_previous</i>
                         </button>
+                    </center>
+                </div>
+                <div class="col-sm">
+                    <center>
+                        <div class="dropdown">
+                            <button aria-haspopup="true" class="btn-text-primary iconbtn" data-toggle="dropdown" aria-expanded="false">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <div class="dropdown-menu menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(307px, 44px, 0px);">
+                                <a data-bs-toggle="librarySheet" class="dropdown-item waves-effect">
+                                    <center>
+                                        <i class="material-icons">library_add</i>
+                                    </center>
+                                </a>
+                                <a class="dropdown-item waves-effect">
+                                    <center>
+                                        <i class="material-icons">info</i>
+                                    </center>
+                                </a>
+                                <a class="dropdown-item waves-effect">
+                                    <center>
+                                        <i class="material-icons">share</i>
+                                    </center>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item waves-effect">
+                                    <center>
+                                        <i class="material-icons">outlined_flag</i>
+                                    </center>
+                                </a>
+                            </div>
+                        </div>
                     </center>
                 </div>
                 <div class="col-sm">
@@ -252,6 +325,7 @@
             </div>
         </div>
         <br><br>
+        <h4 id="queueText"></h4>
         <div id="queue"></div>
 
     </div>

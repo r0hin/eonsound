@@ -159,12 +159,12 @@ function logout() {
 }
 
 function preparenpicchange() {
-    u = document.createElement("input")
-    u.id = 'newpicel'
-    u.style.display = 'none'
-    u.setAttribute("type", "file");
-    u.setAttribute("accept", "image/*");
-    document.getElementById('pfpghost').appendChild(u)
+    h = document.createElement("input")
+    h.id = 'newpicel'
+    h.style.display = 'none'
+    h.setAttribute("type", "file");
+    h.setAttribute("accept", "image/*");
+    document.getElementById('pfpghost').appendChild(h)
     $("#newpicel").change(function(){
         changepfp()
     });

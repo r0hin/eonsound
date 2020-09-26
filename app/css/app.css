@@ -291,3 +291,7 @@
 .logo_welcome {
   max-width: 300px;
 }
+
+.iconbtn-outlined {
+  border-width: 2px !important;
+}

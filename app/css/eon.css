@@ -15,6 +15,10 @@ body {
     color: var(--content-primary);
 }
 
+.bottom_sheet {
+    max-height: 100%;
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: 0.8em;

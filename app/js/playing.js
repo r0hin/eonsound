@@ -44,8 +44,18 @@ async function play(trackURL, trackID) {
     }, 3000);
 
     // Contact server to request song URL.
-    var requestSong = await firebase.functions().httpsCallable('requestSong');
-    track = await requestSong({trackID: trackID, trackURL: trackURL})
+    try {
+        var requestSong = await firebase.functions().httpsCallable('requestSong');
+        track = await requestSong({trackID: trackID, trackURL: trackURL})   
+    } catch (error) {
+        console.log('Error downloading video. 99% geo restricted.');
+        $('#erorrModalMsg').html('There was an error requesting the song. It is likely geo-restricted.')
+        $('#errorModal').modal('toggle')
+        window.setTimeout(() => {
+            $('#play_status').addClass('fadeOutRight')
+            $('#play_status').removeClass('fadeInRight')
+        }, 1)
+    }
 
     // Only run if it request takes longer than 3 seconds. On 99.9999% of already downloaded songs, it will not take this long.
     clearTimeout(firstTime)
@@ -82,6 +92,7 @@ async function play(trackURL, trackID) {
 
     if (musicActive.none !== 'none') {
         Snackbar.show({text: "Added to queue"})
+        buildQueue()
     }
     else {
         playSong({
@@ -95,7 +106,7 @@ async function play(trackURL, trackID) {
     window.setTimeout(() => {
         $('#play_status').addClass('fadeOutRight')
         $('#play_status').removeClass('fadeInRight')
-    }, 1000)
+    }, 1)
 
 }
 
@@ -115,9 +126,13 @@ function playSong(song, backwards) {
     }
 
     // Set song details
+    $('#queueButtons').removeClass('zoomOut')
+    $('#queueButtons').addClass('zoomIn')
+    $('#queueButtons').removeClass('invisible')
     $('#playing_album_art').attr('src', pendingSong.meta.album.images[0].url)
     $('#playing_album_art').removeClass('invisible'); $('#playing_album_art').removeClass('zoomOut');
     $('#playing_album_art').addClass('zoomIn')
+    $('#queueText').html('Queue')
     $('#playing_song_name').html(pendingSong.meta.name)
     snippet_track_artists = ''
     for (let i = 0; i < pendingSong.meta.artists.length; i++) {
@@ -131,6 +146,7 @@ function playSong(song, backwards) {
 
     // Ensure music sidebar is expanded.
     expand_music(document.getElementById('expand_btn'))
+    buildQueue()
 
 }
 
@@ -159,6 +175,15 @@ function queueOver() {
     $('#audio_container').addClass('zoomOut')
     $('#playing_album_art').removeClass('zoomIn')
     $('#playing_album_art').addClass('zoomOut')
+
+    $('#playing_song_artist').html('')
+    $('#playing_song_name').html('Not Playing')
+
+    $('#queueButtons').addClass('zoomOut')
+    $('#queueButtons').removeClass('zoomIn')
+
+    $('#player').attr('src', ``)
+    $('#queueText').html('')
 }
 
 function skipNext() {
@@ -181,4 +206,42 @@ function skipPrevious() {
     // Delete last element of history
     musicHistory.splice(musicHistory.length - 1, 1);
 
+}
+
+function buildQueue() {
+    $('#queue').empty()
+
+    j = document.createElement('div')
+    songSnippet = ''
+
+    for (let i = 0; i < musicQueue.length; i++) {
+        const song = musicQueue[i];
+        iplusone = i + 1
+
+        trackArtistSnippet = ''
+        for (let k = 0; k < song.meta.artists.length; k++) {
+            trackArtistSnippet = trackArtistSnippet + ' ' + song.meta.artists[k].name   
+        }
+
+        songSnippet = songSnippet + `
+            <li class="list-group-item waves-effect">
+                <div class="musicItem">
+                    <img src="${song.meta.album.images[0].url}" class="musicItemCover" alt="">
+                    <div class="musicItemContent">
+                        <p>${song.meta.name}</p>
+                        <br>
+                        <small>${trackArtistSnippet}</small>
+                    </div>
+                </div>
+            </li>
+        `
+    }
+
+    j.innerHTML = `<ul class="list-group musicList"> ${songSnippet} </ul><br><br><br>`
+
+    if (musicQueue.length == 0) {
+        j.innerHTML = `<center><p>Empty Queue</p></center>`
+    }
+
+    document.getElementById('queue').appendChild(j)
 }

@@ -22,6 +22,10 @@ async function createPlaylist() {
 }
 
 async function loadLibrary() {
+    loadLibraryPlaylists()
+}
+
+async function loadLibraryPlaylists() {
     query = await db.collection('users').doc(user.uid).collection('library').get()
     for (let i = 0; i < query.docs.length; i++) {
         playlist = query.docs[i].data();
@@ -42,7 +46,10 @@ async function loadLibrary() {
         f.classList.add('hidden'); f.classList.add('animated'); f.classList.add('faster')
         f.id = query.docs[i].id
 
-        songsSnippet = ''
+
+        if (playlist.songs.length == 0 ) {
+            songsSnippet = '<p>No songs added yet.</p>'
+        }
 
         f.innerHTML = `
         <div class="content_media content_expanded">
