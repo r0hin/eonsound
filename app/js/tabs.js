@@ -26,19 +26,6 @@ function tabe(tab, el) {
                 break;
             case 'library':
                 // Library stuff
-
-                if (typeof(user) == "undefined") {
-                    interval = window.setInterval(() => {
-                        if (typeof(user) !== "undefined") {
-                            loadLibrary()
-                            window.clearInterval(interval)
-                        }
-                    }, 200)
-                }
-                else {
-                    loadLibrary()
-                }
-
                 break;
             case 'account':
                 // Account stuff

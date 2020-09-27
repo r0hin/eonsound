@@ -203,6 +203,14 @@
     border-bottom: 0px solid white;
 }
 
+#queue .musicList {
+    padding: 0px;
+}
+
+.musicList {
+    padding-right: 24px;
+}
+
 .musicList li{
     box-shadow: none;
     border-bottom: 0.5px solid var(--bg-primary);
@@ -244,13 +252,15 @@
 
 .musicRightContent {
     position: absolute;
-    top: 50%; right: 48px;
+    top: 50%; right: 0px;
     transform: translate(0, -50%);
     line-height: 0px;
 }
 
 .musicRightContent p {
     margin-bottom: 0px;
+    width: 200px;
+    text-align: right;
 }
 
 .audio_container {
@@ -267,4 +277,12 @@
     padding: 8px;
     position: relative;
     z-index: -1;
+}
+
+#playing_song_name {
+    width: 100%;
+    padding: 0px 24px 0px 24px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 28px;
 }

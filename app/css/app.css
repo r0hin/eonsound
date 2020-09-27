@@ -295,3 +295,7 @@
 .iconbtn-outlined {
   border-width: 2px !important;
 }
+
+#playlistSelect {
+  z-index: 20000000000000;
+}

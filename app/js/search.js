@@ -244,7 +244,7 @@ async function loadAlbum(id) {
         }
 
         songSnippet = songSnippet + `
-        <li onclick="play('${track.external_urls.spotify}', '${track.id}')" class="list-group-item waves-effect">
+        <li style="animation-delay: ${i}00ms" onclick="play('${track.external_urls.spotify}', '${track.id}')" class="list-group-item waves-effect animated flipInX">
             <div class="musicItem">
                 <img src="${data.images[0].url}" class="musicItemCover" alt="">
                 <div class="musicItemContent">
@@ -259,15 +259,19 @@ async function loadAlbum(id) {
                     <p>${track.track_number}</p>
                 </div>
             </div>
-
         </li>
     `
+    }
 
-
+    if (sessionStorage.getItem('expanded') == 'true') {
+        classes = 'content_media content_expanded content_collapsed'
+    }
+    else {
+        classes = 'content_media content_expanded'
     }
 
     g.innerHTML = `
-    <div class="content_media content_expanded">
+    <div class="${classes}">
         <button onclick="hideAlbum()" class="btn-text-primary iconbtn exitbtn">
             <i class="material-icons">chevron_left</i>
         </button>
@@ -281,6 +285,7 @@ async function loadAlbum(id) {
                     <h2 class="animated fadeInUp">${data.name}</h2>
                     <p class="animated fadeIn">${snippet_album_artists}</p>
                     <br><br>
+                    <button onclick='playAlbum(${JSON.stringify(data.tracks.items)})' class="btn-contained-primary">play</button>
                 </center>
             </div>
             <div class="col-8 playlist_full_bar1">

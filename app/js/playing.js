@@ -1,4 +1,5 @@
 sessionStorage.setItem('errorAvoid', 'false')
+sessionStorage.setItem('expanded', 'false')
 window.musicQueue = []
 window.musicHistory = []
 window.musicActive = {'none': 'none'}
@@ -11,6 +12,9 @@ const player = new Plyr('audio', {});
 window.player = player;
 
 function expand_music(el) {
+
+    sessionStorage.setItem('expanded', 'true')
+
     $(el).attr('onclick', 'collapse_music(this)')
     $(el).addClass('expand_expanded')
 
@@ -24,6 +28,9 @@ function expand_music(el) {
 }
 
 function collapse_music(el) {
+
+    sessionStorage.setItem('expanded', 'false')
+
     $(el).attr('onclick', 'expand_music(this)')
     $(el).removeClass('expand_expanded')
     $('#now_playing').addClass('playing_collapsed')
@@ -33,81 +40,84 @@ function collapse_music(el) {
     $('#play_status').removeClass('play_collapsed')
 }
 
-async function play(trackURL, trackID) {
-    console.log('Requesting song.');
-    $('#play_status').removeClass('hidden')
-    $('#play_status').removeClass('fadeOutRight')
-    $('#play_status').addClass('fadeInRight')
-
-    firstTime = setTimeout(() => {
-        Snackbar.show({text: "Downloading song. This may take a few moments."})
-    }, 3000);
-
-    // Contact server to request song URL.
-    try {
-        var requestSong = await firebase.functions().httpsCallable('requestSong');
-        track = await requestSong({trackID: trackID, trackURL: trackURL})   
-    } catch (error) {
-        console.log('Error downloading video. 99% geo restricted.');
-        $('#erorrModalMsg').html('There was an error requesting the song. It is likely geo-restricted.')
-        $('#errorModal').modal('toggle')
+async function play(trackURL, trackID, QUEUE) {
+    return new Promise(async (resolve,reject) => {
+        console.log('Requesting song.');
+        $('#play_status').removeClass('hidden')
+        $('#play_status').removeClass('fadeOutRight')
+        $('#play_status').addClass('fadeInRight')
+    
+        firstTime = setTimeout(() => {
+            Snackbar.show({text: "Downloading song. This may take a few moments."})
+        }, 3000);
+    
+        // Contact server to request song URL.
+        try {
+            var requestSong = await firebase.functions().httpsCallable('requestSong');
+            track = await requestSong({trackID: trackID, trackURL: trackURL})   
+        } catch (error) {
+            console.log('Error downloading video. 99% geo restricted.');
+            $('#erorrModalMsg').html('There was an error requesting the song. It is likely geo-restricted.')
+            $('#errorModal').modal('toggle')
+            window.setTimeout(() => {
+                $('#play_status').addClass('fadeOutRight')
+                $('#play_status').removeClass('fadeInRight')
+            }, 1)
+        }
+    
+        // Only run if it request takes longer than 3 seconds. On 99.9999% of already downloaded songs, it will not take this long.
+        clearTimeout(firstTime)
+    
+        // Get track details
+        const result = await fetch(`https://api.spotify.com/v1/tracks/${trackID}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${spotifyCode}`
+            },
+        })
+    
+        const data = await result.json()
+    
+        if (data.error) {
+            if (sessionStorage.getItem('errorAvoid') == 'true') {
+                // Don't start a loop of errors wasting code use.
+                Snackbar.show({text: "An error occured while playing song"})
+                return
+            }
+    
+            console.log('Error occured. Likely invalid code - request and do it again.');
+            sessionStorage.setItem('errorAvoid', 'true')
+            refreshCode()
+            play(trackURL, trackID)
+            return;
+        }
+    
+        refreshCode()
+        sessionStorage.setItem('errorAvoid', 'false')
+    
+        // Put the result into the queue and updateselection
+        musicQueue.push({id: trackID, url: track.data, meta: data})
+    
+        if (musicActive.none !== 'none') {
+            Snackbar.show({text: "Added to queue"})
+            buildQueue()
+        }
+        else {
+            playSong({
+                id: trackID, 
+                url: track.data, 
+                meta: data
+            })
+        }
+    
+        // When done
         window.setTimeout(() => {
             $('#play_status').addClass('fadeOutRight')
             $('#play_status').removeClass('fadeInRight')
-        }, 1)
-    }
+            resolve();
+        }, 1)  
 
-    // Only run if it request takes longer than 3 seconds. On 99.9999% of already downloaded songs, it will not take this long.
-    clearTimeout(firstTime)
-
-    // Get track details
-    const result = await fetch(`https://api.spotify.com/v1/tracks/${trackID}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${spotifyCode}`
-        },
-    })
-
-    const data = await result.json()
-
-    if (data.error) {
-        if (sessionStorage.getItem('errorAvoid') == 'true') {
-            // Don't start a loop of errors wasting code use.
-            Snackbar.show({text: "An error occured while playing song"})
-            return
-        }
-
-        console.log('Error occured. Likely invalid code - request and do it again.');
-        sessionStorage.setItem('errorAvoid', 'true')
-        refreshCode()
-        play(trackURL, trackID)
-        return;
-    }
-
-    refreshCode()
-    sessionStorage.setItem('errorAvoid', 'false')
-
-    // Put the result into the queue and updateselection
-    musicQueue.push({id: trackID, url: track.data, meta: data})
-
-    if (musicActive.none !== 'none') {
-        Snackbar.show({text: "Added to queue"})
-        buildQueue()
-    }
-    else {
-        playSong({
-            id: trackID, 
-            url: track.data, 
-            meta: data
-        })
-    }
-
-    // When done
-    window.setTimeout(() => {
-        $('#play_status').addClass('fadeOutRight')
-        $('#play_status').removeClass('fadeInRight')
-    }, 1)
-
+    });
 }
 
 function playSong(song, backwards) {
@@ -125,8 +135,25 @@ function playSong(song, backwards) {
         musicQueue.splice(0, 1);
     }
 
+    snippet_track_artists = ''
+    for (let i = 0; i < pendingSong.meta.artists.length; i++) {
+        snippet_track_artists += `${pendingSong.meta.artists[i].name}, `   
+    }
+    $('#playing_song_artist').html(snippet_track_artists)
+
     // Set song details
-    $('#queueButtons').removeClass('zoomOut')
+    $('#libraryaddbtn').get(0).onclick = function() {
+        prepare_library_changes({
+            id: pendingSong.meta.id,
+            url: pendingSong.url,
+            art: pendingSong.meta.album.images[0].url,
+            artists: snippet_track_artists,
+            name: pendingSong.meta.name,
+            length: pendingSong.meta.duration_ms,
+        })
+    }
+
+    $('#queueButtons').removeClass('zoomOeut')
     $('#queueButtons').addClass('zoomIn')
     $('#queueButtons').removeClass('invisible')
     $('#playing_album_art').attr('src', pendingSong.meta.album.images[0].url)
@@ -134,11 +161,6 @@ function playSong(song, backwards) {
     $('#playing_album_art').addClass('zoomIn')
     $('#queueText').html('Queue')
     $('#playing_song_name').html(pendingSong.meta.name)
-    snippet_track_artists = ''
-    for (let i = 0; i < pendingSong.meta.artists.length; i++) {
-        snippet_track_artists += `${pendingSong.meta.artists[i].name} `   
-    }
-    $('#playing_song_artist').html(snippet_track_artists)
 
     $('#player').attr('src', `${pendingSong.url}`)
     $('#audio_container').removeClass('invisible'); $('#audio_container').removeClass('zoomOut')
@@ -244,4 +266,18 @@ function buildQueue() {
     }
 
     document.getElementById('queue').appendChild(j)
+}
+
+async function playAlbum(data) {
+
+    Snackbar.show({text: "Attemping to queue album."})
+
+    for (let i = 0; i < data.length; i++) {
+        await play(data[i].external_urls.spotify, data[i].id)
+        console.log('Song downloaded');
+    }
+
+    Snackbar.show({text: "All songs queued."})
+    showcomplete()
+
 }

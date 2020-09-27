@@ -14,6 +14,7 @@ firebase.auth().onAuthStateChanged(function(user) {
       }
 
       appContent()
+      loadLibrary()
 
     } else {
         window.location.replace('welcome.html')
