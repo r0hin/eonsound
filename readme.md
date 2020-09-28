@@ -1,5 +1,5 @@
 ## EonSound
-#### Beautiful web-based music player
+#### Beautiful Web-based Music Player
 
 <br><br>
 
