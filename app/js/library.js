@@ -101,6 +101,7 @@ async function loadLibraryPlaylists() {
                         <h2 class="animated fadeInUp">${playlist.name}</h2>
                         <p class="animated fadeIn">${playlist.owner.name}</p>
                         <br><br>
+                        <button onclick='playPlaylist(${JSON.stringify(playlist.songs)})' class="btn-contained-primary">play</button>
                         <hr>
                         <br>
                         <p>${playlist.description}</p>

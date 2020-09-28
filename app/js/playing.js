@@ -127,6 +127,7 @@ function playSong(song, backwards) {
         // Playing it directly from the input
         musicActive = song
         pendingSong = song
+        console.log(song);
     }
     else {
         // Playing it from beggining of queue
@@ -139,6 +140,11 @@ function playSong(song, backwards) {
     for (let i = 0; i < pendingSong.meta.artists.length; i++) {
         snippet_track_artists += `${pendingSong.meta.artists[i].name}, `   
     }
+
+    if (typeof(pendingSong.meta.artistssnippet) !== undefined) {
+        snippet_track_artists = pendingSong.meta.artistssnippet
+    }
+
     $('#playing_song_artist').html(snippet_track_artists)
 
     // Set song details
@@ -245,6 +251,10 @@ function buildQueue() {
             trackArtistSnippet = trackArtistSnippet + ' ' + song.meta.artists[k].name   
         }
 
+        if (typeof(song.meta.artistssnippet) !== undefined) {
+            trackArtistSnippet = song.meta.artistssnippet
+        }
+
         songSnippet = songSnippet + `
             <li class="list-group-item waves-effect">
                 <div class="musicItem">
@@ -275,6 +285,45 @@ async function playAlbum(data) {
     for (let i = 0; i < data.length; i++) {
         await play(data[i].external_urls.spotify, data[i].id)
         console.log('Song downloaded');
+    }
+
+    Snackbar.show({text: "All songs queued."})
+    showcomplete()
+
+}
+
+async function playPlaylist(data) {
+
+    Snackbar.show({text: "Attemping to queue playlist."})
+
+    for (let i = 0; i < data.length; i++) {
+
+        metaitem = {
+            name: data[i].name,
+            id: data[i].id,
+            artists: [],
+            artistssnippet: data[i].artists,
+            duration_ms: data[i].length,
+            album: {
+                images: [{
+                    url: data[i].art
+                }]
+            }
+        }
+
+        musicQueue.push({id: data[i].id, url: data[i].url, meta: metaitem})
+    
+        if (musicActive.none !== 'none') {
+            Snackbar.show({text: "Added to queue"})
+            buildQueue()
+        }
+        else {
+            playSong({
+                id: data[i].id, 
+                url: data[i].url, 
+                meta: metaitem
+            })
+        }
     }
 
     Snackbar.show({text: "All songs queued."})
