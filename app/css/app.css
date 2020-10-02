@@ -275,7 +275,8 @@
 }
 
 #search-tab {
-  height: calc(100vh - 48px);
+  /* -48px frmo height */
+  height: calc(100vh);
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -298,4 +299,57 @@
 
 #playlistSelect {
   z-index: 20000000000000;
+}
+
+.cm_text {
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  height: 100%;
+  text-align: center;
+}
+
+.context-menu {
+  display: none;
+  position: absolute;
+  z-index: 1000000;
+}
+
+.context-bg-active {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+  transition: all 0.3s !important;
+}
+
+.context-bg {
+  position: fixed;
+  width: 100%; height: 100%;
+  top: 0px; left: 0px;
+  z-index: 999999; cursor: pointer;
+
+  background-color: rgba(0, 0, 0, 0);
+  transition: all 0.3s;
+}
+
+.context_active {
+  display: block;
+}
+
+
+.context-menu__items {
+  background-color: var(--bg-tertiary);
+  list-style-type: none;
+  padding: 8px 0px 8px 0px;
+  border-radius: 12px;
+  min-width: 120px;
+}
+
+.context-menu__item {
+  margin: 4px 0px 4px 0px;
+  background-color: var(--bg-secondary);
+  width: 100%; 
+}
+
+.contextbtn {
+  width: 100%;
+  border-radius: 0px !important;
 }

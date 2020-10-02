@@ -314,3 +314,28 @@ async function deletePlaylist(id) {
     $(`#${id}`).remove()
     $(`#${id}snippet`).remove()
 }
+
+async function prepare_track_library(id) {
+    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${spotifyCode}`
+        },
+    })
+
+    const data = await result.json()
+    if (data.error) {
+        if (sessionStorage.getItem('errorAvoid') == 'true') {
+            // Don't start a loop of errors wasting code use.
+            Snackbar.show({text: "An error occured while searching."})
+            return
+        }
+
+        console.log('Error occured. Likely invalid code - request and do it again.');
+        sessionStorage.setItem('errorAvoid', 'true')
+        refreshCode()
+        prepare_track_library(id)
+        return;
+    }
+    refreshCode()
+}

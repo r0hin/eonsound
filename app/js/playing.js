@@ -141,7 +141,7 @@ function playSong(song, backwards) {
         snippet_track_artists += `${pendingSong.meta.artists[i].name}, `   
     }
 
-    if (typeof(pendingSong.meta.artistssnippet) !== undefined) {
+    if (typeof(pendingSong.meta.artistssnippet) !== 'undefined') {
         snippet_track_artists = pendingSong.meta.artistssnippet
     }
 
@@ -251,7 +251,7 @@ function buildQueue() {
             trackArtistSnippet = trackArtistSnippet + ' ' + song.meta.artists[k].name   
         }
 
-        if (typeof(song.meta.artistssnippet) !== undefined) {
+        if (typeof(song.meta.artistssnippet) !== 'undefined') {
             trackArtistSnippet = song.meta.artistssnippet
         }
 
@@ -297,33 +297,8 @@ async function playPlaylist(data) {
     Snackbar.show({text: "Attemping to queue playlist."})
 
     for (let i = 0; i < data.length; i++) {
-
-        metaitem = {
-            name: data[i].name,
-            id: data[i].id,
-            artists: [],
-            artistssnippet: data[i].artists,
-            duration_ms: data[i].length,
-            album: {
-                images: [{
-                    url: data[i].art
-                }]
-            }
-        }
-
-        musicQueue.push({id: data[i].id, url: data[i].url, meta: metaitem})
-    
-        if (musicActive.none !== 'none') {
-            Snackbar.show({text: "Added to queue"})
-            buildQueue()
-        }
-        else {
-            playSong({
-                id: data[i].id, 
-                url: data[i].url, 
-                meta: metaitem
-            })
-        }
+        await play(data[i].url, data[i].id)
+        console.log('Song downloaded');
     }
 
     Snackbar.show({text: "All songs queued."})

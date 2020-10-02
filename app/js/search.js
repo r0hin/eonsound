@@ -159,17 +159,17 @@ async function buildSearch(data) {
             console.log('Minor search error: ' + error)
         }
     }
-    
+
+    k = 0
     for (let i = 0; i < data.tracks.items.length; i++) {
+        k++
         try {
+            id = data.tracks.items[i].id
          // For each episode
         d = document.createElement('div')
+        d.setAttribute('track_details', id + '//==//' + data.tracks.items[i].external_urls.spotify)
         d.classList.add('track')
         d.classList.add('hidden'); d.classList.add('animated'); d.classList.add('fadeIn')
-
-        d.onclick = () => {
-            play(`${data.tracks.items[i].external_urls.spotify}`, `${data.tracks.items[i].id}`)
-        }
 
         if (data.tracks.items[i].album.images.length == 0) {
             continue;
@@ -180,14 +180,15 @@ async function buildSearch(data) {
         for (let k = 0; k < data.tracks.items[i].artists.length; k++) {
             snippet_track_artists += `${data.tracks.items[i].artists[k].name} `   
         }
-
+        
         d.innerHTML = `
-            <img src="${data.tracks.items[i].album.images[0].url}">
+            <img id="${data.tracks.items[i].id}tracksearchicon" onclick="play('${data.tracks.items[i].external_urls.spotify}', '${data.tracks.items[i].id}')" src="${data.tracks.items[i].album.images[0].url}">
             <h4>${data.tracks.items[i].name}</h4>
             <p>${snippet_track_artists}</p>
         `
 
         d.id = 'track_search_index_' + i
+
         document.getElementById('search_tracks').appendChild(d)
         $('#track_search_index_' + i).imagesLoaded( function() {
             $('#track_search_index_' + i).removeClass("hidden")
@@ -196,6 +197,8 @@ async function buildSearch(data) {
             console.log('Minor search error: ' + error)
         }
     }
+
+    addWaves()
 
 }
 

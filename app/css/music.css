@@ -89,14 +89,15 @@
     overflow: auto;
     white-space: nowrap;
     width: 100%;
+    overflow-y: hidden;
+    z-index: 1;
 }
 
 .track {
     text-align: center;
     display: inline-block;
     margin: 0px 12px 0px 12px;
-
-    cursor: pointer;
+    position: relative;
 }
 
 .track h4 {
@@ -107,7 +108,7 @@
 
 .track img {
     margin-bottom: 12px;
-
+    cursor: pointer;
     width: 150px;
     height: 150px;
     object-fit: cover;
