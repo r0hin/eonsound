@@ -10,6 +10,12 @@
     --content-primary: #fff
 }
 
+hr {
+    background-color: var(--content-primary);
+    opacity: 0.6;
+    margin: 12px 36px 12px 36px;
+}
+
 body {
     background-color: var(--bg-primary);
     color: var(--content-primary);

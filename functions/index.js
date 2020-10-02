@@ -16,6 +16,31 @@ const YoutubeMp3Downloader = require("youtube-mp3-downloader");
 
 const JPEG_EXTENSION = '.png';
 
+exports.albumPhoto = functions.https.onCall(async (data, context) => {
+
+    const db = admin.firestore()
+    const uid = context.auth.uid;
+    const id = data.id;
+
+    // Upload Photo
+    return request("https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/app%2Fempty_album.png?alt=media").pipe(fs.createWriteStream(path.join(tmpdir,'default.png'))).on('close', async () => {
+        const bucket = admin.storage().bucket();
+        
+        await bucket.upload(path.join(tmpdir,'default.png'), {
+            destination: `covers/${id}.png`,
+        });
+
+        await db.collection('users').doc(uid).collection('library').doc(id).update({
+            cover: 'https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/covers%2F' + id + '.png?alt=media',
+        })
+
+        fs.unlink(path.join(tmpdir,'default.png'), () => {
+            return {data: true};
+        })
+    });
+        
+});
+
 exports.createAccount = functions.https.onCall(async (data, context) => {
     
     const uid = context.auth.uid;
@@ -189,7 +214,7 @@ exports.profilePhoto = functions.storage.object().onFinalize(async (object) => {
     const tempLocalDir = path.dirname(tempLocalFile);
     const tempLocalJPEGFile = path.join(os.tmpdir(), JPEGFilePath);
 
-    if (filePath.includes('logos/')) {
+    if (filePath.includes('logos/') || filePath.includes('covers/')) {
         console.log(filePath);
         if (object.contentType.startsWith('image/png')) {
             console.log('Already a PNG.');
@@ -203,8 +228,6 @@ exports.profilePhoto = functions.storage.object().onFinalize(async (object) => {
         await bucket.file(filePath).download({destination: tempLocalFile});
 
         await spawn('convert', [tempLocalFile, tempLocalJPEGFile]);
-
-        await bucket.upload(tempLocalJPEGFile, {destination: JPEGFilePath});
 
         await bucket.upload(tempLocalJPEGFile, {destination: JPEGFilePath});
 

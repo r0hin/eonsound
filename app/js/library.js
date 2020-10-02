@@ -1,10 +1,11 @@
 window.db = firebase.firestore()
 
 async function createPlaylist() {
+    toggleloader()
     name = $('#playlistnamebox').val()
     $('#playlistnamebox').get(0).value = ''
 
-    await db.collection('users').doc(user.uid).collection('library').add({
+    docRef = await db.collection('users').doc(user.uid).collection('library').add({
         name: name,
         publicity: 'public',
         description: '',
@@ -18,7 +19,20 @@ async function createPlaylist() {
         cover: 'https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/app%2Fempty_album.png?alt=media',
     })
 
-    Snackbar.show({text: `Playlist, '${name}', created.`})
+    var albumPhoto = firebase.functions().httpsCallable('albumPhoto');
+    albumPhoto({id: docRef.id}).then((result) => {
+        Snackbar.show({text: `Playlist, ${name}, created...`})
+        window.setTimeout(() => {
+            toggleloader()
+            showcomplete()
+            $('#user_playlists').empty()
+            $('#playlistSelectList').empty()
+            $('#user_playlist_view').empty()
+            loadLibraryPlaylists()
+        }, 1200)
+    })
+
+    //docRef.id    
 }
 
 async function loadLibrary() {
@@ -26,15 +40,18 @@ async function loadLibrary() {
 }
 
 async function loadLibraryPlaylists() {
+
     query = await db.collection('users').doc(user.uid).collection('library').get()
+
     for (let i = 0; i < query.docs.length; i++) {
         playlist = query.docs[i].data();
 
         e = document.createElement('div')
+        e.id = query.docs[i].id + 'snippet'
         e.classList.add('playlist'); e.classList.add('playlist_user'); e.classList.add('hidden')
         e.classList.add('animated'); e.classList.add('fadeIn');
         e.innerHTML = `
-            <img src="${playlist.cover}">
+            <img id="${query.docs[i].id}cover2" src="${playlist.cover}">
             <h4>${playlist.name}</h4>
         `
         e.onclick = () => {
@@ -96,15 +113,28 @@ async function loadLibraryPlaylists() {
                 <div class="col-4 playlist_full_bar1">
                     <center>
                         <br><br>
-                        <img class="animated fadeIn" src="${playlist.cover}">
+                        <img id="${query.docs[i].id}cover" class="animated fadeIn" src="${playlist.cover}">
                         <br><br>
                         <h2 class="animated fadeInUp">${playlist.name}</h2>
                         <p class="animated fadeIn">${playlist.owner.name}</p>
                         <br><br>
-                        <button onclick='playPlaylist(${JSON.stringify(playlist.songs)})' class="btn-contained-primary">play</button>
+                        <div class="playlistActions">
+                            <button onclick='playPlaylist(${JSON.stringify(playlist.songs)})' class="btn-contained-primary">play</button>
+                            <div class="dropdown">
+                                <button aria-haspopup="true" class="btn-text-primary iconbtn" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="material-icons">more_horiz</i>
+                                </button>
+                                <div class="dropdown-menu menu">
+                                    <a onclick="setDescription('${query.docs[i].id}', '${efilter(playlist.description)}', this)" class="dr-item">Set Description</a>
+                                    <a onclick="setCover('${query.docs[i].id}')" class="dr-item">Set Playlist Cover</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a onclick="deletePlaylist('${query.docs[i].id}')" class="dropdown-item waves-effect btn-danger">Delete Playlist</a>
+                                </div>
+                            </div>
+                        </div>
                         <hr>
                         <br>
-                        <p>${playlist.description}</p>
+                        <p id="${query.docs[i].id}desc">${playlist.description}</p>
                     </center>
                 </div>
                 <div class="col-8 playlist_full_bar1">
@@ -198,4 +228,89 @@ async function add_to_playlist(playlist) {
     Snackbar.show({text: "Song added to playlist."})
 
     console.log(song, playlist);
+}
+
+function setDescription(id, text, element) {
+    $('#descriptionPlaylist').modal('toggle')
+    $('#descconfbtn').get(0).onclick = () => {
+        confirmDescription(id, element)
+    }
+
+    if (typeof(text) !== 'undefined') {
+        $('#fielddesc').addClass('has-value')
+        $('#descriptionBox').val(text)
+    }
+    else {
+        $('#fielddesc').removeClass('has-value')
+        $('#descriptionBox').val('')
+    }
+}
+
+async function confirmDescription(id, el) {
+    text = efilter($('#descriptionBox').val())
+
+    $(`#${id}`).get(0).onclick = () => {
+        setDescription(id, text, el)
+    }
+
+    await db.collection('users').doc(user.uid).collection('library').doc(id).update({
+        description: text,
+    })
+
+    Snackbar.show({text: "Description changed."})
+    
+    $(`#${id}desc`).text(text)
+    $('#fielddesc').removeClass('has-value')
+    $('#fielddesc').val('')
+}
+
+function setCover(id) {
+    $('#pfpghost').empty()
+    h = document.createElement("input")
+    h.id = 'newpicel'
+    h.style.display = 'none'
+    h.setAttribute("type", "file");
+    h.setAttribute("accept", "image/*");
+    document.getElementById('pfpghost').appendChild(h)
+    $("#newpicel").change(function(){
+        confirmCover(id)
+    });
+    $('#newpicel').click()
+}
+
+async function confirmCover(id) {
+    toggleloader()
+    file = document.getElementById('newpicel').files[0]
+    ext = file.name.split('.').pop()
+    
+    var storageRef = firebase.storage().ref();
+    var fileRef = storageRef.child(`covers/${id}.${ext}`);
+    
+    await fileRef.put(file)
+    
+    window.setTimeout(() => {
+        toggleloader()
+        showcomplete()
+    
+        // Change existing records
+        document.getElementById(id + 'cover').src = "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/covers%2F" + id + "." + ext + "?alt=media&" + new Date().getTime();
+        document.getElementById(id + 'cover2').src = "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/covers%2F" + id + "." + ext + "?alt=media&" + new Date().getTime();
+    
+    }, 800)
+    
+    $('#newpicel').remove()
+}
+
+async function deletePlaylist(id) {
+    x = confirm('Are you sure you want to delete this playlist? This action is irreversible.\n\n\n\n\n\n')
+    if (!x) {
+        Snackbar.show({text: "Nothing changed."})
+        return;
+    }
+
+    await db.collection('users').doc(user.uid).collection('library').doc(id).delete()
+
+    Snackbar.show({text: "Playlist deleted."})
+    $(`#${id}`).remove()
+    $(`#${id}snippet`).remove()
 }

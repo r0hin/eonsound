@@ -34,6 +34,24 @@
 <body>
     <!-- Preflight Modals-->
     
+    <div class="modal fade" id="descriptionPlaylist" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3>Set Description</h3>
+                <br>
+                <div id="fielddesc" class="floating-label textfield-box">
+                    <label for="descriptionBox">New Description</label>
+                    <textarea class="form-control" id="descriptionBox" rows="3"></textarea>
+                </div>
+                
+            </div>
+            <div class="modalfooter">
+                <button type="button" class="btn-text-primary" data-dismiss="modal">dismiss</button>
+                <button onclick="" id="descconfbtn" type="button" class="btn-contained-primary" data-dismiss="modal">change</button>
+            </div>
+        </div>
+    </div></div>
+
     <div class="modal fade" id="newPlaylist" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -187,11 +205,13 @@
 
         <div id="library-tab" class="tab hidden animated fadeIn">
             <br>
-            <h1 class="title bold">Library</h1> 
+            <h1 class="title bold">Your Playlists</h1> 
             <button data-toggle="modal" data-target="#newPlaylist" class="btn-contained-primary newpl">New Playlist</button>
             <br><br>
             <div id="user_playlists"></div>
             <div id="user_playlist_view"></div>
+            <br><br>
+            <h2 class="title bold">Library</h2> 
 
         </div>
 

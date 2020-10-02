@@ -286,3 +286,12 @@
     font-weight: 600;
     font-size: 28px;
 }
+
+.playlistActions {
+    text-align: center;
+    width: 100%;
+}
+
+.playlistActions .dropdown{
+    margin-top: 12px;
+}

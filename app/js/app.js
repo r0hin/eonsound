@@ -1,3 +1,13 @@
+function efilter(filtered) {
+    filtered = filtered.replace(/</g, '')
+    filtered = filtered.replace(/>/g, '')
+    filtered = filtered.replace(/"/g, '')
+    filtered = filtered.replace(/'/g, '')
+    filtered = filtered.replace(/`/g, '')
+    
+    return filtered
+}
+
 var firebaseConfig = { apiKey: "AIzaSyBNf1JpByuDebVLq_lns8fYv4Pyo3kzvoM", authDomain: "eonsound.firebaseapp.com", databaseURL: "https://eonsound.firebaseio.com", projectId: "eonsound", storageBucket: "eonsound.appspot.com", messagingSenderId: "824179683788", appId: "1:824179683788:web:81830e10e40b4b887ded69" };
 firebase.initializeApp(firebaseConfig);
 window.db = firebase.firestore()
@@ -160,6 +170,7 @@ function logout() {
 }
 
 function preparenpicchange() {
+    $('#pfpghost').empty()
     h = document.createElement("input")
     h.id = 'newpicel'
     h.style.display = 'none'
