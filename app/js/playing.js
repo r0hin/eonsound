@@ -300,3 +300,18 @@ async function playPlaylist(data) {
   Snackbar.show({ text: "All songs queued." });
   showcomplete();
 }
+
+async function playSpotPlaylist() {
+  data = JSON.parse(sessionStorage.getItem('currentSpotPlay'));
+  Snackbar.show({ text: "Attemping to queue spotify playlist." });
+
+  for (let i = 0; i < data.length; i++) {
+    console.log(data[i].track.external_urls.spotify);
+    console.log(data[i].track.id);
+    await play(data[i].track.external_urls.spotify, data[i].track.id);
+    console.log("Song downloaded");
+  }
+
+  Snackbar.show({ text: "All songs queued." });
+  showcomplete();
+}

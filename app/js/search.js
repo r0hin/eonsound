@@ -155,7 +155,7 @@ async function buildSearch(data) {
       }
 
       c.innerHTML = `
-                <img src="${data.playlists.items[i].images[0].url}">
+                <img onclick="loadSpotPlaylist('${data.playlists.items[i].id}')" src="${data.playlists.items[i].images[0].url}">
                 <h4>${data.playlists.items[i].name}</h4>
                 <p>${data.playlists.items[i].owner.display_name}</p>
             `;
@@ -213,6 +213,115 @@ async function buildSearch(data) {
   }
 
   addWaves();
+}
+
+async function loadSpotPlaylist(id) {
+  if ($("#media_" + id).length) {
+    // Exists so just show it
+
+    $("#media_" + id).addClass("fadeIn");
+    $("#media_" + id).removeClass("fadeOut");
+    $("#media_" + id).removeClass("hidden");
+    return;
+  }
+
+  // Doesn't exist. Build it then show
+
+  g = document.createElement("div");
+  g.id = "media_" + id;
+  g.classList.add("playlist_view");
+  g.classList.add("hidden");
+  g.classList.add("animated");
+  g.classList.add("faster");
+
+  // Get album data
+  const result = await fetch(`https://api.spotify.com/v1/playlists/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${spotifyCode}`,
+    },
+  });
+
+  const data = await result.json();
+  refreshCode();
+
+  songSnippet = "";
+
+  for (let i = 0; i < data.tracks.items.length; i++) {
+    const track = data.tracks.items[i].track;
+
+    trackArtistSnippet = "";
+    for (let k = 0; k < track.artists.length; k++) {
+      trackArtistSnippet = trackArtistSnippet + " " + track.artists[k].name;
+    }
+
+    songSnippet =
+      songSnippet +
+      `
+        <li style="animation-delay: ${i}00ms" onclick="play('${track.external_urls.spotify}', '${track.id}')" class="list-group-item waves-effect animated flipInX">
+            <div class="musicItem">
+                <img src="${data.images[0].url}" class="musicItemCover" alt="">
+                <div class="musicItemContent">
+                    <h3>${track.name}</h3>
+                    <br>
+                    <p>${trackArtistSnippet}</p>
+                </div>
+            </div>
+
+            <div class="musicItemRight">
+                <div class="musicRightContent">
+                    <p>${track.track_number}</p>
+                </div>
+            </div>
+        </li>
+    `;
+  }
+
+  if (sessionStorage.getItem("expanded") == "true") {
+    classes = "content_media content_expanded content_collapsed";
+  } else {
+    classes = "content_media content_expanded";
+  }
+
+  sessionStorage.setItem('currentSpotPlay', JSON.stringify(data.tracks.items))
+
+  g.innerHTML = `
+    <div class="${classes}">
+        <button onclick="hideSpotPlay()" class="btn-text-primary iconbtn exitbtn">
+            <i class="material-icons">chevron_left</i>
+        </button>
+        <br><br><br>
+        <div class="row">
+            <div class="col-4 playlist_full_bar1">
+                <center>
+                    <br><br>
+                    <img class="animated fadeIn" src="${data.images[0].url}">
+                    <br><br>
+                    <h2 class="animated fadeInUp">${data.name}</h2>
+                    <p class="animated fadeIn">${data.owner.display_name}</p>
+                    <br><br>
+                    <button onclick='playSpotPlaylist()' class="btn-contained-primary">play</button>
+                </center>
+            </div>
+            <div class="col-8 playlist_full_bar1">
+                <br><br>
+                <ul class="list-group musicList">
+                    ${songSnippet}
+                </ul>
+                <br><br> <br><br> <br><br>
+            </div>
+        </div>
+    </div>
+  `;
+
+  document.getElementById("spotify_playlist_views").appendChild(g);
+
+  $("#media_" + id).imagesLoaded(() => {
+    addWaves();
+    $("#media_" + id).addClass("fadeIn");
+    $("#media_" + id).removeClass("fadeOut");
+    $("#media_" + id).removeClass("hidden");
+  });
 }
 
 async function loadAlbum(id) {
@@ -334,6 +443,14 @@ function hideAlbum() {
   $(".album_view").addClass("fadeOut");
   window.setTimeout(() => {
     $(".album_view").addClass("hidden");
+  }, 500);
+}
+
+function hideSpotPlay() {
+  $(".playlist_view").removeClass("fadeIn");
+  $(".playlist_view").addClass("fadeOut");
+  window.setTimeout(() => {
+    $(".playlist_view").addClass("hidden");
   }, 500);
 }
 
