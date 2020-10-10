@@ -4,6 +4,12 @@
     width: 100%;
 }
 
+#user_spotify_albums {
+    overflow-x: scroll;
+    white-space: nowrap;
+    width: 100%;
+}
+
 .album {
     text-align: center;
     display: inline-block;
@@ -86,6 +92,14 @@
 
 
 #search_tracks {
+    overflow: auto;
+    white-space: nowrap;
+    width: 100%;
+    overflow-y: hidden;
+    z-index: 1;
+}
+
+#user_spotify_tracks {
     overflow: auto;
     white-space: nowrap;
     width: 100%;

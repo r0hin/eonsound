@@ -155,6 +155,7 @@ function playSong(song, backwards) {
       artists: snippet_track_artists,
       name: pendingSong.meta.name,
       length: pendingSong.meta.duration_ms,
+      type: 'track'
     });
   };
 

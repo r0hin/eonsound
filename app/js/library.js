@@ -13,6 +13,7 @@ async function createPlaylist() {
       name: name,
       publicity: "public",
       description: "",
+      status: true,
       owner: {
         name: cacheuser.name,
         username: cacheuser.username,
@@ -42,6 +43,50 @@ async function createPlaylist() {
 
 async function loadLibrary() {
   loadLibraryPlaylists();
+  loadLibrarySpotify();
+}
+
+async function loadLibrarySpotify() {
+  // Get's preset spotify data
+
+  doc = await db.collection('users').doc(user.uid).collection('library').doc('spotify').get()
+  if (!doc.exists) {
+    // Cancel 
+    return;
+  }
+  else {
+    // Build albums, tracks
+
+    for (let i = 0; i < doc.data().albums.length; i++) {
+      const album = doc.data().albums[i];
+
+      i = document.createElement('div');
+      i.classList.add('album');
+      i.innerHTML = `
+        <img onclick="loadSpotPlaylist('${album.id}')" src="${album.art}">
+        <h4>${album.name}</h4>
+        <p>${album.artists}</p>
+      `
+      document.getElementById('user_spotify_albums').appendChild(i)
+      
+    }
+
+    for (let i = 0; i < doc.data().tracks.length; i++) {
+      const track = doc.data().tracks[i];
+
+      j = document.createElement('div')
+      j.classList.add('track')
+      j.innerHTML = `
+        <img onclick="play('${track.url}', '${track.id}')" src="${track.art}">
+        <h4>${track.name}</h4>
+        <p>${track.artists}</p>
+      `
+      document.getElementById('user_spotify_tracks').appendChild(j)
+      
+    }
+
+  }
+
 }
 
 async function loadLibraryPlaylists() {
@@ -49,6 +94,7 @@ async function loadLibraryPlaylists() {
     .collection("users")
     .doc(user.uid)
     .collection("library")
+    .where('status', '==', true)
     .get();
 
   for (let i = 0; i < query.docs.length; i++) {
@@ -216,11 +262,6 @@ function prepare_library_changes(song) {
   // Song is object containing .id, .url, .artists, and .art
   window.prepare_library_changes = song;
   addWaves();
-}
-
-function add_to_library() {
-  song = prepare_library_changes;
-  toggleBottomSheet("librarySheet");
 }
 
 async function add_to_playlist(playlist) {
@@ -400,4 +441,46 @@ async function prepare_track_library(id) {
     return;
   }
   refreshCode();
+}
+
+async function add_to_library() {
+  media = prepare_library_changes;
+  toggleBottomSheet("librarySheet");
+
+  switch (media.type) {
+    case 'track':
+      song = media
+      await db.collection('users').doc(user.uid).collection('library').doc('spotify').set({
+        tracks: firebase.firestore.FieldValue.arrayUnion({
+          url: song.url,
+          id: song.id,
+          art: song.art,
+          name: song.name,
+          length: song.length,
+          artists: song.artists
+        })
+      }, {merge: true})
+    
+      Snackbar.show({text: "Track added to library."})
+      break;
+    case 'album': 
+      album = media;
+      await db.collection('users').doc(user.uid).collection('library').doc('spotify').set({
+        // Add eevrything except type: 'album'
+        albums: firebase.firestore.FieldValue.arrayUnion({
+          id: album.id,
+          url: album.url,
+          art: album.art,
+          artists: album.artists,
+          name: album.name,
+          length: album.length,
+          tracks: album.tracks,
+        })
+      }, {merge: true})
+
+      Snackbar.show({text: "Album added to library."})
+      break;
+    default:
+      break;
+  }
 }

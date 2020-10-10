@@ -213,6 +213,8 @@
             <div id="user_playlist_view"></div>
             <br><br>
             <h2 class="title bold">Library</h2> 
+            <div id="user_spotify_albums"></div>
+            <div id="user_spotify_tracks"></div>
 
         </div>
 
@@ -277,7 +279,7 @@
                     <h4>Add to Library</h4>
                 </center>
             </div>
-            <div class="col-sm">
+            <div id="playlistAdd" class="col-sm">
                 <center>
                     <button data-target="#playlistSelect" data-toggle="modal" id="playlist_add_btn" class="btn-outlined-primary iconbtn iconbtn-outlined">
                         <i class="material-icons">playlist_add</i>
@@ -386,22 +388,35 @@
     <div class="context-bg hidden" id="context-bg"></div>
 
     <nav id="track_context" class="context-menu animated fadeIn faster">
-        <ul class="context-menu__items">
-          <li class="context-menu__item">
-            <button id="playbtn" class="btn-text-primary contextbtn">Play</button>
-          </li>
-          <li class="context-menu__item">
-            <a href="#" class="context-menu__link">
-            <button id="queuebtn" class="btn-text-primary contextbtn">Queue</button>
-            </a>
-          </li>
-          <li class="context-menu__item">
-            <a href="#" class="context-menu__link">
-            <button id="addbtn" class="btn-text-primary contextbtn">Add</button>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <ul class="context-menu__items">
+        <li class="context-menu__item">
+          <button id="playbtn" class="btn-text-primary contextbtn">Play</button>
+        </li>
+        <li class="context-menu__item">
+          <a href="#" class="context-menu__link">
+          <button id="queuebtn" class="btn-text-primary contextbtn">Queue</button>
+          </a>
+        </li>
+        <li class="context-menu__item">
+          <a href="#" class="context-menu__link">
+          <button id="addbtn" class="btn-text-primary contextbtn">Add</button>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <nav id="album_context" class="context-menu animated fadeIn faster">
+      <ul class="context-menu__items">
+        <li class="context-menu__item">
+          <button id="openbtn" class="btn-text-primary contextbtn">Open</button>
+        </li>
+        <li class="context-menu__item">
+          <a href="#" class="context-menu__link">
+          <button id="addbtn2" class="btn-text-primary contextbtn">Add</button>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
     <!--=== JavaScript ===-->
     <!-- JQuery --> <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

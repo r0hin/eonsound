@@ -88,6 +88,11 @@ async function buildSearch(data) {
         loadAlbum(data.albums.items[i].id);
       };
 
+      a.setAttribute(
+        "album_details",
+        data.albums.items[i].id
+      );
+
       if (data.albums.items[i].images.length == 0) {
         continue;
       }
