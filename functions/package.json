@@ -30,6 +30,7 @@
     "request": "^2.88.2",
     "simpleyt": "^1.0.5",
     "spotify-web-api-node": "^4.0.0",
+    "youtube-dl": "^3.0.2",
     "youtube-mp3-downloader": "^0.7.3",
     "yt-search": "^2.2.4",
     "ytdl-core": "^3.2.2"

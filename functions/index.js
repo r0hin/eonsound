@@ -12,7 +12,7 @@ const { promisify } = require("util");
 const unlinkAsync = promisify(fs.unlink);
 const fetch = require("node-fetch");
 const simpleYT = require("simpleyt");
-const YoutubeMp3Downloader = require("youtube-mp3-downloader");
+const youtubedl = require('youtube-dl')
 
 const JPEG_EXTENSION = ".png";
 
@@ -144,130 +144,111 @@ exports.createAccount = functions.https.onCall(async (data, context) => {
     });
 });
 
-exports.requestSong = functions
-  .runWith({
-    timeoutSeconds: 300,
-    memory: "2GB",
-  })
-  .https.onCall(async (data, context) => {
-    // Check the storage for the song
+exports.requestSong = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).https.onCall(async (data, context) => {
+  // Check the storage for the song
+  var db = admin.firestore();
+  doc = await db.collection("music").doc(data.trackID).get();
 
-    var db = admin.firestore();
-    doc = await db.collection("music").doc(data.trackID).get();
+  if (doc.exists && doc.data().downloaded) {
+    return `https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`;
+  }
 
-    if (doc.exists && doc.data().downloaded) {
-      return `https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`;
-    }
-
-    res = await fetch("https://accounts.spotify.com/api/token", {
-      method: "post",
-      body: "grant_type=client_credentials",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization:
-          "Basic " +
-          new Buffer.from(
-            "b2b0e41d0a3e4464b12eba666a1de36d" +
-              ":" +
-              "cc01c7911b4c41689b971034ff973587"
-          ).toString("base64"),
-      },
-    });
-
-    body = await res.json();
-    token = body.access_token;
-    console.log(token);
-
-    res = await fetch("https://api.spotify.com/v1/tracks/" + data.trackID, {
-      method: "get",
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-
-    body = await res.json();
-    name = body.name;
-    artist = body.artists[0].name;
-
-    search = await simpleYT(`${artist} ${name}`, {
-      filter: "video",
-    });
-
-    videoURL = search[0].uri;
-    var YD = new YoutubeMp3Downloader({
-      outputPath: tmpdir, // Output file location (default: the home directory)
-      youtubeVideoQuality: "highestaudio", // Desired video quality (default: highestaudio)
-    });
-
-    console.log(videoURL);
-
-    return new Promise((resolve, reject) => {
-      // Split for the ID
-      YD.download(videoURL.split("https://www.youtube.com/watch?v=").pop());
-
-      YD.on("error", function (error) {
-        functions.logger.log(error);
-        return "error";
-      });
-
-      YD.on("progress", function (progress) {
-        console.log(JSON.stringify(progress));
-      });
-
-      YD.on("finished", async (err, localPath) => {
-        var bucket = admin.storage().bucket();
-        await bucket.upload(localPath.file, {
-          destination: `music/${data.trackID}.mp3`,
-        });
-        functions.logger.log("I made it here!");
-
-        await unlinkAsync(localPath.file);
-        functions.logger.log("I made it here!");
-
-        var db = admin.firestore();
-        await db.collection("music").doc(data.trackID).set({
-          downloaded: true,
-        });
-
-        functions.logger.log("I made it here!");
-
-        resolve(
-          `https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`
-        );
-      });
-    });
+  res = await fetch("https://accounts.spotify.com/api/token", {
+    method: "post",
+    body: "grant_type=client_credentials",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization:
+        "Basic " +
+        new Buffer.from(
+          "b2b0e41d0a3e4464b12eba666a1de36d" +
+            ":" +
+            "cc01c7911b4c41689b971034ff973587"
+        ).toString("base64"),
+    },
   });
 
+  body = await res.json();
+  token = body.access_token;
+  console.log(token);
+
+  res = await fetch("https://api.spotify.com/v1/tracks/" + data.trackID, {
+    method: "get",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+
+  body = await res.json();
+  name = body.name;
+  artist = body.artists[0].name;
+
+  search = await simpleYT(`${artist} ${name}`, {
+    filter: "video",
+  });
+
+  videoURL = search[0].uri;
+  
+  return new Promise(async (resolve, reject) => {
+
+    let outputPath = path.join(tmpdir, 'out.mp3')
+
+    youtubedl.exec(videoURL, ['-x', '--audio-format', 'mp3', '-o', outputPath], {}, async (err, output) => {
+      if (err) throw err
+    
+      var bucket = admin.storage().bucket();
+      var db = admin.firestore();
+
+      console.log(output);
+      console.log('------------------', outputPath, '-------------');
+
+      await bucket.upload(outputPath.toString(), {
+        destination: `music/${data.trackID}.mp3`,
+      });
+
+      await unlinkAsync(outputPath.toString());
+
+      await db.collection("music").doc(data.trackID).set({
+        downloaded: true,
+      });
+
+      resolve(`https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`);
+
+    })
+    
+  });
+});
+
 exports.profilePhoto = functions.storage.object().onFinalize(async (object) => {
-  const filePath = object.name;
-  const baseFileName = path.basename(filePath, path.extname(filePath));
-  const fileDir = path.dirname(filePath);
-  const JPEGFilePath = path.normalize(
-    path.format({ dir: fileDir, name: baseFileName, ext: JPEG_EXTENSION })
-  );
-  const tempLocalFile = path.join(os.tmpdir(), filePath);
-  const tempLocalDir = path.dirname(tempLocalFile);
-  const tempLocalJPEGFile = path.join(os.tmpdir(), JPEGFilePath);
+const filePath = object.name;
+const baseFileName = path.basename(filePath, path.extname(filePath));
+const fileDir = path.dirname(filePath);
+const JPEGFilePath = path.normalize(
+  path.format({ dir: fileDir, name: baseFileName, ext: JPEG_EXTENSION })
+);
+const tempLocalFile = path.join(os.tmpdir(), filePath);
+const tempLocalDir = path.dirname(tempLocalFile);
+const tempLocalJPEGFile = path.join(os.tmpdir(), JPEGFilePath);
 
-  if (filePath.includes("logos/") || filePath.includes("covers/")) {
-    console.log(filePath);
-    if (object.contentType.startsWith("image/png")) {
-      console.log("Already a PNG.");
-      return null;
-    }
-
-    const bucket = admin.storage().bucket(object.bucket);
-
-    await mkdirp(tempLocalDir);
-
-    await bucket.file(filePath).download({ destination: tempLocalFile });
-
-    await spawn("convert", [tempLocalFile, tempLocalJPEGFile]);
-
-    await bucket.upload(tempLocalJPEGFile, { destination: JPEGFilePath });
-
-    fs.unlinkSync(tempLocalJPEGFile);
-    fs.unlinkSync(tempLocalFile);
-    functions.logger.log("Converted Image");
+if (filePath.includes("logos/") || filePath.includes("covers/")) {
+  console.log(filePath);
+  if (object.contentType.startsWith("image/png")) {
+    console.log("Already a PNG.");
+    return null;
   }
+
+  const bucket = admin.storage().bucket(object.bucket);
+
+  await mkdirp(tempLocalDir);
+
+  await bucket.file(filePath).download({ destination: tempLocalFile });
+
+  await spawn("convert", [tempLocalFile, tempLocalJPEGFile]);
+
+  await bucket.upload(tempLocalJPEGFile, { destination: JPEGFilePath });
+
+  fs.unlinkSync(tempLocalJPEGFile);
+  fs.unlinkSync(tempLocalFile);
+  functions.logger.log("Converted Image");
+}
 });
