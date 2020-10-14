@@ -191,31 +191,11 @@ exports.requestSong = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).htt
   
   return new Promise(async (resolve, reject) => {
 
-    let outputPath = path.join(tmpdir, 'out.mp3')
+    res = await fetch(`https://eonsound.herokuapp.com/skiddy?potpot=${videoURL.split('https://www.youtube.com/watch?v=').pop()}&skeeya=${data.trackID}`)
+    // Don even do any downloading here
+    body = await res.json()
+    resolve(body)
 
-    youtubedl.exec(videoURL, ['-x', '--audio-format', 'mp3', '-o', outputPath], {}, async (err, output) => {
-      if (err) throw err
-    
-      var bucket = admin.storage().bucket();
-      var db = admin.firestore();
-
-      console.log(output);
-      console.log('------------------', outputPath, '-------------');
-
-      await bucket.upload(outputPath.toString(), {
-        destination: `music/${data.trackID}.mp3`,
-      });
-
-      await unlinkAsync(outputPath.toString());
-
-      await db.collection("music").doc(data.trackID).set({
-        downloaded: true,
-      });
-
-      resolve(`https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/music%2F${data.trackID}.mp3?alt=media`);
-
-    })
-    
   });
 });
 

@@ -1,12 +1,17 @@
 :root {
-  --eon-primary: rgb(233, 162, 255);
-  --eon-secondary: rgb(164, 241, 255);
+  --eon-primary: #FD2D55;
+  --eon-secondary: #fda22b;
 
-  --bg-primary: #0e131e;
-  --bg-secondary: #121722;
-  --bg-tertiary: #1c222e;
+  --bg-primary: #13112F;
+  --bg-secondary: #1A1738;
+  --bg-tertiary: #2C2847;
 
   --content-primary: #fff;
+  --content-primary: #dadada;
+  --content-primary: #c8c8c8;
+
+  --glass: rgba(80, 21, 85, 0.472);
+  
 }
 
 hr {
