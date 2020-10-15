@@ -1,109 +1,145 @@
 .horiz_search {
-    max-height: 300px;
-    min-width: 360px;
-    overflow: auto;
-    padding: 24px;
+  max-height: 300px;
+  min-width: 360px;
+  overflow: auto;
+  padding: 24px;
 }
 
 
 .album {
-    text-align: center;
-    display: inline-block;
-    margin: 0px 12px 0px 12px;
+  text-align: center;
+  display: inline-block;
+  margin: 0px 12px 0px 12px;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .album h4 {
-    margin: 0px;
-    line-height: 16px;
-    text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
+  margin: 0px;
+  line-height: 16px;
+  text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
 .album img {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 24px;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 24px;
 }
 
 .album p {
-    text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
+  text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
 .artist {
-    text-align: center;
-    display: inline-block;
-    margin: 0px 12px 0px 12px;
-    margin-bottom: 36px;
+  text-align: center;
+  display: inline-block;
+  margin: 0px 12px 0px 12px;
+  margin-bottom: 36px;
 }
 
 .artist h4 {
-    margin: 0px;
-    line-height: 16px;
-    text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
+  margin: 0px;
+  line-height: 16px;
+  text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
 .artist img {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .playlist {
-    text-align: center;
-    display: inline-block;
-    margin: 0px 12px 0px 12px;
+  text-align: center;
+  display: inline-block;
+  margin: 0px 12px 0px 12px;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .playlist h4 {
-    margin: 0px;
-    line-height: 16px;
-    text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
+  margin: 0px;
+  line-height: 16px;
+  text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
 .playlist p {
-    text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
+  text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
 .playlist img {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 24px;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 24px;
 }
 
 .track {
-    text-align: center;
-    display: inline-block;
-    margin: 0px 12px 0px 12px;
-    position: relative;
+  text-align: center;
+  display: inline-block;
+  margin: 0px 12px 0px 12px;
+  position: relative;
 }
 
 .track h4 {
-    margin: 0px;
-    line-height: 16px;
-    text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
+  margin: 0px;
+  line-height: 16px;
+  text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
 .track p {
-    text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
+  text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
 .track img {
-    margin-bottom: 12px;
-    cursor: pointer;
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 24px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+#user_library_playlists {
+  margin-top: 36px;
+}
+
+.userPlaylist {
+  text-align: center;
+  display: inline-block;
+  margin: 12px;
+  padding: 24px;
+  border-radius: 12px;
+
+  cursor: pointer;
+}
+
+.userPlaylist h4 {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 12px;
+  margin-bottom: 0px;
+  font-size: 24px;
+  font-weight: 800; line-height: 28px;
+  text-overflow:ellipsis; max-width: 150px;
+  overflow: hidden;
+}
+
+.userPlaylist p {
+  text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
+}
+
+.userPlaylist img {
+  margin-bottom: 12px;
+  display: inline-block;
+  width: 150px; height: 150px;
+  object-fit: cover; border-radius: 24px;
 }

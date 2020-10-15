@@ -44,7 +44,6 @@ function sendVerification(el) {
 
 async function appContent() {
   initSpotifyCode();
-  loadUserPlaylists();
 
   doc = await db.collection("app").doc("details").get();
   window.cachedetails = doc.data();
@@ -56,6 +55,7 @@ async function appContent() {
   }
 
   window.cacheuser = doc.data();
+  loadUserPlaylists(cacheuser.playlistsPreview);
 
   $("#userpfp1").get(0).src = cacheuser.url;
   $("#usercard").imagesLoaded(function () {
@@ -239,4 +239,60 @@ function artistToString(artists) {
   }
 
   return snippet
+}
+
+function calculatePlayerWidths() {
+  textWidth = $('#playing_track_details').width()
+
+  // + 32 - padding
+  // + 50 - album image
+  songActionWidth = textWidth + 32 + 50
+  // + 185 - song action width
+  // + 24 - padding
+  contentWidth = songActionWidth + 185 + 24
+  playerWidth = 'calc(100% - ' + contentWidth + 'px)'
+
+  $('#InjectedWidth').get(0).innerHTML = `
+  .songactions {
+    left: ${songActionWidth}px !important;
+    transition: all 1s !important;
+  }
+
+  #player .plyr {
+    width: ${playerWidth} !important;
+    transition: all 1s !important;
+  }
+  `
+}
+
+function showPlayer() {
+  $('#InjectedPlayer').get(0).innerHTML = `
+    #usercard {
+      bottom: 86px !important;
+      transition: all 0.5s !important;
+    }
+    #loader {
+
+    }
+  `
+  $('#player').removeClass('fadeOutDown')
+  $('#player').addClass('fadeInUp')
+  $('#player').removeClass('hidden')
+}
+
+function hidePlayer() {
+  $('#InjectedPlayer').get(0).innerHTML = ``
+  $('#player').addClass('fadeOutDown')
+  $('#player').removeClass('fadeInUp')
+}
+
+function showLoader() {
+  $('#loader').removeClass('fadeOutRight')
+  $('#loader').addClass('fadeInRight')
+  $('#loader').removeClass('hidden')
+}
+
+function hideLoader() {
+  $('#loader').removeClass('fadeInRight')
+  $('#loader').addClass('fadeOutRight')
 }

@@ -33,17 +33,9 @@ exports.albumPhoto = functions.https.onCall(async (data, context) => {
         destination: `covers/${id}.png`,
       });
 
-      await db
-        .collection("users")
-        .doc(uid)
-        .collection("library")
-        .doc(id)
-        .update({
-          cover:
-            "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/covers%2F" +
-            id +
-            ".png?alt=media",
-        });
+      await db.collection("users").doc(uid).collection("library").doc(id).update({
+        cover: "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/covers%2F" + id + ".png?alt=media",
+      });
 
       fs.unlink(path.join(tmpdir, "default.png"), () => {
         return { data: true };
@@ -117,6 +109,7 @@ exports.createAccount = functions.https.onCall(async (data, context) => {
         emailchange: admin.firestore.FieldValue.serverTimestamp(),
         passchange: admin.firestore.FieldValue.serverTimestamp(),
         created: admin.firestore.FieldValue.serverTimestamp(),
+        uid: uid,
         url:
           "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/logos%2F" +
           uid +

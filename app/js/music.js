@@ -1,6 +1,11 @@
 window.musicQueue = [];
 window.musicActive = {none: 'none'};
 window.musicHistory = [];
+window.player = new Plyr("audio", {})
+
+$("#main_player").bind("ended", function () {
+  endedSong();
+});
 
 function artistToString(artists) {
   if (artists.length == 1) { return artists[0].name }
@@ -80,6 +85,23 @@ function playlist(id, data, objectID, destinationID) {
   })
 }
 
+function userPlaylist(id, data, objectID, destinationID) {
+  return new Promise((resolve, reject) => {
+    e = document.createElement('div')
+    e.setAttribute('class', 'hidden animated fadeIn userPlaylist')
+    e.setAttribute('playlist_details', id)
+    e.id = objectID
+
+    e.innerHTML = `
+      <img id="${objectID}image" crossOrigin="Anonymous" onclick="openUserPlaylist('${id}')" src="${data.cover}&${new Date().getTime()}">
+      <h4>${data.name}</h4>
+    `;
+
+    $(`#${destinationID}`).get(0).appendChild(e)
+    resolve('Success')
+  })
+}
+
 function track(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     d = document.createElement('div')
@@ -109,19 +131,19 @@ async function downloadSong(trackID, spotifyURL, trackName) {
   return new Promise(async (resolve, reject) => {
     var requestSong = await firebase.functions().httpsCallable("requestSong");
     try {
-      track = await requestSong({ trackID: trackID, trackURL: spotifyURL});
+      downloadedTrack = await requestSong({ trackID: trackID, trackURL: spotifyURL});
     } catch (error) {
-      Snackbar.show({text: `${trackName} could not be downloaded.`})
+      Snackbar.show({text: `${trackName} could not be downloaded.`,  pos: 'top-right'})
       reject(error)
     }
-    if(typeof(track.data) == 'string') {
+    if(typeof(downloadedTrack.data) == 'string') {
       // default
-      resolve(track.data)
+      resolve(downloadedTrack.data)
     }
     else{
-      resolve(track.data.song)
+      resolve(downloadedTrack.data.song)
     }
-    resolve(track)
+    resolve(downloadedTrack)
   })
 }
 
@@ -138,7 +160,7 @@ async function queueSongWithoutData(id) {
 
   if (data.error) {
     if (sessionStorage.getItem("errorAvoid") == "true") {
-      Snackbar.show({ text: "An error occured while playing song" });
+      Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
       return;
     }
     console.log("Error occured. Likely invalid code - request and do it again.");
@@ -177,7 +199,7 @@ async function playSongWithoutData(id) {
 
   if (data.error) {
     if (sessionStorage.getItem("errorAvoid") == "true") {
-      Snackbar.show({ text: "An error occured while playing song" });
+      Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
       return;
     }
     console.log("Error occured. Likely invalid code - request and do it again.");
@@ -202,10 +224,21 @@ async function playSongWithoutData(id) {
   playSong(savedData)
 }
 
+async function endedQueue() {
+  $('#queueProgress').addClass('zoomOut')
+  $('#playing_album_cover').removeClass('zoomIn')
+  $('#playing_album_cover').addClass('zoomOut')
+  $('#nowplayingbutton').get(0).setAttribute('disabled', 'true')
+  $('#nowplayingbutton').addClass('btn-disabled')
+  $('#InjectedWidth').get(0).innerHTML = ``
+  hidePlayer()
+}
+
 async function queueSong(data) {
   if (musicActive.none !== 'none') {
     // There's a song playing so add it to queue
     musicQueue.push(data)
+    Snackbar.show({text: "Added to queue.", pos: 'top-right'})
   }
   else {
     // Just play it
@@ -222,11 +255,56 @@ async function playSong(data) {
 
 async function loadSong(data) {
   url = data.url
+  showPlayer()
+  $('#queueProgress').removeClass('zoomOut')
+  $('#queueProgress').removeClass('hidden')
+  $('#queueProgress').addClass('zoomIn')
+  $('#playing_album_cover').removeClass('zoomIn')
+  $('#playing_album_cover').addClass('zoomOut')
+  $('#nowplayingbutton').get(0).setAttribute('disabled', 'true')
+  $('#nowplayingbutton').addClass('btn-disabled')
   if (!data.url) {
+    loadertimer = window.setTimeout(() => {
+      showLoader()
+    }, 1500)
     url = await downloadSong(data.id, data.spotifyURL, data.name)
+    window.clearInterval(loadertimer)
+    hideLoader()
   }
 
-  console.log(url);
+  musicActive = data
+  musicActive.url = url
 
+  console.log(data);
+  $('#main_player').get(0).setAttribute('src', url)
+  $('#playing_album_cover').get(0).setAttribute('src', data.art)
+  $('#playing_track_details').get(0).innerHTML = `<b>${data.name}</b>${data.artists}`
+  $('#nowplayingbutton').get(0).onclick = () => {
+    // More options button to set library changes to song
+    window.prepare_library_changes = data
+  }
+
+  $('#queueProgress').removeClass('zoomIn')
+  $('#queueProgress').addClass('zoomOut')
+  $('#playing_album_cover').removeClass('zoomOut')
+  $('#playing_album_cover').removeClass('hidden')
+  $('#playing_album_cover').addClass('zoomIn')
+  $('#nowplayingbutton').get(0).removeAttribute('disabled')
+  $('#nowplayingbutton').removeClass('btn-disabled')
+  calculatePlayerWidths()
+  player.play()
 }
 
+async function endedSong() {
+  // Song did end
+  musicActive = {none: 'none'}
+  if (musicQueue.length > 0) {
+    // Next song
+    loadSong(musicQueue[0])
+    musicQueue.splice(0, 1)
+  }
+  else {
+    // End queue
+    endedQueue()
+  }
+}

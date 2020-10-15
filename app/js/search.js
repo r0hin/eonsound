@@ -72,21 +72,21 @@ async function buildSearch(data) {
     });
   }
 
-  for (let i = 0; i < data.playlists.items.length; i++) {
-    // For each album
-    await playlist(data.playlists.items[i].id, data.playlists.items[i], 'playlist_search_index_' + i, 'search_playlists')
-    
-    $("#playlist_search_index_" + i).imagesLoaded(() => {
-      $("#playlist_search_index_" + i).removeClass("hidden");
-    });
-  }
-
   for (let i = 0; i < data.tracks.items.length; i++) {
     // For each episode
     await track(data.tracks.items[i].id, data.tracks.items[i], 'track_search_index_' + i, 'search_tracks')
     
     $("#track_search_index_" + i).imagesLoaded(() => {
       $("#track_search_index_" + i).removeClass("hidden");
+    });
+  }
+
+  for (let i = 0; i < data.playlists.items.length; i++) {
+    // For each album
+    await playlist(data.playlists.items[i].id, data.playlists.items[i], 'playlist_search_index_' + i, 'search_playlists')
+    
+    $("#playlist_search_index_" + i).imagesLoaded(() => {
+      $("#playlist_search_index_" + i).removeClass("hidden");
     });
   }
 

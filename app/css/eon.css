@@ -7,11 +7,13 @@
   --bg-tertiary: #2C2847;
 
   --content-primary: #fff;
-  --content-primary: #dadada;
-  --content-primary: #c8c8c8;
+  --content-secondary: #dadada;
+  --content-tertiary: #b3b3b3;
 
-  --glass: rgba(80, 21, 85, 0.472);
+  --glass: rgba(57, 36, 83, 0.472);
   
+  --plyr-color-main: var(--eon-primary);
+  --plyr-audio-control-color: var(--content-primary);
 }
 
 hr {
@@ -35,6 +37,14 @@ audio {
 
 .block {
   width: 100%;
+}
+
+.float {
+  float: right;
+}
+
+.dropdown {
+  display: inline-block;
 }
 
 .bottom_sheet {
