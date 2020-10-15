@@ -19,7 +19,7 @@ function tabe(tab) {
   $('.tab').addClass("hidden")
   $(`#${tab}`).removeClass("hidden")
 
-  hideAllViews()
+  hideCurrentView()
 
   if (sessionStorage.getItem('first-time-' + tab) == 'true') {
     sessionStorage.setItem('first-time-' + tab, 'false')

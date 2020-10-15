@@ -17,6 +17,7 @@ async function createPlaylist() {
       photo: cacheuser.url,
     },
     created_at: firebase.firestore.FieldValue.serverTimestamp(),
+    last_updated:firebase.firestore.FieldValue.serverTimestamp(),
     songs: [],
     cover: "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/app%2Fempty_album.png?alt=media",
   });

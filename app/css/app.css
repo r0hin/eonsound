@@ -242,3 +242,13 @@
 .modalfooterright button{
   margin-left: 12px;
 }
+
+.modalfooter {
+  text-align: center;
+  padding: 24px;
+}
+
+.playlistButton {
+  margin-bottom: 24px;
+  width: 100%;
+}

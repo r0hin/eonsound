@@ -90,12 +90,22 @@ function userPlaylist(id, data, objectID, destinationID) {
     e = document.createElement('div')
     e.setAttribute('class', 'hidden animated fadeIn userPlaylist')
     e.setAttribute('playlist_details', id)
+    e.onclick = () => { openUserPlaylist(id) }
     e.id = objectID
 
     e.innerHTML = `
       <img id="${objectID}image" crossOrigin="Anonymous" onclick="openUserPlaylist('${id}')" src="${data.cover}&${new Date().getTime()}">
       <h4>${data.name}</h4>
     `;
+
+    g = document.createElement('button')
+    g.setAttribute('class', 'animated fadeIn btn-text-primary playlistButton')
+    g.innerHTML = data.name
+    g.onclick = () => {
+      addTrackToPlaylist(id);
+      $('#playlistSelect').modal('hide')
+    }
+    $(`#playlistSelectItem`).get(0).appendChild(g)
 
     $(`#${destinationID}`).get(0).appendChild(e)
     resolve('Success')

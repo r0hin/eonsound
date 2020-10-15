@@ -110,6 +110,7 @@
 
 #user_library_playlists {
   margin-top: 36px;
+  text-align: center;
 }
 
 .userPlaylist {
@@ -142,4 +143,23 @@
   display: inline-block;
   width: 150px; height: 150px;
   object-fit: cover; border-radius: 24px;
+}
+
+.media_view {
+  position: fixed;
+  height: 100%; width: calc(100% - 280px);
+  padding: 36px; overflow-y: auto; z-index: 5;
+  background-color: var(--bg-secondary);
+  right: 0px; top: 0px;
+}
+
+.playlistHeader img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.playlistHeader .chip {
+  margin: 4px;
 }

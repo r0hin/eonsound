@@ -38,7 +38,7 @@
 <body>
     <!-- Preflight Modals-->
     
-    <div class="modal fade" id="playlistSelect" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
+  <div class="modal fade" id="playlistSelect" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
       <div class="modal-content">
           <div class="modal-body">
             <center>
@@ -69,142 +69,142 @@
             <button onclick="createPlaylist()" type="button" class="btn-contained-primary" data-dismiss="modal">create</button>
         </div>
     </div>
-</div></div>
+  </div></div>
 
-    <div class="modal fade bd-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm" role="document"><div class="modal-content"><div class="modalheader"><h3>Error</h3></div><div class="modalbody"><p id="erorrModalMsg"></p><button type="button" class="btn-contained-primary block" data-dismiss="modal">dismiss</button></div></div></div></div>
-    <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eonloaderelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><div class="progress-circular"><div class="progress-circular-wrapper"><div class="progress-circular-inner"><div class="progress-circular-left"><div class="progress-circular-spinner"></div></div><div class="progress-circular-gap"></div><div class="progress-circular-right"><div class="progress-circular-spinner"></div></div></div></div></div></center></div></div></div></div>
-    <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="material-icons doneicon">done</i></h1></center></div></div></div></div>
-    <div class="hidden animated fadeIn faster" id="bottom_sheet_background"></div>
+  <div class="modal fade bd-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm" role="document"><div class="modal-content"><div class="modalheader"><h3>Error</h3></div><div class="modalbody"><p id="erorrModalMsg"></p><button type="button" class="btn-contained-primary block" data-dismiss="modal">dismiss</button></div></div></div></div>
+  <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eonloaderelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><div class="progress-circular"><div class="progress-circular-wrapper"><div class="progress-circular-inner"><div class="progress-circular-left"><div class="progress-circular-spinner"></div></div><div class="progress-circular-gap"></div><div class="progress-circular-right"><div class="progress-circular-spinner"></div></div></div></div></div></center></div></div></div></div>
+  <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="material-icons doneicon">done</i></h1></center></div></div></div></div>
+  <div class="hidden animated fadeIn faster" id="bottom_sheet_background"></div>
 
-    <div id="unverified" class="hidden animated fadeIn slow">
-      <div class="card centered animated fadeInUp">
-          <div class="card-body">
-              <center>
-                  <h2>Welcome to EonSound</h2>
-                  <p>Please verify your email</p>
-                  <button onclick="sendVerification(this)" class="btn-text-primary">Send Email</button>
-                  <div class="hidden animated fadeIn" id="sentEmail">
-                      <p>Email sent. Follow the link sent to your email</p>
-                      <button class="btn-contained-primary animated fadeIn" style="animation-delay: 5s;" onclick="window.location.reload()">I've Verified</button>
-                  </div>
-
-              </center>
-          </div>
-      </div>
-    </div>
-
-    <div id="finish_profile" class="hidden animated fadeIn slow">
-      <div class="card centered animated fadeInUp">
+  <div id="unverified" class="hidden animated fadeIn slow">
+    <div class="card centered animated fadeInUp">
         <div class="card-body">
-          <center>
-            <h2>Complete your profile</h2>
-            <br>
-            <div class="floating-label textfield-box">
-              <label for="namebox">Name</label>
-              <input class="form-control" id="namebox" type="text">
-            </div>
-            <br><br>
-            <div class="floating-label textfield-box">
-                <label for="usernamebox">Username</label>
-                <input class="form-control" id="usernamebox" type="text">
-            </div>
-            <br><br>
-            <button onclick="createUser()" class="btn-contained-primary block">Confirm</button>
-            <br><br>
-            <div id="createAccFeedback" class="alert alert-danger hidden animated fadeIn" role="alert">
-                
-            </div>
-          </center>
+            <center>
+                <h2>Welcome to EonSound</h2>
+                <p>Please verify your email</p>
+                <button onclick="sendVerification(this)" class="btn-text-primary">Send Email</button>
+                <div class="hidden animated fadeIn" id="sentEmail">
+                    <p>Email sent. Follow the link sent to your email</p>
+                    <button class="btn-contained-primary animated fadeIn" style="animation-delay: 5s;" onclick="window.location.reload()">I've Verified</button>
+                </div>
+
+            </center>
         </div>
-      </div>
     </div>
+  </div>
 
-    <!-- Content -->
-
-    <!-- Loader-->
-    <div class="loader shadow animated hidden faster" id="loader">
-      <i class="gradicon material-icons">cloud_download</i>
-      <div class="progress-circular animated zoomIn"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
-    </div>
-
-    <!-- Player -->
-    <div class="player animated hidden" id="player">
-      <img id="playing_album_cover" class="hidden animated zoomIn" src="assets/bg.jpeg" alt="" />
-      <p id="playing_track_details">
-        <b>Not Playing</b>
-      </p>
-      <div class="songactions">
-        <button class="btn-text-primary iconbtn">
-          <i class="material-icons">skip_previous</i>
-        </button>
-        <div class="dropdown">
-          <button id="nowplayingbutton" disabled aria-haspopup="true" class="btn-text-primary iconbtn btn-disabled" data-toggle="dropdown">
-            <i class="material-icons">more_vert</i>
-          </button>
-          <div class="dropdown-menu menu">
-            <a id="playingaddplaylistbtn" data-toggle="modal" data-target="#playlistSelect" class="dr-item">Add to Playlist</a>
-            <a onclick="addTrackToLibrary(prepare_library_changes)" class="dr-item">Add to Library</a>
-            <div class="dropdown-divider"></div>
-            <a class="dr-item">Go to Album</a>
-            <a class="dr-item">Go to Artist</a>
-            <a class="dr-item">Show Info</a>
-            <div class="dropdown-divider"></div>
-            <a class="dr-item">Copy Link</a>
+  <div id="finish_profile" class="hidden animated fadeIn slow">
+    <div class="card centered animated fadeInUp">
+      <div class="card-body">
+        <center>
+          <h2>Complete your profile</h2>
+          <br>
+          <div class="floating-label textfield-box">
+            <label for="namebox">Name</label>
+            <input class="form-control" id="namebox" type="text">
           </div>
-        </div>
-        <button class="btn-text-primary iconbtn">
-          <i class="material-icons">skip_next</i>
-        </button>
+          <br><br>
+          <div class="floating-label textfield-box">
+              <label for="usernamebox">Username</label>
+              <input class="form-control" id="usernamebox" type="text">
+          </div>
+          <br><br>
+          <button onclick="createUser()" class="btn-contained-primary block">Confirm</button>
+          <br><br>
+          <div id="createAccFeedback" class="alert alert-danger hidden animated fadeIn" role="alert">
+              
+          </div>
+        </center>
       </div>
-      <div class="progress-circular hidden animated fadeIn" id="queueProgress"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
-      <audio id="main_player" controls />
     </div>
+  </div>
 
-   <div id="sidebar">
-      <h4>Library</h4>
-      <button class="tab-btn btn-text-primary" id="playlists-tab" onclick="tabe('playlists')">
-        <i class="material-icons">library_music</i>
-        Playlists
+  <!-- Content -->
+
+  <!-- Loader-->
+  <div class="loader shadow animated hidden faster" id="loader">
+    <i class="gradicon material-icons">cloud_download</i>
+    <div class="progress-circular animated zoomIn"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
+  </div>
+
+  <!-- Player -->
+  <div class="player animated hidden" id="player">
+    <img id="playing_album_cover" class="hidden animated zoomIn" src="assets/bg.jpeg" alt="" />
+    <p id="playing_track_details">
+      <b>Not Playing</b>
+    </p>
+    <div class="songactions">
+      <button class="btn-text-primary iconbtn">
+        <i class="material-icons">skip_previous</i>
       </button>
-      <button class="tab-btn btn-text-primary" id="artists-tab" onclick="tabe('artists')">
-        <i class="material-icons">person</i>
-        Artists
-      </button>
-      <button class="tab-btn btn-text-primary" id="albums-tab" onclick="tabe('albums')">
-        <i class="material-icons">album</i>
-        Albums
-      </button>
-      <button class="tab-btn btn-text-primary" id="songs-tab" onclick="tabe('songs')">
-        <i class="material-icons">audiotrack</i>
-        Songs
-      </button>
-      <h4>Discover</h4>
-      <button class="tab-btn btn-text-primary" id="browse-tab" onclick="tabe('browse')">
-        <i class="material-icons">dashboard</i>
-        Browse
-      </button>
-      <button class="tab-btn btn-text-primary" id="search-tab" onclick="tabe('search')">
-        <i class="material-icons">search</i>
-        Search
-      </button>
-      <br> <br> <br> <br> <br>
-      <br> <br> <br> <br> <br> <br>
-      <div id="usercard" class="usercard hidden animated fadeInUp shadow">
-        <img id="userpfp1" alt="Loading...">
-        <p id="username1"></p>
-        <button class="btn-text-primary iconbtn">
-          <i class="material-icons">person</i>
+      <div class="dropdown">
+        <button id="nowplayingbutton" disabled aria-haspopup="true" class="btn-text-primary iconbtn btn-disabled" data-toggle="dropdown">
+          <i class="material-icons">more_vert</i>
         </button>
+        <div class="dropdown-menu menu">
+          <a id="playingaddplaylistbtn" data-toggle="modal" data-target="#playlistSelect" class="dr-item">Add to Playlist</a>
+          <a onclick="addTrackToLibrary(prepare_library_changes)" class="dr-item">Add to Library</a>
+          <div class="dropdown-divider"></div>
+          <a class="dr-item">Go to Album</a>
+          <a class="dr-item">Go to Artist</a>
+          <a class="dr-item">Show Info</a>
+          <div class="dropdown-divider"></div>
+          <a class="dr-item">Copy Link</a>
+        </div>
       </div>
+      <button class="btn-text-primary iconbtn">
+        <i class="material-icons">skip_next</i>
+      </button>
+    </div>
+    <div class="progress-circular hidden animated fadeIn" id="queueProgress"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
+    <audio id="main_player" controls />
+  </div>
 
-   </div>
+  <div id="sidebar">
+    <h4>Library</h4>
+    <button class="tab-btn btn-text-primary" id="playlists-tab" onclick="tabe('playlists')">
+      <i class="material-icons">library_music</i>
+      Playlists
+    </button>
+    <button class="tab-btn btn-text-primary" id="artists-tab" onclick="tabe('artists')">
+      <i class="material-icons">person</i>
+      Artists
+    </button>
+    <button class="tab-btn btn-text-primary" id="albums-tab" onclick="tabe('albums')">
+      <i class="material-icons">album</i>
+      Albums
+    </button>
+    <button class="tab-btn btn-text-primary" id="songs-tab" onclick="tabe('songs')">
+      <i class="material-icons">audiotrack</i>
+      Songs
+    </button>
+    <h4>Discover</h4>
+    <button class="tab-btn btn-text-primary" id="browse-tab" onclick="tabe('browse')">
+      <i class="material-icons">dashboard</i>
+      Browse
+    </button>
+    <button class="tab-btn btn-text-primary" id="search-tab" onclick="tabe('search')">
+      <i class="material-icons">search</i>
+      Search
+    </button>
+    <br> <br> <br> <br> <br>
+    <br> <br> <br> <br> <br> <br>
+    <div id="usercard" class="usercard hidden animated fadeInUp shadow">
+      <img id="userpfp1" alt="Loading...">
+      <p id="username1"></p>
+      <button class="btn-text-primary iconbtn">
+        <i class="material-icons">person</i>
+      </button>
+    </div>
+  </div>
 
-   <div id="content">
+  <div id="content">
     <!-- Views -->
-    <div class="playlist_view"> </div>
-    <div class="artist_view"> </div>
-    <div class="album_view"> </div>
-    <div class="song_view"> </div>
+    <div id="userplaylist_view" class="userplaylist_view"> </div>
+    <div id="playlist_view" class="playlist_view"> </div>
+    <div id="artist_view" class="artist_view"> </div>
+    <div id="album_view" class="album_view"> </div>
+    <div id="song_view" class="song_view"> </div>
 
     <!-- Tabs -->
     <div class="tab hidden animated fadeIn faster" id="playlists">
@@ -269,7 +269,7 @@
       </div>
 
     </div>
-   </div>
+  </div>
 
    <div class="bottom_sheet animated faster fadeOutDown hidden" id="librarySheet">
     <div class="bottom_sheet_content">
