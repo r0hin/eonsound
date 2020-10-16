@@ -1,13 +1,15 @@
 async function addTrackToPlaylist(playlistID) {
   // GET TRACK INFO
-  track = prepare_library_changes
+  const prepareTrackPlaylistTrack = prepare_library_changes
 
   // GET TRACK DOWNLOAD URL
-  url = await downloadSong(track.id, data.external_urls.spotify, data.name)
-
+  if (!prepareTrackPlaylistTrack.url) {
+    prepareTrackPlaylistTrack.url = await downloadSong(prepareTrackPlaylistTrack.id, prepareTrackPlaylistTrack.spotifyURL, prepareTrackPlaylistTrack.name)
+  }
+  
   // ADD TRACK TO PLAYLIST
   await db.collection('users').doc(user.uid).collection('library').doc(playlistID).update({
-    songs: firebase.firstore.FieldValue.arrayUnion(track)
+    songs: firebase.firestore.FieldValue.arrayUnion(prepareTrackPlaylistTrack)
   })
 
   // ADD TRACK TO LIBRARY

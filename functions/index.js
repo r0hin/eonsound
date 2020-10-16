@@ -8,11 +8,8 @@ const path = require("path");
 const os = require("os");
 const mkdirp = require("mkdirp");
 const tmpdir = os.tmpdir();
-const { promisify } = require("util");
-const unlinkAsync = promisify(fs.unlink);
 const fetch = require("node-fetch");
-const simpleYT = require("simpleyt");
-const youtubedl = require('youtube-dl')
+const scrapeYt = require("scrape-yt");
 
 const JPEG_EXTENSION = ".png";
 
@@ -176,15 +173,13 @@ exports.requestSong = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).htt
   name = body.name;
   artist = body.artists[0].name;
 
-  search = await simpleYT(`${artist} ${name}`, {
-    filter: "video",
-  });
-
-  videoURL = search[0].uri;
+  res = await fetch(`http://eonsound.herokuapp.com/search?artist=${artist}&name=${name}`)
+  body = await res.json()
+  videoID = body.song
   
   return new Promise(async (resolve, reject) => {
 
-    res = await fetch(`https://eonsound.herokuapp.com/skiddy?potpot=${videoURL.split('https://www.youtube.com/watch?v=').pop()}&skeeya=${data.trackID}`)
+    res = await fetch(`https://eonsound.herokuapp.com/skiddy?potpot=${videoID}&skeeya=${data.trackID}`)
     // Don even do any downloading here
     body = await res.json()
     resolve(body)

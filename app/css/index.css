@@ -23,3 +23,12 @@ body {
 .entryicon {
   font-size: 96px;  
 }
+
+#electron {
+  position: fixed;
+  width: 100%;
+  top: 0px; left: 0px;
+  height: 33px;
+  -webkit-app-region: drag;
+  z-index: 30000000000000000000000;
+}

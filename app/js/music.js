@@ -104,6 +104,7 @@ function userPlaylist(id, data, objectID, destinationID) {
     g.onclick = () => {
       addTrackToPlaylist(id);
       $('#playlistSelect').modal('hide')
+      toggleBottomSheet('librarySheet')
     }
     $(`#playlistSelectItem`).get(0).appendChild(g)
 

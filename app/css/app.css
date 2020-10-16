@@ -252,3 +252,16 @@
   margin-bottom: 24px;
   width: 100%;
 }
+
+#playlistSelect {
+  z-index: 200000000000;
+}
+
+#electron {
+  position: fixed;
+  width: 100%;
+  top: 0px; left: 0px;
+  height: 33px;
+  -webkit-app-region: drag;
+  z-index: 30000000000000000000000;
+}
