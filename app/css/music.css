@@ -163,3 +163,22 @@
 .playlistHeader .chip {
   margin: 4px;
 }
+
+.myPlaylistOverlay {
+  display: none;
+}
+
+.myPlaylistImg {
+  display: relative;
+}
+
+.myPlaylistImg:hover {
+  opacity: 0.8;
+  transition: all 0.5s;
+}
+
+.myPlaylistImg:hover + .myPlaylistOverlay, .myPlaylistOverlay:hover {
+  display: block; position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+}

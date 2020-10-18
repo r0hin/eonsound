@@ -40,14 +40,17 @@ async function openUserPlaylist(id) {
     <div class="playlistHeader row">
       <div class="col-sm">
         <center>
-          <img src="${openPlaylist.cover}"></img>
+          <img class="myPlaylistImg" src="${openPlaylist.cover}"></img>
+          <div class="myPlaylistOverlay">
+            <a onclick="changePlayCover('${playlistId}')" class="btn-contained-primary animated fadeInUp">Change Cover</a>
+          </div>
         </center>
       </div>
       <div class="col-sm">
         <center>
           <h1>${openPlaylist.name}</h1>
           <span class="chip">${openPlaylist.publicity}</span> <span class="chip">${openPlaylist.last_updated.toDate().toString().split('GMT').shift()}</span>
-          <br>
+          <br><br>
           <p oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({text: 'Description updated.', pos: 'top-right'})}, 3000)" contentEditable='true'>${description}</p>
         </center>
       </div>
@@ -55,5 +58,6 @@ async function openUserPlaylist(id) {
   `
 
   document.getElementById('userplaylist_view').appendChild(f)
+  initButtonsContained()
   sessionStorage.setItem('opening', 'false')
 }
