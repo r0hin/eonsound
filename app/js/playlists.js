@@ -59,9 +59,44 @@ async function loadUserPlaylists(playlists) {
     await userPlaylist(playlists[i].id, playlists[i], playlists[i].id + 'userlibraryplaylistelement', 'user_library_playlists')
     $(`#${playlists[i].id}userlibraryplaylistelement`).imagesLoaded(() => {
       $(`#${playlists[i].id}userlibraryplaylistelement`).removeClass('hidden')
-      colors = colorThief.getColor(document.getElementById( playlists[i].id + 'userlibraryplaylistelementimage'))
-      document.getElementById(playlists[i].id + 'userlibraryplaylistelement').setAttribute('style', 'background-color: rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.6)')
+      colorThiefify('userPlaylistPreview', playlists[i].id + 'userlibraryplaylistelementimage', playlists[i].id + 'userlibraryplaylistelement')
     })
   }
 
+}
+
+function changePlayCover(id) {
+  $("#pfpplayhost").empty();
+  h = document.createElement("input"); h.id = "newPlayEl";
+  h.setAttribute('class', 'hidden'); h.setAttribute("type", "file"); h.setAttribute("accept", "image/*");
+  document.getElementById("pfpplayhost").appendChild(h);
+  $("#newPlayEl").change(async () => { 
+    // Change logic
+    toggleloader();
+    file = $('#newPlayEl').get(0).files[0]
+    ext = file.name.split(".").pop();
+
+
+    await firebase.storage().ref().child(`covers/${id}.${ext}`).put(file)
+
+    window.setTimeout(() => {
+      toggleloader(); showcomplete();
+      newImg = `https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/covers%2F${id}.${ext}?alt=media&${new Date().getTime()}`
+      // Change existing records
+      $(`.${id}cover`).attr('src', newImg)
+      window.setTimeout(() => {
+
+        $(`#${id}UserPlaylistView`).imagesLoaded(() => {
+          colorThiefify('userPlaylistView', id + 'cover', id + 'userplaylistgradientelement')
+        })
+        $(`#${id}userlibraryplaylistelement`).imagesLoaded(() => {
+          colorThiefify('userPlaylistPreview', id + 'userlibraryplaylistelementimage', id + 'userlibraryplaylistelement')
+        })
+
+      }, 1220)
+    }, 800);
+  
+  });
+
+  $("#newPlayEl").click();
 }

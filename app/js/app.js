@@ -302,3 +302,20 @@ function hideLoader() {
   $('#loader').removeClass('fadeInRight')
   $('#loader').addClass('fadeOutRight')
 }
+
+function colorThiefify(TYPE, imageID, containerID) {
+
+  colors = colorThief.getColor(document.getElementById(imageID))
+
+  switch (TYPE) {
+    case 'userPlaylistPreview':
+      document.getElementById(containerID).setAttribute('style', 'background-color: rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.6)')
+      break;
+    case 'userPlaylistView':
+      document.getElementById(containerID).setAttribute('style', 'background-image: linear-gradient(180deg, rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 1) -30%, var(--bg-secondary) 100%)')  
+  
+    default:
+      break;
+  }
+
+}

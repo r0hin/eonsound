@@ -187,7 +187,7 @@ exports.requestSong = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).htt
   });
 });
 
-exports.profilePhoto = functions.storage.object().onFinalize(async (object) => {
+exports.convertPhotos = functions.storage.object().onFinalize(async (object) => {
 const filePath = object.name;
 const baseFileName = path.basename(filePath, path.extname(filePath));
 const fileDir = path.dirname(filePath);

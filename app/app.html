@@ -310,62 +310,65 @@
     </div>
   </div>
 
-   <div class="context-bg hidden" id="context-bg"></div>
+  <div class="context-bg hidden" id="context-bg"></div>
 
-   <nav id="track_context" class="context-menu animated fadeIn faster">
-     <ul class="context-menu__items">
-       <li class="context-menu__item">
-         <button id="playbtn" class="btn-text-primary contextbtn">Play</button>
-       </li>
-       <li class="context-menu__item">
-         <button id="queuebtn" class="btn-text-primary contextbtn">Queue</button>
-       </li>
-       <li class="context-menu__item">
-         <button id="addbtn" class="btn-text-primary contextbtn">Add</button>
-       </li>
-     </ul>
-   </nav>
+  <nav id="track_context" class="context-menu animated fadeIn faster">
+    <ul class="context-menu__items">
+      <li class="context-menu__item">
+        <button id="playbtn" class="btn-text-primary contextbtn">Play</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="queuebtn" class="btn-text-primary contextbtn">Queue</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="addbtn" class="btn-text-primary contextbtn">Add</button>
+      </li>
+    </ul>
+  </nav>
 
-   <nav id="album_context" class="context-menu animated fadeIn faster">
-     <ul class="context-menu__items">
-       <li class="context-menu__item">
-         <button id="openbtn" class="btn-text-primary contextbtn">Open</button>
-       </li>
-       <li class="context-menu__item">
-         <button id="addbtn2" class="btn-text-primary contextbtn">Add</button>
-       </li>
-     </ul>
-   </nav>
+  <nav id="album_context" class="context-menu animated fadeIn faster">
+    <ul class="context-menu__items">
+      <li class="context-menu__item">
+        <button id="openbtn" class="btn-text-primary contextbtn">Open</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="addbtn2" class="btn-text-primary contextbtn">Add</button>
+      </li>
+    </ul>
+  </nav>
 
-    <!--=== JavaScript ===-->
-    <!-- JQuery --> <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <!-- Popper --> <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-    <!-- Bootstrap --> <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <!-- Daemonite --> <script src="https://eastcoastgang.github.io/style/release/cdn/material.min.js"></script>
-    <!-- Snackbar --> <script src="https://eastcoastgang.github.io/style/release/cdn/snackbar.min.js"></script> <style>     .snackbar-container {padding-top: 8px !important; padding-bottom: 8px !important; border-radius: 8px !important; max-width: 8723789253786352614975678392738649502976483528059748327952px; }</style>
-    <!-- Ripplet --> <script src="https://cdn.jsdelivr.net/npm/ripplet.js@0.3.0/umd/ripplet-declarative.min.js"></script>
-    <!-- Waves --> <script src="https://eastcoastgang.github.io/style/release/cdn/waves.min.js"></script>
-    <!-- East --> <script src="https://eastcoastgang.github.io/style/release/east.js"></script><script>injectDark()</script>
+  <!-- Junk Containers -->
+  <div id="pfpplayhost"></div>
 
-    <!-- Plyr --> <script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
-    <!-- Images Loaded --> <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
-    <!-- Color Thief --> <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+  <!--=== JavaScript ===-->
+  <!-- JQuery --> <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <!-- Popper --> <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <!-- Bootstrap --> <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <!-- Daemonite --> <script src="https://eastcoastgang.github.io/style/release/cdn/material.min.js"></script>
+  <!-- Snackbar --> <script src="https://eastcoastgang.github.io/style/release/cdn/snackbar.min.js"></script> <style>     .snackbar-container {padding-top: 8px !important; padding-bottom: 8px !important; border-radius: 8px !important; max-width: 8723789253786352614975678392738649502976483528059748327952px; }</style>
+  <!-- Ripplet --> <script src="https://cdn.jsdelivr.net/npm/ripplet.js@0.3.0/umd/ripplet-declarative.min.js"></script>
+  <!-- Waves --> <script src="https://eastcoastgang.github.io/style/release/cdn/waves.min.js"></script>
+  <!-- East --> <script src="https://eastcoastgang.github.io/style/release/east.js"></script><script>injectDark()</script>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-storage.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-functions.js"></script>
+  <!-- Plyr --> <script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
+  <!-- Images Loaded --> <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+  <!-- Color Thief --> <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 
-    <!-- App --> <script src="js/app.js"></script>
-    <!-- Tabs --> <script src="js/tabs.js"></script>
-    <!-- Music --> <script src="js/music.js"></script>
-    <!-- Views --> <script src="js/views.js"></script>
-    <!-- Search --> <script src="js/search.js"></script>
-    <!-- Library --> <script src="js/library.js"></script>
-    <!-- Playlists --> <script src="js/playlists.js"></script>
-    <!-- Context Menu --> <script src="js/context.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-functions.js"></script>
+
+  <!-- App --> <script src="js/app.js"></script>
+  <!-- Tabs --> <script src="js/tabs.js"></script>
+  <!-- Music --> <script src="js/music.js"></script>
+  <!-- Views --> <script src="js/views.js"></script>
+  <!-- Search --> <script src="js/search.js"></script>
+  <!-- Library --> <script src="js/library.js"></script>
+  <!-- Playlists --> <script src="js/playlists.js"></script>
+  <!-- Context Menu --> <script src="js/context.js"></script>
 
 
 </body>

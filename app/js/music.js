@@ -90,11 +90,11 @@ function userPlaylist(id, data, objectID, destinationID) {
     e = document.createElement('div')
     e.setAttribute('class', 'hidden animated fadeIn userPlaylist')
     e.setAttribute('playlist_details', id)
-    e.onclick = () => { openUserPlaylist(id) }
+    e.setAttribute('onclick', "openUserPlaylist('" + id + "')")
     e.id = objectID
 
     e.innerHTML = `
-      <img id="${objectID}image" crossOrigin="Anonymous" onclick="openUserPlaylist('${id}')" src="${data.cover}&${new Date().getTime()}">
+      <img id="${objectID}image" class="${id}cover" crossOrigin="Anonymous" onclick="openUserPlaylist('${id}')" src="${data.cover}&${new Date().getTime()}">
       <h4>${data.name}</h4>
     `;
 

@@ -11,10 +11,11 @@ async function openUserPlaylist(id) {
   if (sessionStorage.getItem('opening') == id) {
     return;
   }
+  
   sessionStorage.setItem('opening', id)
   console.log('Opening playlist of ' + id);
   playlistId = id
-  sessionStorage.setItem('activeView', playlistId + 'userPlaylistView')
+  sessionStorage.setItem('activeView', playlistId + 'UserPlaylistView')
 
   if ($(`#${id}UserPlaylistView`).length) {
     $(`#${id}UserPlaylistView`).removeClass('hidden')
@@ -23,13 +24,15 @@ async function openUserPlaylist(id) {
     return;
   }
 
+  toggleloader();
+
   doc = await db.collection('users').doc(user.uid).collection('library').doc(playlistId).get()
   openPlaylist = doc.data()
 
   // Build the playlist
   f = document.createElement('div')
-  f.setAttribute('class', 'animated fadeIn media_view faster ' + id + 'userPlaylistView')
-  f.setAttribute('id', playlistId + 'userPlaylistView')
+  f.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'UserPlaylistView')
+  f.setAttribute('id', playlistId + 'UserPlaylistView')
 
   description = openPlaylist.description
   if (openPlaylist.description == '') {
@@ -37,10 +40,11 @@ async function openUserPlaylist(id) {
   }
 
   f.innerHTML = `
+    <div class="playViewGradient" id="${playlistId}userplaylistgradientelement"></div>
     <div class="playlistHeader row">
       <div class="col-sm">
         <center>
-          <img class="myPlaylistImg" src="${openPlaylist.cover}"></img>
+          <img crossOrigin="Anonymous" id="${playlistId}cover" class="myPlaylistImg ${playlistId}cover" src="${openPlaylist.cover}"></img>
           <div class="myPlaylistOverlay">
             <a onclick="changePlayCover('${playlistId}')" class="btn-contained-primary animated fadeInUp">Change Cover</a>
           </div>
@@ -51,13 +55,17 @@ async function openUserPlaylist(id) {
           <h1>${openPlaylist.name}</h1>
           <span class="chip">${openPlaylist.publicity}</span> <span class="chip">${openPlaylist.last_updated.toDate().toString().split('GMT').shift()}</span>
           <br><br>
-          <p oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({text: 'Description updated.', pos: 'top-right'})}, 3000)" contentEditable='true'>${description}</p>
+          <p class="playlistDescription" oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({text: 'Description updated.', pos: 'top-right'})}, 3000)" contentEditable='true'>${description}</p>
         </center>
       </div>
     </div>
   `
-
   document.getElementById('userplaylist_view').appendChild(f)
+  $(`#${playlistId}UserPlaylistView`).imagesLoaded(() => {
+    colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
+    $(`#${id}UserPlaylistView`).removeClass('hidden')
+    window.setTimeout(() => {toggleloader()}, 500)
+  })
   initButtonsContained()
   sessionStorage.setItem('opening', 'false')
 }
