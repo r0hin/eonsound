@@ -33,7 +33,7 @@ function clickInsideElement(e, className) {
 
 async function contextMenuListener() {
   document.addEventListener("contextmenu", (e) => {
-    el = clickInsideElement(e, "track");
+    el = clickInsideElement(e, "song");
     if (el) {
       trackContext(e, el)
     } else {

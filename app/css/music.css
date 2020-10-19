@@ -199,3 +199,68 @@
   background-image: linear-gradient(180deg, var(--bg-secondary) -20%, var(--bg-secondary) 100%);
   transition: all 1s !important;
 }
+
+.closePlaylistButton {
+  position: absolute; z-index: 20;
+  top: 36px; left: 24px; height: 42px;
+  min-width: 0px; padding: 12px 8px 12px 8px;
+  margin-right: 6px; margin-left: 6px; border-radius: 24px;
+
+  background-color: var(--bg-tertiary) !important;
+  color: var(--content-secondary) !important;
+}
+
+.closePlaylistButton:hover {
+  color: var(--content-primary) !important;
+}
+
+.songList {
+  margin-top: 12px; width: 100%;
+  display: block; 
+}
+
+.userSong {
+  border-radius: 12px; width: 100%;
+  padding: 12px; cursor: pointer;
+  background-color: var(--bg-secondary);
+  display: block;
+}
+
+.userSong img {
+  display: inline-block; border-radius: 4px;
+  width: 36px; margin-right: 12px;
+}
+
+.userSong b {
+  display: inline-block;
+  font-size: 18px;
+  margin: 0px; line-height: 0px;
+  vertical-align: middle;
+}
+
+.userSong p {
+  transform: translate(0, -50%);
+  position: absolute;
+  top: 50%; right: 12px;
+  margin: 0px; line-height: 0px;
+}
+
+.userSong:hover {
+  background-color: var(--bg-tertiary);
+  transition: all 0.1s;
+}
+
+.playPlaylistBtn {
+  background-color: var(--eon-primary) !important;
+  border-radius: 12px;
+  width: 200px;
+  height: 40px;
+}
+
+.shufflePlaylistBtn {
+  background-color: var(--contrast) !important;
+  color: var(--content-primary) !important;
+  border-radius: 12px;
+  width: 200px;
+  height: 40px;
+}

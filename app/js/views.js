@@ -1,10 +1,13 @@
+window.musicData = {}
+
 function hideCurrentView() {
   id = sessionStorage.getItem('activeView')
   $(`#${id}`).removeClass('fadeIn')
   $(`#${id}`).addClass('fadeOut')
   window.setTimeout(() => {
     $(`#${sessionStorage.getItem('activeView')}`).addClass('hidden')
-  }, 800)
+    sessionStorage.setItem('opening', 'false')
+  }, 400)
 }
 
 async function openUserPlaylist(id) {
@@ -41,6 +44,7 @@ async function openUserPlaylist(id) {
 
   f.innerHTML = `
     <div class="playViewGradient" id="${playlistId}userplaylistgradientelement"></div>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView()"><i class="material-icons">close</i></button>
     <div class="playlistHeader row">
       <div class="col-sm">
         <center>
@@ -59,13 +63,26 @@ async function openUserPlaylist(id) {
         </center>
       </div>
     </div>
+    <br><br>
+    <div class="row">
+      <div class="col-sm"><center><button onclick="playSongs('${playlistId}')" class="btn-contained-primary playPlaylistBtn">Play</button></center></div>
+      <div class="col-sm"><center><button onclick="shuffleSongs('${playlistId}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>
+    </div>
+    <br><br>
+    <div class="songList ${playlistId}playlistSongs" id="${playlistId}playlistSongs"></div>
   `
   document.getElementById('userplaylist_view').appendChild(f)
+  for (let j = 0; j < openPlaylist.songs.length; j++) {
+    const openPlaylistSong = openPlaylist.songs[j];
+    await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
+  }
+  musicData[playlistId] = openPlaylist.songs
   $(`#${playlistId}UserPlaylistView`).imagesLoaded(() => {
     colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
     $(`#${id}UserPlaylistView`).removeClass('hidden')
     window.setTimeout(() => {toggleloader()}, 500)
   })
   initButtonsContained()
+  initButtonsText()
   sessionStorage.setItem('opening', 'false')
 }

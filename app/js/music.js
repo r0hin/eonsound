@@ -94,7 +94,7 @@ function userPlaylist(id, data, objectID, destinationID) {
     e.id = objectID
 
     e.innerHTML = `
-      <img id="${objectID}image" class="${id}cover" crossOrigin="Anonymous" onclick="openUserPlaylist('${id}')" src="${data.cover}&${new Date().getTime()}">
+      <img id="${objectID}image" class="${id}cover" crossOrigin="Anonymous" src="${data.cover}&${new Date().getTime()}">
       <h4>${data.name}</h4>
     `;
 
@@ -116,7 +116,7 @@ function userPlaylist(id, data, objectID, destinationID) {
 function track(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     d = document.createElement('div')
-    d.setAttribute('class', 'hidden animated fadeIn track')
+    d.setAttribute('class', 'hidden animated fadeIn track song')
     d.setAttribute('track_details', id)
     d.id = objectID
 
@@ -136,6 +136,78 @@ function track(id, data, objectID, destinationID) {
     $(`#${destinationID}`).get(0).appendChild(d)
     resolve('Success')
   })
+}
+
+function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
+  return new Promise((resolve, reject) => {
+    f = document.createElement('div')
+    f.setAttribute('class', 'userSong animated flipInX song')
+    f.setAttribute('id', objectID)
+    f.setAttribute('track_details', id)
+    f.onclick = () => {
+      playSongsAtIndex(index, playlist)
+    }
+
+    f.innerHTML = `
+      <img src="${data.art}"></img>
+      <b>${data.name}</b>
+      <p>${data.artists}</p>
+    `
+    $(`#${destinationID}`).get(0).appendChild(f)
+    resolve('Success')
+  })
+}
+
+function playSongsAtIndex(index, playlist) {
+  songSelection = [...musicData[playlist]]
+  for (let i = 0; i < index; i++) {
+    songSelection.shift()
+  }  
+  
+  playSongs(false, songSelection)
+}
+
+function playSongs(Id, externalData) {
+  // Playlists will have sufficient data
+  // Albums wont
+  if (externalData) {
+    // Allow for passing in external data
+    musicDataPlay = externalData
+  }
+  else {
+    // Use data from ID
+    musicDataPlay = musicData[Id]
+  }
+
+  for (let n = 0; n < musicDataPlay.length; n++) {
+    const playSongsSong = musicDataPlay[n];
+    if (playSongsSong.url) {
+      if (n == 0) {
+        // Play it. (Clear queue and play first song)
+        playSong(playSongsSong)
+      }
+      else {
+        // Queue it
+        queueSong(playSongsSong, true)
+      }
+    }
+    else {
+      if (n == 0) {
+        // Play it. (Clear queue and play first song)
+        playSongWithoutData(playSongsSong.id)
+      }
+      else {
+        // Queue it
+        queueSongWithoutData(playSongsSong.id, true)
+      }
+    }
+  }
+
+}
+
+function shuffleSongs(Id) {
+  shuffleSongsData = shuffled(musicData[Id])
+  playSongs(Id, shuffleSongsData)
 }
 
 async function downloadSong(trackID, spotifyURL, trackName) {
@@ -245,11 +317,13 @@ async function endedQueue() {
   hidePlayer()
 }
 
-async function queueSong(data) {
+async function queueSong(data, skipMsg) {
   if (musicActive.none !== 'none') {
     // There's a song playing so add it to queue
     musicQueue.push(data)
-    Snackbar.show({text: "Added to queue.", pos: 'top-right'})
+    if (!skipMsg) {
+      Snackbar.show({text: "Added to queue.", pos: 'top-right'})
+    }
   }
   else {
     // Just play it
@@ -318,4 +392,24 @@ async function endedSong() {
     // End queue
     endedQueue()
   }
+}
+
+function skipPrevious() {
+  // Delete last element of history, to move it to first of queue
+  // Twice as a dummy element to keep active song in front of next song.
+
+  if (musicActive.none !== "none") {
+    // Song is playing, move it to first of queue
+    musicQueue.unshift(musicActive);
+  }
+
+  // Play last element of history
+  playSong(musicHistory[musicHistory.length - 1], true);
+
+  // Delete last element of history
+  musicHistory.splice(musicHistory.length - 1, 1);
+}
+
+function skipForward() {
+  endedSong();
 }
