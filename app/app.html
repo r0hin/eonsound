@@ -130,6 +130,12 @@
     <div class="progress-circular animated zoomIn"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
   </div>
 
+  <!-- Queue Visualizer -->
+  <button onclick="tabe('queue')" id="showQueue" class="showQueue btn-text-primary iconbtn animated fadeInUp hidden">
+    <i class="material-icons">chevron_right</i>
+    Queue
+  </button>
+
   <!-- Player -->
   <div class="player animated hidden" id="player">
     <img id="playing_album_cover" class="hidden animated zoomIn" src="assets/bg.jpeg" alt="" />
@@ -210,6 +216,20 @@
     <div id="song_view" class="song_view"> </div>
 
     <!-- Tabs -->
+    <div class="tab hidden animated fadeIn faster" id="queue">
+      <div class="tabtitlebox">
+        <p class="tab-subtitle">Queue</p>
+        <h2 class="tab-title">Now Playing</h2>
+      </div>
+      <br>
+
+      <div id="queueNow" class="animated pulse infinite slower"></div>
+      <br><br>
+
+      <h2 class="tab-title">Up Next</h2>
+      <div id="queueItems"></div>
+      <br><br>
+    </div>
     <div class="tab hidden animated fadeIn faster" id="playlists">
       <div class="tabtitlebox">
         <p class="tab-subtitle">Playlists</p>
@@ -274,54 +294,30 @@
     </div>
   </div>
 
-   <div class="bottom_sheet animated faster fadeOutDown hidden" id="librarySheet">
-    <div class="bottom_sheet_content">
-      <h2>Add to Library</h2>
-      <br>
-      <div class="row">
-        <div class="col-sm">
-            <center>
-                <button onclick="addTrackToLibrary(prepare_library_changes)" id="library_add_btn" class="btn-outlined-primary iconbtn iconbtn-outlined">
-                    <i class="material-icons">library_add</i>
-                </button>
-                <br><br>
-                <h4>Add to Library</h4>
-            </center>
-        </div>
-        <div id="playlistAdd" class="col-sm">
-            <center>
-                <button data-target="#playlistSelect" data-toggle="modal" class="btn-outlined-primary iconbtn iconbtn-outlined">
-                    <i class="material-icons">playlist_add</i>
-                </button>
-                <br><br>
-                <h4>Add to Playlist</h4>
-            </center>
-        </div>
-        <div class="col-sm">
-            <center>
-                <button onclick="edit_note()" id="note_btn" class="btn-outlined-primary iconbtn iconbtn-outlined">
-                    <i class="material-icons">note</i>
-                </button>
-                <br><br>
-                <h4>Update Note</h4>
-            </center>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="context-bg hidden" id="context-bg"></div>
-
   <nav id="track_context" class="context-menu animated fadeIn faster">
     <ul class="context-menu__items">
       <li class="context-menu__item">
-        <button id="playbtn" class="btn-text-primary contextbtn">Play</button>
+        <button id="playbtn" class="btn-text-primary contextbtn">Play Track</button>
       </li>
       <li class="context-menu__item">
-        <button id="queuebtn" class="btn-text-primary contextbtn">Queue</button>
+        <button id="queuebtn" class="btn-text-primary contextbtn">Add to Queue</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="0addbtn" class="btn-text-primary contextbtn">Add to Playlist</button>
       </li>
       <li class="context-menu__item">
-        <button id="addbtn" class="btn-text-primary contextbtn">Add</button>
+        <button id="1addbtn" class="btn-text-primary contextbtn">Add to Library</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="2addbtn" class="btn-text-primary contextbtn">Save to Liked</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="infobtn" class="btn-text-primary contextbtn">Song Info</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="copybtn" class="btn-text-primary contextbtn">Copy Link</button>
       </li>
     </ul>
   </nav>
@@ -329,10 +325,21 @@
   <nav id="album_context" class="context-menu animated fadeIn faster">
     <ul class="context-menu__items">
       <li class="context-menu__item">
-        <button id="openbtn" class="btn-text-primary contextbtn">Open</button>
+        <button id="openbtn" class="btn-text-primary contextbtn">Open Album</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="0addbtn2" class="btn-text-primary contextbtn">Add to Library</button>
       </li>
       <li class="context-menu__item">
-        <button id="addbtn2" class="btn-text-primary contextbtn">Add</button>
+        <button id="1addbtn2" class="btn-text-primary contextbtn">Save to Liked</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="infobtn2" class="btn-text-primary contextbtn">Album Info</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="copybtn2" class="btn-text-primary contextbtn">Copy Link</button>
       </li>
     </ul>
   </nav>

@@ -33,7 +33,12 @@ function clickInsideElement(e, className) {
 
 async function contextMenuListener() {
   document.addEventListener("contextmenu", (e) => {
-    el = clickInsideElement(e, "song");
+    checkElements(e)
+  });
+}
+
+function checkElements(e) {
+  el = clickInsideElement(e, "song");
     if (el) {
       trackContext(e, el)
     } else {
@@ -44,16 +49,10 @@ async function contextMenuListener() {
         toggleMenuOff();
       }
     }
-  });
 }
 
 function toggleMenuOff() {
-  console.log("Menu off");
   sessionStorage.setItem("menuOpen", "false");
-  $("#context-bg").removeClass("context-bg-active");
-  window.setTimeout(() => {
-    $("#context-bg").addClass("hidden");
-  }, 300);
   document.getElementById("track_context").classList.remove("context_active");
   document.getElementById("album_context").classList.remove("context_active");
 }
@@ -64,35 +63,55 @@ document.addEventListener("click", function (e) {
   }
 });
 
+function positionMenu(e, menu) {
+  clickCoords = getPosition(e);
+  clickCoordsX = clickCoords.x;
+  clickCoordsY = clickCoords.y;
+
+  menuWidth = menu.offsetWidth + 4;
+  menuHeight = menu.offsetHeight + 4;
+
+  windowWidth = window.innerWidth;
+  windowHeight = window.innerHeight;
+
+  if ( (windowWidth - clickCoordsX) < menuWidth ) {
+    menu.style.left = windowWidth - menuWidth + "px";
+  } else {
+    menu.style.left = clickCoordsX + "px";
+  }
+
+  if ( (windowHeight - clickCoordsY) < menuHeight ) {
+    menu.style.top = windowHeight - menuHeight + "px";
+  } else {
+    menu.style.top = clickCoordsY + "px";
+  }
+}
+
 async function trackContext(e, el) {
   e.preventDefault();
   sessionStorage.setItem("menuOpen", "true");
-  menuPosition = getPosition(e); menuPositionX = menuPosition.x + "px"; menuPositionY = menuPosition.y + "px";
-
-  menu = document.getElementById("track_context");
-  menu.classList.add("context_active"); menu.style.left = menuPositionX; menu.style.top = menuPositionY;
-
-  $("#context-bg").removeClass("hidden");
   
-  window.setTimeout(() => {
-    $("#context-bg").addClass("context-bg-active");
-  }, 100);
+  menu = document.getElementById("track_context");
+  menu.classList.add("context_active");
+  positionMenu(e, menu)
 
   id = el.getAttribute("track_details")
 
+  // PLAY BUTTON
   document.getElementById("playbtn").onclick = () => {
-    // Clear queue
     window.musicQueue = [];
     window.musicHistory = [];
     window.musicActive = { none: "none" };
     playSongWithoutData(id);
   };
   
+  // QUEUE BUTTON
   document.getElementById("queuebtn").onclick = () => {
     queueSongWithoutData(id);
   };
-    
-  document.getElementById("addbtn").onclick = async () => {
+
+  // ADD PLAYLIST  
+  document.getElementById("0addbtn").onclick = async () => {
     // Get track details
     const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
       method: "GET",
@@ -111,7 +130,7 @@ async function trackContext(e, el) {
       console.log("Error occured. Likely invalid code - request and do it again.");
       sessionStorage.setItem("errorAvoid", "true");
       refreshCode();
-      document.getElementById("addbtn").click();
+      document.getElementById("0addbtn").click();
       return;
     }
 
@@ -132,34 +151,87 @@ async function trackContext(e, el) {
       type: 'track',
     };
 
-    $('#playlistAdd').removeClass('hidden')
-    toggleBottomSheet("librarySheet");
+    $('#playlistSelect').modal('toggle')
   };
+
+  // ADD LIBRARY
+  document.getElementById('1addbtn').onclick = async () => {
+    // Get track details
+    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${spotifyCode}`,
+      },
+    });
+
+    const data = await result.json();
+
+    if (data.error) {
+      if (sessionStorage.getItem("errorAvoid") == "true") {
+        Snackbar.show({ text: "An error occured while loading library options."});
+        return;
+      }
+      console.log("Error occured. Likely invalid code - request and do it again.");
+      sessionStorage.setItem("errorAvoid", "true");
+      refreshCode();
+      document.getElementById("0addbtn").click();
+      return;
+    }
+
+    refreshCode();
+    sessionStorage.setItem("errorAvoid", "false");
+
+    artists = artistToString(data.artists)
+
+    url = await downloadSong(id, data.external_urls.spotify, data.name)
+
+    window.prepare_library_changes = {
+      id: id,
+      url: url.data,
+      art: data.album.images[0].url,
+      artists: artists,
+      name: data.name,
+      length: data.duration_ms,
+      type: 'track',
+    };
+
+    addTrackToLibrary()
+  }
+
+  // ADD LIKED
+  document.getElementById('2addbtn').onclick = async () => {
+    console.log('Save to liked');
+  }
+
+  // SONG INFO
+  document.getElementById('infobtn').onclick = async () => {
+    console.log(' Song info');
+  }
+
+  // Copy link
+  document.getElementById('copybtn').onclick = async () => {
+    console.log(' Song info');
+  }
+
 }
 
 async function albumContext(e, el) {
   e.preventDefault();
   sessionStorage.setItem("menuOpen", "true");
   
-  menuPosition = getPosition(e); menuPositionX = menuPosition.x + "px"; menuPositionY = menuPosition.y + "px";
-
   menu = document.getElementById("album_context");
   menu.classList.add("context_active");
-  menu.style.left = menuPositionX;
-  menu.style.top = menuPositionY;
-
-  $("#context-bg").removeClass("hidden");
-  window.setTimeout(() => {
-    $("#context-bg").addClass("context-bg-active");
-  }, 100);
+  positionMenu(e, menu)
 
   id = el.getAttribute("album_details");
 
+  // OPEN BUTTON
   document.getElementById("openbtn").onclick = () => {
     showAlbum(id);
   };
 
-  document.getElementById("addbtn2").onclick = async () => {
+  // ADD LIBRARY
+  document.getElementById("0addbtn2").onclick = async () => {
     // Get album details
     const result = await fetch(`https://api.spotify.com/v1/albums/${id}`, {
       method: "GET",
@@ -187,10 +259,7 @@ async function albumContext(e, el) {
 
     refreshCode();
     sessionStorage.setItem("errorAvoid", "false");
-
-    toggleBottomSheet("librarySheet");
-    $('#playlistAdd').addClass('hidden')
-          
+      
     artists = artistToString(data.artists)
     effecientTracks = [];
 
@@ -217,7 +286,21 @@ async function albumContext(e, el) {
       type: 'album'
     };
 
-    return;
-
+    addAlbumToLibrary()
   };
+
+  // ADD LIKED
+  document.getElementById('1addbtn2').onclick = async () => {
+    console.log('Save album to liked');
+  }
+
+  // SONG INFO
+  document.getElementById('infobtn2').onclick = async () => {
+    console.log(' Album info');
+  }
+
+  // Copy link
+  document.getElementById('copybtn2').onclick = async () => {
+    console.log(' Album info');
+  }
 }

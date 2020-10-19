@@ -315,6 +315,8 @@ async function endedQueue() {
   $('#nowplayingbutton').addClass('btn-disabled')
   $('#InjectedWidth').get(0).innerHTML = ``
   hidePlayer()
+  visualQ_build()
+  $('#showQueue').addClass('hidden')
 }
 
 async function queueSong(data, skipMsg) {
@@ -323,15 +325,24 @@ async function queueSong(data, skipMsg) {
     musicQueue.push(data)
     if (!skipMsg) {
       Snackbar.show({text: "Added to queue.", pos: 'top-right'})
+      $('#showQueue').removeClass('hidden')
+      visualQ_build()
     }
   }
   else {
     // Just play it
     loadSong(data)
+    $('#showQueue').addClass('hidden')
   }
 }
 
 async function playSong(data) {
+  if (musicActive.none !== 'none') {
+    // Song is playing while loading new song so move it to history
+    // Move active song to history
+    musicHistory.push(musicActive);
+  }
+
   // Empty queue and play
   window.musicQueue = [];
   window.musicActive = {none: 'none'};
@@ -339,6 +350,7 @@ async function playSong(data) {
 }
 
 async function loadSong(data) {
+
   url = data.url
   showPlayer()
   $('#queueProgress').removeClass('zoomOut')
@@ -378,12 +390,23 @@ async function loadSong(data) {
   $('#nowplayingbutton').removeClass('btn-disabled')
   calculatePlayerWidths()
   player.play()
+  visualQ_build()
 }
 
 async function endedSong() {
   // Song did end
+  player.pause()
+
+  // Move active song to history
+  musicHistory.push(musicActive);
+
   musicActive = {none: 'none'}
   if (musicQueue.length > 0) {
+    // Check if hide queue btn
+    if (musicQueue.length == 1) {
+      $('#showQueue').addClass('hidden')
+    }
+
     // Next song
     loadSong(musicQueue[0])
     musicQueue.splice(0, 1)
@@ -398,13 +421,18 @@ function skipPrevious() {
   // Delete last element of history, to move it to first of queue
   // Twice as a dummy element to keep active song in front of next song.
 
+  if (!musicHistory.length) {
+    // Stop if there is no history to play.
+    return;
+  }
+
   if (musicActive.none !== "none") {
     // Song is playing, move it to first of queue
     musicQueue.unshift(musicActive);
   }
 
   // Play last element of history
-  playSong(musicHistory[musicHistory.length - 1], true);
+  loadSong(musicHistory[musicHistory.length - 1], true);
 
   // Delete last element of history
   musicHistory.splice(musicHistory.length - 1, 1);
@@ -412,4 +440,35 @@ function skipPrevious() {
 
 function skipForward() {
   endedSong();
+}
+
+function visualQ_build() {
+  $('#queueItems').empty()
+
+  document.getElementById('queueNow').innerHTML = `
+    <div class="userSong animated fadeInUp song" track_details="${musicActive.id}">
+      <img src="${musicActive.art}"></img>
+      <b>${musicActive.name}</b>
+      <p>${musicActive.artists}</p>
+    </div>
+  `
+
+  for (let i = 0; i < musicQueue.length; i++) {
+    const data = musicQueue[i]
+    p = document.createElement('div')
+    p.setAttribute('class', 'userSong animated flipInX song')
+    p.setAttribute('track_details', data.id)
+    p.onclick = () => {
+      playSongsAtQueueIndex('0', 'queue')
+    }
+  
+    p.innerHTML = `
+      <img src="${data.art}"></img>
+      <b>${data.name}</b>
+      <p>${data.artists}</p>
+    `
+    
+    document.getElementById('queueItems').appendChild(p)
+  }
+
 }

@@ -21,9 +21,9 @@ async function addTrackToPlaylist(playlistID) {
 }
 
 async function addAlbumToLibrary() {
-  console.log(albumID);
+  console.log('Add album to library');
 }
 
 async function addTrackToLibrary() {
-  console.log(trackID);
+  console.log('Add track to library');
 }

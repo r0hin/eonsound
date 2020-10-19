@@ -70,7 +70,7 @@
   left: 0px; top: 0px;
   height: 100%; width: 280px;
   background-color: var(--bg-secondary);
-  padding: 24px;
+  padding: 24px; overflow: auto;
 }
 
 #sidebar h4 {
@@ -109,7 +109,7 @@
 }
 
 #usercard {
-  position: absolute;
+  position: fixed;
   height: 74px; width: 232px; bottom: 24px;
   transition: all 0.5s !important;
   border-radius: 12px;
@@ -264,4 +264,41 @@
   height: 33px;
   -webkit-app-region: drag;
   z-index: 30000000000000000000000;
+}
+
+.showQueue {
+  position: fixed;
+  bottom: 180px; left: 16px;
+  padding: 4px; z-index: 8;
+  width: 232px;
+}
+
+.showQueue i {
+  left: 24px;
+}
+
+#queueItems {
+  width: 100%;
+  float: left;
+}
+
+#queueItems .song {
+  background-color: var(--bg-primary);
+}
+
+#queueItems .song:hover {
+  background-color: var(--bg-secondary);
+  transition: all 0.2s;
+}
+
+#queueNow {
+  float: left;
+  width: 100%;
+  margin-bottom: 36px;
+  position: relative;
+  animation-duration: 6s;
+}
+
+#queueNow .song{
+  background-color: var(--contrast);
 }
