@@ -59,7 +59,10 @@ async function loadUserPlaylists(playlists) {
     await userPlaylist(playlists[i].id, playlists[i], playlists[i].id + 'userlibraryplaylistelement', 'user_library_playlists')
     $(`#${playlists[i].id}userlibraryplaylistelement`).imagesLoaded(() => {
       $(`#${playlists[i].id}userlibraryplaylistelement`).removeClass('hidden')
-      colorThiefify('userPlaylistPreview', playlists[i].id + 'userlibraryplaylistelementimage', playlists[i].id + 'userlibraryplaylistelement')
+      window.setTimeout(() => {
+        // Some browsers will take a while to finish.
+        colorThiefify('userPlaylistPreview', playlists[i].id + 'userlibraryplaylistelementimage', playlists[i].id + 'userlibraryplaylistelement')
+      }, 500)
     })
   }
 

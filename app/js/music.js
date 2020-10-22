@@ -34,12 +34,22 @@ function album(id, data, objectID, destinationID) {
     }
 
     a.innerHTML = `
-      <img onclick="openAlbum('${data.id}')" src="${data.images[0].url}">
-      <h4>${data.name}</h4>
-      <p>${artists}</p>
+      <div class="content shadow">
+        <img id="${data.id}PreviewImage" crossOrigin="Anonymous" onclick="openAlbum('${data.id}')" src="${data.images[0].url}">
+        <div id="${data.id}PreviewFooter" class="albumFooter">
+          <h4>${data.name}</h4>
+          <p>${artists}</p>
+        </div>
+      </div>
     `;
 
     $(`#${destinationID}`).get(0).appendChild(a)
+    $(`#${objectID}`).imagesLoaded(() => {
+      window.setTimeout(() => {
+        // Some browsers will take a while to finish.
+        colorThiefify('albumPreview', data.id + 'PreviewImage', data.id + 'PreviewFooter')
+      }, 500)
+    })
     
     resolve('Success')
   })

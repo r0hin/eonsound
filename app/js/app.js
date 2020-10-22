@@ -306,6 +306,7 @@ function hideLoader() {
 
 function colorThiefify(TYPE, imageID, containerID) {
 
+  console.log(imageID);
   colors = colorThief.getColor(document.getElementById(imageID))
 
   switch (TYPE) {
@@ -314,7 +315,9 @@ function colorThiefify(TYPE, imageID, containerID) {
       break;
     case 'userPlaylistView':
       document.getElementById(containerID).setAttribute('style', 'background-image: linear-gradient(180deg, rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 1) -30%, var(--bg-secondary) 100%)')  
-  
+      break;
+    case 'albumPreview':
+      document.getElementById(containerID).setAttribute('style', 'background-color: rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.9)')
     default:
       break;
   }

@@ -48,9 +48,12 @@ async function loadLibraryAlbums() {
 
     $('#libraryItem' + temporaryAlbumItem.id).imagesLoaded(() => {
       $('#libraryItem' + temporaryAlbumItem.id).removeClass("hidden");
-    })
-    
+    })   
   }
+
+  $('#collectionAlbums').imagesLoaded(() => {
+    masonryAlbums()  
+  })
 }
 
 async function addTrackToPlaylist(playlistID) {
