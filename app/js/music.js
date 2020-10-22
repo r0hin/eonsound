@@ -21,7 +21,12 @@ function album(id, data, objectID, destinationID) {
     a.setAttribute('album_details', id)
     a.id = objectID
 
-    artists = artistToString(data.artists)
+    if (data.artists_formatted) {
+      artists = data.artists_formatted
+    }
+    else {
+      artists = artistToString(data.artists)
+    }
 
     if (!data.images || !data.images.length) {
       console.log('Minor issue. No image found. Skipping.');
@@ -29,7 +34,7 @@ function album(id, data, objectID, destinationID) {
     }
 
     a.innerHTML = `
-      <img src="${data.images[0].url}">
+      <img onclick="openAlbum('${data.id}')" src="${data.images[0].url}">
       <h4>${data.name}</h4>
       <p>${artists}</p>
     `;
@@ -128,7 +133,7 @@ function track(id, data, objectID, destinationID) {
     }
 
     d.innerHTML = `
-      <img onclick="playSongWithoutData('${id}')" src="${data.album.images[0].url}">
+      <img onclick="queueSongWithoutData('${id}')" src="${data.album.images[0].url}">
       <h4>${data.name}</h4>
       <p>${artists}</p>
     `;
@@ -158,8 +163,28 @@ function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
   })
 }
 
-function playSongsAtIndex(index, playlist) {
-  songSelection = [...musicData[playlist]]
+function albumSong(id, data, objectID, destinationID, index, album, art) {
+  return new Promise((resolve, reject) => {
+    h = document.createElement('div')
+    h.setAttribute('class', 'albumSong animated flipInX song')
+    h.setAttribute('id', objectID)
+    h.setAttribute('track_details', id)
+    h.onclick = () => {
+      playSongsAtIndex(index, album)
+    }
+
+    h.innerHTML = `
+      <img src="${art}"></img>
+      <b>${data.name}</b>
+      <p>${artistToString(data.artists)}</p>
+    `
+    $(`#${destinationID}`).get(0).appendChild(h)
+    resolve('Success')
+  })
+}
+
+function playSongsAtIndex(index, content) {
+  songSelection = [...musicData[content]]
   for (let i = 0; i < index; i++) {
     songSelection.shift()
   }  
@@ -167,7 +192,7 @@ function playSongsAtIndex(index, playlist) {
   playSongs(false, songSelection)
 }
 
-function playSongs(Id, externalData) {
+async function playSongs(Id, externalData) {
   // Playlists will have sufficient data
   // Albums wont
   if (externalData) {
@@ -184,21 +209,21 @@ function playSongs(Id, externalData) {
     if (playSongsSong.url) {
       if (n == 0) {
         // Play it. (Clear queue and play first song)
-        playSong(playSongsSong)
+        await playSong(playSongsSong)
       }
       else {
         // Queue it
-        queueSong(playSongsSong, true)
+        await queueSong(playSongsSong, true)
       }
     }
     else {
       if (n == 0) {
         // Play it. (Clear queue and play first song)
-        playSongWithoutData(playSongsSong.id)
+        await playSongWithoutData(playSongsSong.id)
       }
       else {
         // Queue it
-        queueSongWithoutData(playSongsSong.id, true)
+        await queueSongWithoutData(playSongsSong.id, true)
       }
     }
   }
@@ -231,80 +256,85 @@ async function downloadSong(trackID, spotifyURL, trackName) {
 }
 
 async function queueSongWithoutData(id) {
-  // Gather data, then queue
-  const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${spotifyCode}`,
-    },
-  });
+  return new Promise(async (resolve, reject) => {
+    // Gather data, then queue
+    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${spotifyCode}`,
+      },
+    });
 
-  const data = await result.json();
+    const data = await result.json();
 
-  if (data.error) {
-    if (sessionStorage.getItem("errorAvoid") == "true") {
-      Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
+    if (data.error) {
+      if (sessionStorage.getItem("errorAvoid") == "true") {
+        Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
+        return;
+      }
+      console.log("Error occured. Likely invalid code - request and do it again.");
+      sessionStorage.setItem("errorAvoid", "true");
+      refreshCode();
+      queueSongWithoutData(id);
       return;
     }
-    console.log("Error occured. Likely invalid code - request and do it again.");
-    sessionStorage.setItem("errorAvoid", "true");
+
     refreshCode();
-    queueSongWithoutData(id);
-    return;
-  }
+    sessionStorage.setItem("errorAvoid", "false");
 
-  refreshCode();
-  sessionStorage.setItem("errorAvoid", "false");
+    savedData = {
+      art: data.album.images[0].url,
+      artists: artistToString(data.artists),
+      id: data.id,
+      name: data.name,
+      url: undefined,
+      spotifyURL: data.external_urls.spotify,
+    }
 
-  savedData = {
-    art: data.album.images[0].url,
-    artists: artistToString(data.artists),
-    id: data.id,
-    name: data.name,
-    url: undefined,
-    spotifyURL: data.external_urls.spotify,
-  }
-
-  queueSong(savedData)
-
+    await queueSong(savedData)    
+    resolve('Skidop freshski')
+  })
 }
 
 async function playSongWithoutData(id) {
-  // Gather data, then queue
-  const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${spotifyCode}`,
-    },
-  });
+  return new Promise(async (resolve, reject) => {
+    // Gather data, then queue
+    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${spotifyCode}`,
+      },
+    });
 
-  const data = await result.json();
+    const data = await result.json();
 
-  if (data.error) {
-    if (sessionStorage.getItem("errorAvoid") == "true") {
-      Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
+    if (data.error) {
+      if (sessionStorage.getItem("errorAvoid") == "true") {
+        Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
+        return;
+      }
+      console.log("Error occured. Likely invalid code - request and do it again.");
+      sessionStorage.setItem("errorAvoid", "true");
+      refreshCode();
+      queueSongWithoutData(id);
       return;
     }
-    console.log("Error occured. Likely invalid code - request and do it again.");
-    sessionStorage.setItem("errorAvoid", "true");
+
     refreshCode();
-    queueSongWithoutData(id);
-    return;
-  }
+    sessionStorage.setItem("errorAvoid", "false");
 
-  refreshCode();
-  sessionStorage.setItem("errorAvoid", "false");
+    savedData = {
+      art: data.album.images[0].url,
+      artists: artistToString(data.artists),
+      id: data.id,
+      name: data.name,
+      url: undefined,
+      spotifyURL: data.external_urls.spotify,
+    }
 
-  savedData = {
-    art: data.album.images[0].url,
-    artists: artistToString(data.artists),
-    id: data.id,
-    name: data.name,
-    url: undefined,
-    spotifyURL: data.external_urls.spotify,
-  }
-
-  playSong(savedData)
+    await playSong(savedData)
+    resolve('Skiddopot')
+  })
 }
 
 async function endedQueue() {
@@ -320,77 +350,86 @@ async function endedQueue() {
 }
 
 async function queueSong(data, skipMsg) {
-  if (musicActive.none !== 'none') {
-    // There's a song playing so add it to queue
-    musicQueue.push(data)
-    if (!skipMsg) {
-      Snackbar.show({text: "Added to queue.", pos: 'top-right'})
-      $('#showQueue').removeClass('hidden')
-      visualQ_build()
+  return new Promise((resolve, reject) => {
+    if (musicActive.none !== 'none') {
+      // There's a song playing so add it to queue
+      musicQueue.push(data)
+      if (!skipMsg) {
+        Snackbar.show({text: "Added to queue.", pos: 'top-right'})
+        $('#showQueue').removeClass('hidden')
+        visualQ_build()
+      }
+      resolve('Skiddyo potpot')
     }
-  }
-  else {
-    // Just play it
-    loadSong(data)
-    $('#showQueue').addClass('hidden')
-  }
+    else {
+      // Just play it
+      resolve(loadSong(data))
+      $('#showQueue').addClass('hidden')
+    }
+  })
 }
 
 async function playSong(data) {
-  if (musicActive.none !== 'none') {
-    // Song is playing while loading new song so move it to history
-    // Move active song to history
-    musicHistory.push(musicActive);
-  }
-
-  // Empty queue and play
-  window.musicQueue = [];
-  window.musicActive = {none: 'none'};
-  loadSong(data)
+  return new Promise(async (resolve, reject) => {
+    if (musicActive.none !== 'none') {
+      // Song is playing while loading new song so move it to history
+      // Move active song to history
+      musicHistory.push(musicActive);
+    }
+  
+    // Empty queue and play
+    window.musicQueue = [];
+    window.musicActive = {none: 'none'};
+    await loadSong(data)
+    resolve('Skiddyo')
+  })
 }
 
 async function loadSong(data) {
+  return new Promise(async (resolve, reject) => {
+    url = data.url
+    showPlayer()
+    $('#queueProgress').removeClass('zoomOut')
+    $('#queueProgress').removeClass('hidden')
+    $('#queueProgress').addClass('zoomIn')
+    $('#playing_album_cover').removeClass('zoomIn')
+    $('#playing_album_cover').addClass('zoomOut')
+    $('#nowplayingbutton').get(0).setAttribute('disabled', 'true')
+    $('#nowplayingbutton').addClass('btn-disabled')
+    if (!data.url) {
+      loadertimer = window.setTimeout(() => {
+        showLoader()
+      }, 1500)
+      url = await downloadSong(data.id, data.spotifyURL, data.name)
+      window.clearInterval(loadertimer)
+      hideLoader()
+    }
+  
+    musicActive = data
+    musicActive.url = url
+  
+    console.log(data);
+    $('#main_player').get(0).setAttribute('src', url)
+    $('#playing_album_cover').get(0).setAttribute('src', data.art)
+    $('#playing_track_details').get(0).innerHTML = `<b>${data.name}</b>${data.artists}`
+    $('#nowplayingbutton').get(0).onclick = () => {
+      // More options button to set library changes to song
+      window.prepare_library_changes = data
+    }
+  
+    $('#queueProgress').removeClass('zoomIn')
+    $('#queueProgress').addClass('zoomOut')
+    $('#playing_album_cover').removeClass('zoomOut')
+    $('#playing_album_cover').removeClass('hidden')
+    $('#playing_album_cover').addClass('zoomIn')
+    $('#nowplayingbutton').get(0).removeAttribute('disabled')
+    $('#nowplayingbutton').removeClass('btn-disabled')
+    calculatePlayerWidths()
+    player.play()
+    visualQ_build()
 
-  url = data.url
-  showPlayer()
-  $('#queueProgress').removeClass('zoomOut')
-  $('#queueProgress').removeClass('hidden')
-  $('#queueProgress').addClass('zoomIn')
-  $('#playing_album_cover').removeClass('zoomIn')
-  $('#playing_album_cover').addClass('zoomOut')
-  $('#nowplayingbutton').get(0).setAttribute('disabled', 'true')
-  $('#nowplayingbutton').addClass('btn-disabled')
-  if (!data.url) {
-    loadertimer = window.setTimeout(() => {
-      showLoader()
-    }, 1500)
-    url = await downloadSong(data.id, data.spotifyURL, data.name)
-    window.clearInterval(loadertimer)
-    hideLoader()
-  }
-
-  musicActive = data
-  musicActive.url = url
-
-  console.log(data);
-  $('#main_player').get(0).setAttribute('src', url)
-  $('#playing_album_cover').get(0).setAttribute('src', data.art)
-  $('#playing_track_details').get(0).innerHTML = `<b>${data.name}</b>${data.artists}`
-  $('#nowplayingbutton').get(0).onclick = () => {
-    // More options button to set library changes to song
-    window.prepare_library_changes = data
-  }
-
-  $('#queueProgress').removeClass('zoomIn')
-  $('#queueProgress').addClass('zoomOut')
-  $('#playing_album_cover').removeClass('zoomOut')
-  $('#playing_album_cover').removeClass('hidden')
-  $('#playing_album_cover').addClass('zoomIn')
-  $('#nowplayingbutton').get(0).removeAttribute('disabled')
-  $('#nowplayingbutton').removeClass('btn-disabled')
-  calculatePlayerWidths()
-  player.play()
-  visualQ_build()
+    resolve('successo expresso')
+  })
 }
 
 async function endedSong() {

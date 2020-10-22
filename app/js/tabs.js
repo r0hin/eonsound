@@ -27,6 +27,9 @@ function tabe(tab) {
     switch (tab) {
       case 'playlists':
         break;
+      case 'albums':
+        loadLibraryAlbums()
+        break;
       default:
         break;
     }

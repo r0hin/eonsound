@@ -10,6 +10,103 @@ function hideCurrentView() {
   }, 400)
 }
 
+async function openAlbum(id) {
+  // Open spotify album of id
+  if (sessionStorage.getItem('opening') == id) {
+    return;
+  }
+  sessionStorage.setItem('opening', id)
+  sessionStorage.setItem('activeView', id + 'AlbumView')
+  console.log('Opening album of ' + id);
+
+  if ($(`#${id}AlbumView`).length) {
+    $(`#${id}AlbumView`).removeClass('hidden')
+    $(`#${id}AlbumView`).removeClass('fadeOut')
+    $(`#${id}AlbumView`).addClass('fadeIn')
+    return;
+  }
+
+  toggleloader();
+
+  // Album info
+  const result = await fetch(
+    `https://api.spotify.com/v1/albums/${id}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${spotifyCode}`,
+      },
+    }
+  );
+
+  const data = await result.json();
+
+  if (data.error) {
+    if (sessionStorage.getItem("errorAvoid") == "true") {
+      Snackbar.show({ text: "An error occured while searching" });
+      return;
+    }
+    console.log( "Error occured. Likely invalid code - request and do it again." );
+    sessionStorage.setItem("errorAvoid", "true");
+    refreshCode();
+    openAlbum(id);
+    return;
+  }
+
+  // Has results in data
+  refreshCode();
+  sessionStorage.setItem("errorAvoid", "false");
+
+  // Build the album
+  g = document.createElement('div')
+  g.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'AlbumView')
+  g.setAttribute('id', id + 'AlbumView')
+  g.innerHTML = `
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView()"><i class="material-icons">close</i></button>
+
+    <div class="playlistHeader row">
+      <div class="col-sm">
+        <center>
+          <img crossOrigin="Anonymous" id="${id}cover" class="albumImg ${id}cover" src="${data.images[0].url}"></img>
+        </center>
+      </div>
+      <div class="col-sm">
+        <center>
+          <h1>${data.name}</h1>
+          <p>${artistToString(data.artists)}</p>
+        </center>
+      </div>
+    </div>
+    <br><br>
+    <div class="row">
+      <div class="col-sm"><center><button onclick="playSongs('${id}')" class="btn-contained-primary playPlaylistBtn">Play</button></center></div>
+      <div class="col-sm"><center><button onclick="shuffleSongs('${id}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>
+      <div class="col-sm"><center><button onclick="addAlbumToLibrary('${id}')" class="btn-contained-primary albumLibraryBtn">Add to Library</button></center></div>
+    </div>
+    <br><br>
+    <div class="songList ${id}AlbumSongs" id="${id}AlbumSongs"></div>
+    <br><br>
+  `
+  document.getElementById('album_view').appendChild(g)
+
+  for (let j = 0; j < data.tracks.items.length; j++) {
+    const openAlbumSong = data.tracks.items[j];
+    await albumSong(openAlbumSong.id, openAlbumSong, id + openAlbumSong.id, id + 'AlbumSongs', j, id, data.images[0].url)
+  }
+  musicData[id] = data.tracks.items
+
+  $(`#${id}AlbumView`).imagesLoaded(() => {
+    // colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
+    $(`#${id}AlbumView`).removeClass('hidden')
+    window.setTimeout(() => {toggleloader()}, 500)
+  })
+  initButtonsContained()
+  initButtonsText()
+
+  console.log(data);
+
+}
+
 async function openUserPlaylist(id) {
   if (sessionStorage.getItem('opening') == id) {
     return;
@@ -70,6 +167,7 @@ async function openUserPlaylist(id) {
     </div>
     <br><br>
     <div class="songList ${playlistId}playlistSongs" id="${playlistId}playlistSongs"></div>
+    <br><br>
   `
   document.getElementById('userplaylist_view').appendChild(f)
   for (let j = 0; j < openPlaylist.songs.length; j++) {

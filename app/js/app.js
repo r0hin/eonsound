@@ -56,6 +56,7 @@ async function appContent() {
 
   window.cacheuser = doc.data();
   loadUserPlaylists(cacheuser.playlistsPreview);
+  loadLibrary()
 
   $("#userpfp1").get(0).src = cacheuser.url;
   $("#usercard").imagesLoaded(function () {

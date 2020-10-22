@@ -11,7 +11,6 @@
   display: inline-block;
   margin: 0px 12px 0px 12px;
 
-  cursor: pointer;
 }
 
 .album h4 {
@@ -22,11 +21,12 @@
 
 .album img {
   margin-bottom: 12px;
-
+  
   width: 150px;
   height: 150px;
   object-fit: cover;
   border-radius: 24px;
+  cursor: pointer;
 }
 
 .album p {
@@ -263,4 +263,43 @@
   border-radius: 12px;
   width: 200px;
   height: 40px;
+}
+
+.albumLibraryBtn {
+  background-color: var(--eon-secondary) !important;
+  color: var(--content-primary) !important;
+  border-radius: 12px;
+  width: 200px;
+  height: 40px;
+}
+
+.albumSong {
+  border-radius: 12px; width: 100%;
+  padding: 12px; cursor: pointer;
+  background-color: var(--bg-secondary);
+  display: block;
+}
+
+.albumSong img {
+  display: inline-block; border-radius: 4px;
+  width: 36px; margin-right: 12px;
+}
+
+.albumSong b {
+  display: inline-block;
+  font-size: 18px;
+  margin: 0px; line-height: 0px;
+  vertical-align: middle;
+}
+
+.albumSong p {
+  transform: translate(0, -50%);
+  position: absolute;
+  top: 50%; right: 12px;
+  margin: 0px; line-height: 0px;
+}
+
+.albumSong:hover {
+  background-color: var(--bg-tertiary);
+  transition: all 0.1s;
 }
