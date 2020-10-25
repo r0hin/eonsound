@@ -238,6 +238,7 @@
       <button data-toggle="modal" data-target="#playlistCreate" class="float btn-text-primary iconbtn"> <i class="material-icons">add</i> </button>
       <br><br>
       <div id="user_library_playlists"></div>
+      <br><br>
     </div>
     <div class="tab hidden animated fadeIn faster" id="artists">
       <p class="tab-subtitle">Artists</p>
@@ -250,6 +251,7 @@
         <h2 class="tab-title">Collection</h2>
         <div id="collectionArtists"></div>
       </div>
+      <br><br>
     </div>
     <div class="tab hidden animated fadeIn faster" id="albums">
       <p class="tab-subtitle">Albums</p>
@@ -262,10 +264,24 @@
         <h2 class="tab-title">Collection</h2>
         <div id="collectionAlbums"></div>
       </div>
+      <br><br>
     </div>
     <div class="tab hidden animated fadeIn faster" id="songs">
       <p class="tab-subtitle">Songs</p>
-      <h2 class="tab-title">Featured</h2>
+      <div id="feattext" class="hidden animated fadeIn">
+        <h2 class="tab-title">Featured</h2>
+        <div id="featuredTracks"></div>
+      </div>
+      <div id="favtext3" class="hidden animated fadeIn">
+        <h2 class="tab-title">Favorites</h2>
+        <div id="favTracks"></div>
+        <br><br>
+      </div>
+      <div id="coltext3" class="hidden animated fadeIn"> 
+        <h2 class="tab-title">Collection</h2>
+        <div id="collectionTracks"></div>
+      </div>
+      <br><br>
     </div>
     <div class="tab hidden animated fadeIn faster" id="browse">
       <h2 class="tab-title">Browse</h2>
@@ -310,7 +326,7 @@
     </div>
   </div>
 
-  <nav id="track_context" class="context-menu animated fadeIn faster">
+  <nav id="track_context" class="context-menu contextAnim">
     <ul class="context-menu__items">
       <li class="context-menu__item">
         <button id="playbtn" class="btn-text-primary contextbtn">Play Track</button>
@@ -338,7 +354,7 @@
     </ul>
   </nav>
 
-  <nav id="album_context" class="context-menu animated fadeIn faster">
+  <nav id="album_context" class="context-menu contextAnim">
     <ul class="context-menu__items">
       <li class="context-menu__item">
         <button id="openbtn" class="btn-text-primary contextbtn">Open Album</button>
@@ -360,7 +376,7 @@
     </ul>
   </nav>
 
-  <nav id="artist_context" class="context-menu animated fadeIn faster">
+  <nav id="artist_context" class="context-menu contextAnim">
     <ul class="context-menu__items">
       <li class="context-menu__item">
         <button id="openbtnartist" class="btn-text-primary contextbtn">Open Artist</button>

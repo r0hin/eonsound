@@ -41,27 +41,33 @@ function checkElements(e) {
   el = clickInsideElement(e, "song");
     if (el) {
       trackContext(e, el)
+      toggleMenuOff('track');
     } else {
       el = clickInsideElement(e, "album");
       if (el) {
         albumContext(e, el)
+        toggleMenuOff('album');
       } else {
         el = clickInsideElement(e, "artist")
         if (el) {
           artistContext(e, el)
-        }
-        else {
-          toggleMenuOff();
+          toggleMenuOff('artist');
         }
       }
     }
 }
 
-function toggleMenuOff() {
+function toggleMenuOff(ignore) {
   sessionStorage.setItem("menuOpen", "false");
   document.getElementById("track_context").classList.remove("context_active");
   document.getElementById("album_context").classList.remove("context_active");
   document.getElementById("artist_context").classList.remove("context_active");
+
+  if (ignore) {
+    // Toggle off everything except for ignore
+    sessionStorage.setItem("menuOpen", "true");
+    document.getElementById(ignore + "_context").classList.add("context_active");
+  }
 }
 
 document.addEventListener("click", function (e) {
@@ -163,51 +169,23 @@ async function trackContext(e, el) {
 
   // ADD LIBRARY
   document.getElementById('1addbtn').onclick = async () => {
-    // Get track details
-    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${spotifyCode}`,
-      },
-    });
-
-    const data = await result.json();
-
-    if (data.error) {
-      if (sessionStorage.getItem("errorAvoid") == "true") {
-        Snackbar.show({ text: "An error occured while loading library options."});
-        return;
-      }
-      console.log("Error occured. Likely invalid code - request and do it again.");
-      sessionStorage.setItem("errorAvoid", "true");
-      refreshCode();
-      document.getElementById("0addbtn").click();
-      return;
-    }
-
-    refreshCode();
-    sessionStorage.setItem("errorAvoid", "false");
-
-    artists = artistToString(data.artists)
-
-    url = await downloadSong(id, data.external_urls.spotify, data.name)
-
-    window.prepare_library_changes = {
-      id: id,
-      url: url.data,
-      art: data.album.images[0].url,
-      artists: artists,
-      name: data.name,
-      length: data.duration_ms,
-      type: 'track',
-    };
-
-    addTrackToLibrary()
+    // Call directly
+    addTrackToLibrary(id)
   }
 
   // ADD LIKED
-  document.getElementById('2addbtn').onclick = async () => {
-    console.log('Save to liked');
+  if (cacheLikedTracks.includes(id)) {
+    // Already liked
+    document.getElementById('2addbtn').onclick = async () => {
+      unfavTrack(id)
+    }
+    document.getElementById('2addbtn').innerHTML = "Remove from Favorites"
+  }
+  else {
+    document.getElementById('2addbtn').onclick = async () => {
+      favTrack(id)
+    }
+    document.getElementById('2addbtn').innerHTML = "Add to Favorites"
   }
 
   // SONG INFO
@@ -217,7 +195,7 @@ async function trackContext(e, el) {
 
   // Copy link
   document.getElementById('copybtn').onclick = async () => {
-    console.log(' Song info');
+    console.log(' Song link');
   }
 
 }

@@ -74,7 +74,7 @@ async function buildSearch(data) {
 
   for (let i = 0; i < data.tracks.items.length; i++) {
     // For each episode
-    await track(data.tracks.items[i].id, data.tracks.items[i], 'track_search_index_' + i, 'search_tracks')
+    await searchTrack(data.tracks.items[i].id, data.tracks.items[i], 'track_search_index_' + i, 'search_tracks')
     
     $("#track_search_index_" + i).imagesLoaded(() => {
       $("#track_search_index_" + i).removeClass("hidden");

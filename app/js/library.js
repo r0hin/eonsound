@@ -4,6 +4,7 @@ async function loadLibrary() {
   window.cacheUserTracks = []
   window.cacheLikedAlbums = []
   window.cacheLikedArtists = []
+  window.cacheLikedTracks = []
 
   doc = await db.collection('users').doc(user.uid).collection('spotify').doc('artists').get()
   if (doc.exists) {
@@ -35,10 +36,51 @@ async function loadLibrary() {
   if (doc.exists) {
     window.cacheUserTracks = doc.data().map
     window.cacheUserTracksData = doc.data().tracks
+    window.cacheLikedTracks = doc.data().liked
+    if (!doc.data().liked) {
+      window.cacheLikedTracks = []
+    }
   }
   else {
     window.cacheUserTracks = []
   }
+}
+
+async function loadLibraryTracks() {
+  // data is cacheUserTracksData
+  if (typeof(cacheUserTracksData) == "undefined") {
+    // User not definted yet, library not defined yet...
+    interval = window.setInterval(() => {
+      if (typeof(cacheUserTracksData) !== "undefined") {
+        window.clearInterval(interval)
+        loadLibraryTracks()
+      }
+    }, 200)
+    return;
+  }
+
+  if (cacheLikedTracks.length) {
+    $('#favtext3').removeClass('hidden')
+  }
+
+  for (let i = 0; i < cacheUserTracksData.length; i++) {
+    const temporaryTrackItem = cacheUserTracksData[i];
+    if (cacheLikedArtists.includes(temporaryTrackItem.id)) {
+      destinationID = 'favTracks'
+    }
+    else {
+      destinationID = 'collectionTracks'
+    }
+    await track(temporaryTrackItem.id, temporaryTrackItem, 'libraryItem' + temporaryTrackItem.id, destinationID, i, 'tracks')
+
+    musicData['tracks'] = cacheUserTracksData
+
+    $('#songs').imagesLoaded(() => {
+      $('#libraryItem' + temporaryTrackItem.id).removeClass("hidden");
+    })   
+  }
+
+  updateTrackViews()
 }
 
 async function loadLibraryArtists() {
@@ -301,7 +343,7 @@ async function addAlbumToLibrary(id) {
   })
 }
 
-async function addTrackToLibrary() {
+async function addTrackToLibrary(id) {
   console.log('Add track to library');
 }
 
@@ -351,6 +393,52 @@ async function unfavAlbum(id) {
   }, 650)
 }
 
+async function favTrack(id) {
+  $(`#libraryItem${id}`).removeClass('fadeIn')
+  $(`#libraryItem${id}`).addClass('fadeOutUp')
+
+  window.setTimeout(async () => {
+
+    if (!cacheUserTracks.includes(id)) {
+      await addTrackToLibrary(id)
+    }
+
+    await db.collection('users').doc(user.uid).collection('spotify').doc('tracks').set({
+      liked: firebase.firestore.FieldValue.arrayUnion(id)
+    }, {merge: true})
+    
+    $(`#libraryItem${id}`).addClass('fadeIn')
+    $(`#libraryItem${id}`).removeClass('fadeOutUp')
+
+    $(`#favTracks`).append($(`#libraryItem${id}`))
+    cacheLikedTracks.push(id)
+
+     
+    updateTrackViews()
+  }, 650)
+
+}
+
+async function unfavTrack(id) {
+  $(`#libraryItem${id}`).removeClass('fadeIn')
+  $(`#libraryItem${id}`).addClass('fadeOutDown')
+
+  window.setTimeout(async () => {    
+    await db.collection('users').doc(user.uid).collection('spotify').doc('tracks').set({
+      liked: firebase.firestore.FieldValue.arrayRemove(id)
+    }, {merge: true})
+
+    $(`#libraryItem${id}`).addClass('fadeIn')
+    $(`#libraryItem${id}`).removeClass('fadeOutDown')
+
+    $(`#collectionTracks`).append($(`#libraryItem${id}`))
+    cacheLikedTracks.splice(cacheLikedTracks.indexOf(id), 1);
+
+     
+    updateTrackViews()
+  }, 650)
+}
+
 async function favArtist(id) {
   $(`#libraryItem${id}`).removeClass('fadeIn')
   $(`#libraryItem${id}`).addClass('fadeOutUp')
@@ -397,7 +485,6 @@ async function unfavArtist(id) {
   }, 650)
 }
 
-
 function updateAlbumViews() {
   if (cacheLikedAlbums.length) {
     // Favourites exist
@@ -435,5 +522,25 @@ function updateArtistViews() {
   else {
     // Collection items dont exist
     $('#coltext2').addClass('hidden')
+  }
+}
+
+function updateTrackViews() {
+  if (cacheLikedTracks.length) {
+    // Favourites exist
+    $('#favtext3').removeClass('hidden')
+  }
+  else {
+    // Favourites don't exist
+    $('#favtext3').addClass('hidden')
+  }
+
+  if ($('#collectionTracks').children().length) {
+    // Collection items exist
+    $('#coltext3').removeClass('hidden')
+  }
+  else {
+    // Collection items dont exist
+    $('#coltext3').addClass('hidden')
   }
 }

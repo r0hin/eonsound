@@ -156,7 +156,7 @@ async function openUserPlaylist(id) {
 
   f.innerHTML = `
     <div class="playViewGradient" id="${playlistId}userplaylistgradientelement"></div>
-    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView(${playlistId}UserPlaylistView)"><i class="material-icons">close</i></button>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${playlistId}UserPlaylistView')"><i class="material-icons">close</i></button>
     <div class="playlistHeader row">
       <div class="col-sm">
         <center>

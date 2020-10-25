@@ -135,7 +135,55 @@ function userPlaylist(id, data, objectID, destinationID) {
   })
 }
 
-function track(id, data, objectID, destinationID) {
+function track(id, data, objectID, destinationID, index, playlist) {
+  return new Promise((resolve, reject) => {
+    o = document.createElement('div')
+    if (playlist == 'tracks') {
+      desintationSpecific = ' trackLibraryItem'
+    }
+    o.setAttribute('class', 'hidden animated fadeIn userSong song' + desintationSpecific)
+    o.setAttribute('track_details', id)
+    o.id = objectID
+
+    if (data.artists_display) {
+      // Use first for now
+      artists = data.artists_display.split(';').shift()
+    }
+    else {
+      artists = artistToString(data.artists)
+    }
+
+    if (data.art) {
+      art = data.art
+    }
+    else {
+      if (!data.album.images || !data.album.images.length) {
+        console.log('Minor issue. No image found. Skipping.');
+        resolve('Nope');
+      }
+      else {
+        art = data.album.images[0].url
+      }
+    }
+
+    o.onclick = () => {
+      queueSongWithoutData(id)
+    }
+
+    o.innerHTML = `
+      <div class="content">
+        <img src="${data.art}"></img>
+        <b>${data.name}</b>
+        <p>${artists}</p>
+      </div>
+    `
+
+    $(`#${destinationID}`).get(0).appendChild(o)
+    resolve('Success')
+  })
+}
+
+function searchTrack(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     d = document.createElement('div')
     d.setAttribute('class', 'hidden animated fadeIn track song')
@@ -191,9 +239,11 @@ function albumSong(id, data, objectID, destinationID, index, album, art) {
     }
 
     h.innerHTML = `
-      <img src="${art}"></img>
-      <b>${data.name}</b>
-      <p>${artistToString(data.artists)}</p>
+      <div class="content">
+        <img src="${art}"></img>
+        <b>${data.name}</b>
+        <p>${artistToString(data.artists)}</p>
+      </div>
     `
     $(`#${destinationID}`).get(0).appendChild(h)
     resolve('Success')

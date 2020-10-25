@@ -32,6 +32,10 @@ function tabe(tab) {
         break;
       case 'artists':
         loadLibraryArtists()
+        break;
+      case 'songs':
+        loadLibraryTracks()
+        break;
       default:
         break;
     }

@@ -374,3 +374,8 @@
   overflow: auto;
   white-space: nowrap;
 }
+
+.trackLibraryItem {
+  background-color: var(--bg-primary);
+  position: relative;
+}
