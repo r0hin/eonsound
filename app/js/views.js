@@ -1,4 +1,5 @@
 window.musicData = {}
+sessionStorage.removeItem('activeView')
 
 function hideCurrentView(id) {
   if (id) {
@@ -8,7 +9,6 @@ function hideCurrentView(id) {
     $(`#${id}`).addClass('fadeOut')
     window.setTimeout(() => {
       $(`#${sessionStorage.getItem('activeView')}`).addClass('hidden')
-      sessionStorage.setItem('opening', 'false')
     }, 400)
     return;
   }
@@ -22,10 +22,6 @@ function hideCurrentView(id) {
 
 async function openAlbum(id) {
   // Open spotify album of id
-  if (sessionStorage.getItem('opening') == id) {
-    return;
-  }
-  sessionStorage.setItem('opening', id)
   sessionStorage.setItem('activeView', id + 'AlbumView')
   console.log('Opening album of ' + id);
 
@@ -35,6 +31,11 @@ async function openAlbum(id) {
     $(`#${id}AlbumView`).addClass('fadeIn')
     return;
   }
+
+  console.log(id);
+  console.log(cacheUserAlbums);
+  window.aeo = id
+  window.apo = cacheUserAlbums
 
   toggleloader();
 
@@ -91,7 +92,7 @@ async function openAlbum(id) {
     <div class="row">
       <div class="col-sm"><center><button onclick="playSongs('${id}')" class="btn-contained-primary playPlaylistBtn">Play</button></center></div>
       <div class="col-sm"><center><button onclick="shuffleSongs('${id}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>
-      <div class="col-sm"><center><button onclick="addAlbumToLibrary('${id}')" class="btn-contained-primary albumLibraryBtn">Add to Library</button></center></div>
+      <div class="col-sm hidden animated fadeIn" id="addLibraryCol${id}"><center><button onclick="addAlbumToLibrary('${id}')" class="btn-contained-primary albumLibraryBtn">Add to Library</button></center></div>
     </div>
     <br><br>
     <div class="songList ${id}AlbumSongs" id="${id}AlbumSongs"></div>
@@ -109,6 +110,15 @@ async function openAlbum(id) {
     // colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
     $(`#${id}AlbumView`).removeClass('hidden')
     window.setTimeout(() => {toggleloader()}, 500)
+
+    if (cacheUserAlbums.includes(id)) {
+      // Added, don't show add button
+      $(`#addLibraryCol${id}`).addClass('hidden')
+    }
+    else {
+      // Not added, show add button
+      $(`#addLibraryCol${id}`).removeClass('hidden')
+    }
   })
   initButtonsContained()
   initButtonsText()
@@ -118,11 +128,6 @@ async function openAlbum(id) {
 }
 
 async function openUserPlaylist(id) {
-  if (sessionStorage.getItem('opening') == id) {
-    return;
-  }
-  
-  sessionStorage.setItem('opening', id)
   console.log('Opening playlist of ' + id);
   playlistId = id
   sessionStorage.setItem('activeView', playlistId + 'UserPlaylistView')
@@ -192,15 +197,10 @@ async function openUserPlaylist(id) {
   })
   initButtonsContained()
   initButtonsText()
-  sessionStorage.setItem('opening', 'false')
 }
 
 async function openArtist(id) {
   // Open spotify album of id
-  if (sessionStorage.getItem('opening') == id) {
-    return;
-  }
-  sessionStorage.setItem('opening', id)
   sessionStorage.setItem('activeView', id + 'ArtistView')
   console.log('Opening artist of ' + id);
 

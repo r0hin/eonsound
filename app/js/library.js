@@ -292,6 +292,10 @@ async function addAlbumToLibrary(id) {
     updateAlbumViews()
     masonryAlbums()
     showcomplete()
+
+    // Remove button
+    $(`#addLibraryCol${id}`).addClass('hidden')
+
     Snackbar.show({text: "Added to library"})
     resolve('skiddooo')
   })

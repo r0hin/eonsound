@@ -15,9 +15,7 @@ firebase.initializeApp(firebaseConfig);
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // Authenticate via spotify
-    window.location.replace(
-      "https://accounts.spotify.com/authorize?client_id=b2b0e41d0a3e4464b12eba666a1de36d&response_type=code&redirect_uri=http://localhost:6968/auth.html"
-    );
+    window.location.replace('auth.html');
   } else {
     // Do nothing and allow them to sign in.
   }

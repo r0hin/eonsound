@@ -245,6 +245,10 @@ async function playSongs(Id, externalData) {
     }
   }
 
+  if (musicQueue.length > 0) {
+    $('#showQueue').removeClass('hidden')
+  }  
+
 }
 
 function shuffleSongs(Id) {
