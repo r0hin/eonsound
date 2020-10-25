@@ -49,7 +49,7 @@
 
 .artist img {
   margin-bottom: 12px;
-
+  cursor: pointer;
   width: 150px;
   height: 150px;
   object-fit: cover;
@@ -327,6 +327,28 @@
   transition: all 0.5s;
 }
 
+#collectionArtists {
+  /* Masonry */
+  display: grid;
+  justify-items: center;
+  grid-gap: 64px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-auto-rows: 10px;
+}
+
+#artists {
+  margin: 12px 48px;
+}
+
+#collectionArtists .artist { /* Masonry bricks or child elements */
+  position: relative;
+  padding-left: 32px;
+  padding-right: 32px;
+  margin-top: 24px;
+  grid-row-end: span 1;
+  transition: all 0.5s;
+}
+
 .albumFooter {
   background-color: transparent;
   transition: all 0.5s;
@@ -337,4 +359,18 @@
 
 .albumFooter p {
   margin: 0px;
+}
+
+.artistHero {
+  position: absolute;
+  top: 0px; left: 0px;
+  width: 100%; height: 280px;
+  object-fit: cover; object-position: center;
+  -webkit-mask-image:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+}
+
+.artist_albums {
+  overflow: auto;
+  white-space: nowrap;
 }

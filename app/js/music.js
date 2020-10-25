@@ -33,6 +33,11 @@ function album(id, data, objectID, destinationID) {
       resolve('Nope');
     }
 
+    if (data.total_tracks && data.total_tracks == 1) {
+      console.log('ayo');
+      data.name = data.name + ' - Single'
+    }
+
     a.innerHTML = `
       <div class="content shadow">
         <img id="${data.id}PreviewImage" crossOrigin="Anonymous" onclick="openAlbum('${data.id}')" src="${data.images[0].url}">
@@ -68,8 +73,10 @@ function artist(id, data, objectID, destinationID) {
     }
 
     b.innerHTML = `
-      <img src="${data.images[0].url}">
-      <h4>${data.name}</h4>
+      <div class="content">
+        <img onclick="openArtist('${id}')" src="${data.images[0].url}">
+        <h4>${data.name}</h4>
+      </div>
     `;
 
     $(`#${destinationID}`).get(0).appendChild(b)

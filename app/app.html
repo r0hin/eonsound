@@ -241,16 +241,27 @@
     </div>
     <div class="tab hidden animated fadeIn faster" id="artists">
       <p class="tab-subtitle">Artists</p>
-      <h2 class="tab-title">Featured</h2>
-      <div id="featuredArtists"></div>
-      <h2 class="tab-title">Collection</h2>
-      <div id="collectionArtists"></div>
+      <div id="favtext2" class="hidden animated fadeIn">
+        <h2 class="tab-title">Favorites</h2>
+        <div id="favArtists"></div>
+        <br><br>
+      </div>
+      <div id="coltext2" class="hidden animated fadeIn"> 
+        <h2 class="tab-title">Collection</h2>
+        <div id="collectionArtists"></div>
+      </div>
     </div>
     <div class="tab hidden animated fadeIn faster" id="albums">
       <p class="tab-subtitle">Albums</p>
-      <h2 class="tab-title">Favorites</h2>
-      <h2 class="tab-title">Collection</h2>
-      <div id="collectionAlbums"></div>
+      <div id="favtext" class="hidden animated fadeIn">
+        <h2 class="tab-title">Favorites</h2>
+        <div id="favAlbums"></div>
+        <br><br>
+      </div>
+      <div id="coltext" class="hidden animated fadeIn"> 
+        <h2 class="tab-title">Collection</h2>
+        <div id="collectionAlbums"></div>
+      </div>
     </div>
     <div class="tab hidden animated fadeIn faster" id="songs">
       <p class="tab-subtitle">Songs</p>
@@ -345,6 +356,28 @@
       </li>
       <li class="context-menu__item">
         <button id="copybtn2" class="btn-text-primary contextbtn">Copy Link</button>
+      </li>
+    </ul>
+  </nav>
+
+  <nav id="artist_context" class="context-menu animated fadeIn faster">
+    <ul class="context-menu__items">
+      <li class="context-menu__item">
+        <button id="openbtnartist" class="btn-text-primary contextbtn">Open Artist</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="0addbtnartist" class="btn-text-primary contextbtn">Add to Library</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="1addbtnartist" class="btn-text-primary contextbtn">Save to Liked</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="infobtnartist" class="btn-text-primary contextbtn">Artist Info</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="copybtnartist" class="btn-text-primary contextbtn">Copy Link</button>
       </li>
     </ul>
   </nav>

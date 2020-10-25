@@ -2,17 +2,33 @@ async function loadLibrary() {
   window.cacheUserArtists = []
   window.cacheUserAlbums = []
   window.cacheUserTracks = []
+  window.cacheLikedAlbums = []
+  window.cacheLikedArtists = []
 
   doc = await db.collection('users').doc(user.uid).collection('spotify').doc('artists').get()
   if (doc.exists) {
     window.cacheUserArtists = doc.data().map
     window.cacheUserArtistsData = doc.data().artists
+    window.cacheLikedArtists = doc.data().liked
+    if (!doc.data().liked) {
+      window.cacheLikedArtists = []
+    }
+  }
+  else {
+    window.cacheUserArtists = []
   }
 
   doc = await db.collection('users').doc(user.uid).collection('spotify').doc('albums').get()
   if (doc.exists) {
     window.cacheUserAlbums = doc.data().map
+    window.cacheLikedAlbums = doc.data().liked
+    if (!doc.data().liked) {
+      window.cacheLikedAlbums = []
+    }
     window.cacheUserAlbumsData = doc.data().albums
+  }
+  else {
+    window.cacheUserAlbums = []
   }
 
   doc = await db.collection('users').doc(user.uid).collection('spotify').doc('tracks').get()
@@ -20,11 +36,56 @@ async function loadLibrary() {
     window.cacheUserTracks = doc.data().map
     window.cacheUserTracksData = doc.data().tracks
   }
+  else {
+    window.cacheUserTracks = []
+  }
+}
+
+async function loadLibraryArtists() {
+  // data is cacheUserAlbumsData
+  if (typeof(cacheUserArtistsData) == "undefined") {
+    // User not definted yet, library not defined yet...
+    interval = window.setInterval(() => {
+      if (typeof(cacheUserArtistsData) !== "undefined") {
+        window.clearInterval(interval)
+        loadLibraryArtists()
+      }
+    }, 200)
+    return;
+  }
+
+  if (cacheLikedArtists.length) {
+    $('#favtext2').removeClass('hidden')
+  }
+
+  for (let i = 0; i < cacheUserArtistsData.length; i++) {
+    const temporaryArtistItem = cacheUserArtistsData[i];
+    if (cacheLikedArtists.includes(temporaryArtistItem.id)) {
+      destinationID = 'favArtists'
+    }
+    else {
+      destinationID = 'collectionArtists'
+    }
+    await artist(temporaryArtistItem.id, {
+      images: [{url: temporaryArtistItem.pfp}],
+      name: temporaryArtistItem.name,
+      id: temporaryArtistItem.id,
+    }, 'libraryItem' + temporaryArtistItem.id, destinationID)
+
+    $('#artists').imagesLoaded(() => {
+      $('#libraryItem' + temporaryArtistItem.id).removeClass("hidden");
+    })   
+  }
+
+  updateArtistViews()
+  
+  $('#collectionArtists').imagesLoaded(() => {
+    masonryArtists()  
+  })
 }
 
 async function loadLibraryAlbums() {
   // data is cacheUserAlbumsData
-
   if (typeof(cacheUserAlbumsData) == "undefined") {
     // User not definted yet, library not defined yet...
     interval = window.setInterval(() => {
@@ -36,21 +97,33 @@ async function loadLibraryAlbums() {
     return;
   }
 
+  if (cacheLikedAlbums.length) {
+    $('#favtext').removeClass('hidden')
+  }
+
   for (let i = 0; i < cacheUserAlbumsData.length; i++) {
     const temporaryAlbumItem = cacheUserAlbumsData[i];
+    if (cacheLikedAlbums.includes(temporaryAlbumItem.id)) {
+      destinationID = 'favAlbums'
+    }
+    else {
+      destinationID = 'collectionAlbums'
+    }
     await album(temporaryAlbumItem.id, {
       images: [{url: temporaryAlbumItem.art}],
       // Only do first artist for now
       artists_formatted:temporaryAlbumItem.artists_display.split(';')[0],
       name: temporaryAlbumItem.name,
       id: temporaryAlbumItem.id,
-    }, 'libraryItem' + temporaryAlbumItem.id, 'collectionAlbums')
+    }, 'libraryItem' + temporaryAlbumItem.id, destinationID)
 
-    $('#libraryItem' + temporaryAlbumItem.id).imagesLoaded(() => {
+    $('#albums').imagesLoaded(() => {
       $('#libraryItem' + temporaryAlbumItem.id).removeClass("hidden");
     })   
   }
 
+  updateAlbumViews()
+  
   $('#collectionAlbums').imagesLoaded(() => {
     masonryAlbums()  
   })
@@ -197,17 +270,27 @@ async function addAlbumToLibrary(id) {
       thisAlbumArtistSnippet2 = thisAlbumArtistSnippet2 + data.artists[i].name + ';'
     }
 
+    thisAlbumDataSnippet = {
+      art: data.images[0].url,
+      artists: thisAlbumArtistSnippet,
+      artists_display: thisAlbumArtistSnippet2,
+      name: data.name,
+      id: data.id,
+    }
+
     await db.collection('users').doc(user.uid).collection('spotify').doc('albums').set({
-      albums: firebase.firestore.FieldValue.arrayUnion({
-        art: data.images[0].url,
-        artists: thisAlbumArtistSnippet,
-        artists_display: thisAlbumArtistSnippet2,
-        name: data.name,
-        id: data.id,
-      }),
+      albums: firebase.firestore.FieldValue.arrayUnion(thisAlbumDataSnippet),
       map: firebase.firestore.FieldValue.arrayUnion(data.id)
     }, {merge: true})
   
+    // Added, now build
+
+    await album(data.id, data, 'libraryItem' + data.id, 'collectionAlbums')
+    cacheUserAlbumsData.push(thisAlbumDataSnippet)
+    cacheUserAlbums.push(data.id)
+ 
+    updateAlbumViews()
+    masonryAlbums()
     showcomplete()
     Snackbar.show({text: "Added to library"})
     resolve('skiddooo')
@@ -216,4 +299,137 @@ async function addAlbumToLibrary(id) {
 
 async function addTrackToLibrary() {
   console.log('Add track to library');
+}
+
+async function favAlbum(id) {
+  $(`#libraryItem${id}`).removeClass('fadeIn')
+  $(`#libraryItem${id}`).addClass('fadeOutUp')
+
+  window.setTimeout(async () => {
+
+    if (!cacheUserAlbums.includes(id)) {
+      await addAlbumToLibrary(id)
+    }
+
+    await db.collection('users').doc(user.uid).collection('spotify').doc('albums').set({
+      liked: firebase.firestore.FieldValue.arrayUnion(id)
+    }, {merge: true})
+    
+    $(`#libraryItem${id}`).addClass('fadeIn')
+    $(`#libraryItem${id}`).removeClass('fadeOutUp')
+
+    $(`#favAlbums`).append($(`#libraryItem${id}`))
+    cacheLikedAlbums.push(id)
+
+    masonryAlbums() 
+    updateAlbumViews()
+  }, 650)
+
+}
+
+async function unfavAlbum(id) {
+  $(`#libraryItem${id}`).removeClass('fadeIn')
+  $(`#libraryItem${id}`).addClass('fadeOutDown')
+
+  window.setTimeout(async () => {    
+    await db.collection('users').doc(user.uid).collection('spotify').doc('albums').set({
+      liked: firebase.firestore.FieldValue.arrayRemove(id)
+    }, {merge: true})
+
+    $(`#libraryItem${id}`).addClass('fadeIn')
+    $(`#libraryItem${id}`).removeClass('fadeOutDown')
+
+    $(`#collectionAlbums`).append($(`#libraryItem${id}`))
+    cacheLikedAlbums.splice(cacheLikedAlbums.indexOf(id), 1);
+
+    masonryAlbums() 
+    updateAlbumViews()
+  }, 650)
+}
+
+async function favArtist(id) {
+  $(`#libraryItem${id}`).removeClass('fadeIn')
+  $(`#libraryItem${id}`).addClass('fadeOutUp')
+
+  window.setTimeout(async () => {
+
+    if (!cacheUserArtists.includes(id)) {
+      await addArtistToLibrary(id)
+    }
+
+    await db.collection('users').doc(user.uid).collection('spotify').doc('artists').set({
+      liked: firebase.firestore.FieldValue.arrayUnion(id)
+    }, {merge: true})
+    
+    $(`#libraryItem${id}`).addClass('fadeIn')
+    $(`#libraryItem${id}`).removeClass('fadeOutUp')
+
+    $(`#favArtists`).append($(`#libraryItem${id}`))
+    cacheLikedArtists.push(id)
+
+    masonryArtists() 
+    updateArtistViews()
+  }, 650)
+
+}
+
+async function unfavArtist(id) {
+  $(`#libraryItem${id}`).removeClass('fadeIn')
+  $(`#libraryItem${id}`).addClass('fadeOutDown')
+
+  window.setTimeout(async () => {    
+    await db.collection('users').doc(user.uid).collection('spotify').doc('artists').set({
+      liked: firebase.firestore.FieldValue.arrayRemove(id)
+    }, {merge: true})
+
+    $(`#libraryItem${id}`).addClass('fadeIn')
+    $(`#libraryItem${id}`).removeClass('fadeOutDown')
+
+    $(`#collectionArtists`).append($(`#libraryItem${id}`))
+    cacheLikedArtists.splice(cacheLikedArtists.indexOf(id), 1);
+
+    masonryArtists() 
+    updateArtistViews()
+  }, 650)
+}
+
+
+function updateAlbumViews() {
+  if (cacheLikedAlbums.length) {
+    // Favourites exist
+    $('#favtext').removeClass('hidden')
+  }
+  else {
+    // Favourites don't exist
+    $('#favtext').addClass('hidden')
+  }
+
+  if ($('#collectionAlbums').children().length) {
+    // Collection items exist
+    $('#coltext').removeClass('hidden')
+  }
+  else {
+    // Collection items dont exist
+    $('#coltext').addClass('hidden')
+  }
+}
+
+function updateArtistViews() {
+  if (cacheLikedArtists.length) {
+    // Favourites exist
+    $('#favtext2').removeClass('hidden')
+  }
+  else {
+    // Favourites don't exist
+    $('#favtext2').addClass('hidden')
+  }
+
+  if ($('#collectionArtists').children().length) {
+    // Collection items exist
+    $('#coltext2').removeClass('hidden')
+  }
+  else {
+    // Collection items dont exist
+    $('#coltext2').addClass('hidden')
+  }
 }

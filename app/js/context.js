@@ -46,7 +46,13 @@ function checkElements(e) {
       if (el) {
         albumContext(e, el)
       } else {
-        toggleMenuOff();
+        el = clickInsideElement(e, "artist")
+        if (el) {
+          artistContext(e, el)
+        }
+        else {
+          toggleMenuOff();
+        }
       }
     }
 }
@@ -55,6 +61,7 @@ function toggleMenuOff() {
   sessionStorage.setItem("menuOpen", "false");
   document.getElementById("track_context").classList.remove("context_active");
   document.getElementById("album_context").classList.remove("context_active");
+  document.getElementById("artist_context").classList.remove("context_active");
 }
 
 document.addEventListener("click", function (e) {
@@ -232,67 +239,25 @@ async function albumContext(e, el) {
 
   // ADD LIBRARY
   document.getElementById("0addbtn2").onclick = async () => {
-    // Get album details
-    const result = await fetch(`https://api.spotify.com/v1/albums/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${spotifyCode}`,
-      },
-    });
-
-    const data = await result.json();
-
-    if (data.error) {
-      if (sessionStorage.getItem("errorAvoid") == "true") {
-        Snackbar.show({text: "An error occured while loading library options."});
-        return;
-      }
-
-      console.log("Error occured. Likely invalid code - request and do it again.");
-
-      sessionStorage.setItem("errorAvoid", "true");
-
-      refreshCode();
-      document.getElementById("addbtn2").click();
-      return;
-    }
-
-    refreshCode();
-    sessionStorage.setItem("errorAvoid", "false");
-      
-    artists = artistToString(data.artists)
-    effecientTracks = [];
-
-    for (let i = 0; i < data.tracks.items.length; i++) {
-      artistSnippet = artistToString(data.tracks.items[i].artists)
-
-      songURL = await downloadSong(data.tracks.items[i].id, data.tracks.items[i].external_urls.spotify, data.tracks.items[i].name)
-
-      effecientTracks.push({
-        name: data.tracks.items[i].name,
-        artists: artistSnippet,
-        url: songURL,
-      })
-    }
-          
-    window.prepare_library_changes = {
-      id: data.id,
-      url: data.external_urls.spotify,
-      art: data.images[0].url,
-      artists: artists,
-      name: data.name,
-      length: data.total_tracks,
-      tracks: effecientTracks,
-      type: 'album'
-    };
-
-    addAlbumToLibrary()
+    // Call function directly
+    await addAlbumToLibrary(id)
   };
 
   // ADD LIKED
-  document.getElementById('1addbtn2').onclick = async () => {
-    console.log('Save album to liked');
+  if (cacheLikedAlbums.includes(id)) {
+    // Already liked
+    document.getElementById('1addbtn2').onclick = async () => {
+      unfavAlbum(id)
+    }
+    document.getElementById('1addbtn2').innerHTML = "Remove from Favorites"
   }
+  else {
+    document.getElementById('1addbtn2').onclick = async () => {
+      favAlbum(id)
+    }
+    document.getElementById('1addbtn2').innerHTML = "Add to Favorites"
+  }
+
 
   // SONG INFO
   document.getElementById('infobtn2').onclick = async () => {
@@ -302,5 +267,53 @@ async function albumContext(e, el) {
   // Copy link
   document.getElementById('copybtn2').onclick = async () => {
     console.log(' Album info');
+  }
+}
+
+async function artistContext(e, el) {
+  e.preventDefault();
+  sessionStorage.setItem("menuOpen", "true");
+  
+  menu = document.getElementById("artist_context");
+  menu.classList.add("context_active");
+  positionMenu(e, menu)
+
+  id = el.getAttribute("artist_details");
+
+  // OPEN BUTTON
+  document.getElementById("openbtnartist").onclick = () => {
+    showArtist(id);
+  };
+
+  // ADD LIBRARY
+  document.getElementById("0addbtnartist").onclick = async () => {
+    // CAll function directly
+    addArtistToLibrary(id)
+  };
+
+  // ADD LIKED
+  if (cacheLikedArtists.includes(id)) {
+    // Already liked
+    document.getElementById('1addbtnartist').onclick = async () => {
+      unfavArtist(id)
+    }
+    document.getElementById('1addbtnartist').innerHTML = "Remove from Favorites"
+  }
+  else {
+    document.getElementById('1addbtnartist').onclick = async () => {
+      favArtist(id)
+    }
+    document.getElementById('1addbtnartist').innerHTML = "Add to Favorites"
+  }
+
+
+  // SONG INFO
+  document.getElementById('infobtnartist').onclick = async () => {
+    console.log(' Artist info');
+  }
+
+  // Copy link
+  document.getElementById('copybtnartist').onclick = async () => {
+    console.log(' Artist Link');
   }
 }
