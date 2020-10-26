@@ -57,7 +57,7 @@ audio {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 0.8em;
+  width: 0.5em;
   height: 0.8em;
   border-radius: 12px;
 }
@@ -82,5 +82,6 @@ audio {
   background: var(--c-2);
   cursor: pointer;
   border-radius: 0px;
+  width: 1em;
   transition: all 0.5s;
 }
