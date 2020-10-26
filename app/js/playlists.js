@@ -1,3 +1,7 @@
+// playlists.js
+// Manages user playlists - adding things, modifying it, displaying it, etc.
+// Will include code for managing other users' playlists.
+
 const colorThief = new ColorThief();
 window.colorThief = new ColorThief();
 

@@ -1,3 +1,6 @@
+// app.js
+// App related content such as user handling, account management and UI optimizations.
+
 var firebaseConfig = {
   apiKey: "AIzaSyBNf1JpByuDebVLq_lns8fYv4Pyo3kzvoM",
   authDomain: "eonsound.firebaseapp.com",

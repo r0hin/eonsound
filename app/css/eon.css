@@ -1,3 +1,6 @@
+/* eon.css
+Color variables and styling for app-wide elements. */
+
 :root {
   --eon-primary: #FD2D55;
   --eon-secondary: #fda22b;

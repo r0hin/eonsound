@@ -1,3 +1,6 @@
+/* app.css 
+To contain all the main styling used throughout the app such as icons, tabs, views, etc. */
+
 .gradicon {
   background: -webkit-linear-gradient(45deg, var(--eon-primary), var(--eon-secondary));
   padding: 24px;

@@ -1,3 +1,6 @@
+// search.js
+// Includes code for searching for songs and managing the presentation of it.
+
 document.getElementById("searchbox").addEventListener("keyup", function (event) {
   if (event.keyCode === 13) {
     event.preventDefault();

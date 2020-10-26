@@ -1,3 +1,8 @@
+// library.js
+// Scripts relating to the user library and managing it.
+// Called from various elements to interact with the library.
+// Some stuff here is sensitive as it directly influences the database.
+
 async function loadLibrary() {
   window.cacheUserArtists = []
   window.cacheUserAlbums = []
@@ -243,14 +248,17 @@ async function addArtistToLibrary(id) {
   })
 }
 
-async function addAlbumToLibrary(id) {
+async function addAlbumToLibrary(id, skipUI) {
   return new Promise(async (resolve, reject) => {
     if (cacheUserArtists.includes(id)) {
       // Already contains
       resolve('gottempopot')
       return;
     }
-    Snackbar.show({text: "Adding"})
+
+    if (!skipUI) {
+      Snackbar.show({text: "Adding"})
+    }
     // Gather album details
     // Album info
     const result = await fetch(`https://api.spotify.com/v1/albums/${id}`, {
@@ -333,18 +341,103 @@ async function addAlbumToLibrary(id) {
  
     updateAlbumViews()
     masonryAlbums()
-    showcomplete()
+
+    if (!skipUI) {
+      showcomplete()
+    }
 
     // Remove button
     $(`#addLibraryCol${id}`).addClass('hidden')
 
-    Snackbar.show({text: "Added to library"})
+    if (!skipUI) {
+      Snackbar.show({text: "Added to library"})
+    }
     resolve('skiddooo')
   })
 }
 
 async function addTrackToLibrary(id) {
   console.log('Add track to library');
+}
+
+async function addSpotifyPlaylistToLibrary(id) {
+  // Spotify playlists to library:
+  // Get playlist data, convert it, add the playlist. For each song, add the song, artist and album.
+  return new Promise(async (resolve, reject) => {
+    toggleloader(); Snackbar.show({text: "Converting..."})
+
+    // Grab playlist data
+    const result = await fetch( `https://api.spotify.com/v1/playlists/${id}`, { method: "GET", headers: { Authorization: `Bearer ${spotifyCode}`, }, } );
+    const data = await result.json();
+    if (data.error) { if (sessionStorage.getItem("errorAvoid") == "true") { Snackbar.show({ text: "An error occured while searching" }); return; } sessionStorage.setItem("errorAvoid", "true"); refreshCode(); addSpotifyPlaylistToLibrary(id);return; }
+    refreshCode(); sessionStorage.setItem("errorAvoid", "false");
+
+    await db.collection('users').doc(user.uid).collection('library').doc(id).set({
+      name: data.name,
+      publicity: "public",
+      description: data.description,
+      status: true,
+      owner: {
+        name: cacheuser.name,
+        username: cacheuser.username,
+        photo: cacheuser.url,
+      },
+      created_at: firebase.firestore.FieldValue.serverTimestamp(),
+      last_updated:firebase.firestore.FieldValue.serverTimestamp(),
+      songs: [],
+      cover: "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/app%2Fempty_album.png?alt=media",
+    })
+
+    await db.collection('users').doc(user.uid).set({
+      playlistsPreview: firebase.firestore.FieldValue.arrayUnion({
+        cover: "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/covers%2F" + id + ".png?alt=media",
+        name: data.name,
+        status: true,
+        id: id
+      })
+    }, {merge: true})
+
+    var albumPhoto = firebase.functions().httpsCallable("albumPhoto");
+    await albumPhoto({ id: id })
+    
+    // For each track
+    formattedTracks = []
+    for (let i = 0; i < data.tracks.items.length; i++) {
+      const temporaryTrackItem = data.tracks.items[i].track;
+
+      // Add to playlist...
+
+      url = await downloadSong(temporaryTrackItem.id, temporaryTrackItem.external_urls.spotify, temporaryTrackItem.name)
+
+      if (url === 'no') {
+        continue;
+      }
+
+      await db.collection('users').doc(user.uid).collection('library').doc(id).set({
+        songs: firebase.firestore.FieldValue.arrayUnion({
+          art: temporaryTrackItem.album.images[0].url,
+          artists: artistToString(temporaryTrackItem.artists),
+          id: temporaryTrackItem.id,
+          name: temporaryTrackItem.name,
+          url: url,
+        })
+      }, {merge: true})
+
+      // Add each album and that should be it. Adding album adds artist as well
+
+      await addAlbumToLibrary(temporaryTrackItem.album.id, true)
+
+      Snackbar.show({text: `Added ${i}/${data.tracks.items.length}`})
+
+    }
+
+    window.setTimeout(() => {
+      toggleloader()
+      showcomplete()
+      Snackbar.show({text: "Saved to library."})
+    }, 500)
+    resolve('ayo')
+  }) 
 }
 
 async function favAlbum(id) {
@@ -544,3 +637,4 @@ function updateTrackViews() {
     $('#coltext3').addClass('hidden')
   }
 }
+

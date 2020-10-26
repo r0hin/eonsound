@@ -1,3 +1,7 @@
+// music.js
+// Code for the music side of EonSound.
+// Includes things such as building music components, playing songs, managing song details, etc.
+
 window.musicQueue = [];
 window.musicActive = {none: 'none'};
 window.musicHistory = [];
@@ -87,7 +91,7 @@ function artist(id, data, objectID, destinationID) {
 function playlist(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     c = document.createElement('div')
-    c.setAttribute('class', 'hidden animated fadeIn playlist')
+    c.setAttribute('class', 'hidden animated fadeIn playlist spotifyPlaylist')
     c.setAttribute('playlist_details', id)
     c.id = objectID
 
@@ -297,7 +301,9 @@ async function playSongs(Id, externalData) {
 
   if (musicQueue.length > 0) {
     $('#showQueue').removeClass('hidden')
-  }  
+  }
+  
+  visualQ_build()
 
 }
 
@@ -313,7 +319,7 @@ async function downloadSong(trackID, spotifyURL, trackName) {
       downloadedTrack = await requestSong({ trackID: trackID, trackURL: spotifyURL});
     } catch (error) {
       Snackbar.show({text: `${trackName} could not be downloaded.`,  pos: 'top-right'})
-      reject(error)
+      resolve('no')
     }
     if(typeof(downloadedTrack.data) == 'string') {
       // default
@@ -326,7 +332,7 @@ async function downloadSong(trackID, spotifyURL, trackName) {
   })
 }
 
-async function queueSongWithoutData(id) {
+async function queueSongWithoutData(id, skipMsg) {
   return new Promise(async (resolve, reject) => {
     // Gather data, then queue
     const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
@@ -346,7 +352,7 @@ async function queueSongWithoutData(id) {
       console.log("Error occured. Likely invalid code - request and do it again.");
       sessionStorage.setItem("errorAvoid", "true");
       refreshCode();
-      queueSongWithoutData(id);
+      queueSongWithoutData(id, skipMsg);
       return;
     }
 
@@ -362,7 +368,7 @@ async function queueSongWithoutData(id) {
       spotifyURL: data.external_urls.spotify,
     }
 
-    await queueSong(savedData)    
+    await queueSong(savedData, skipMsg)    
     resolve('Skidop freshski')
   })
 }

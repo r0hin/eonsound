@@ -1,10 +1,13 @@
+/* music.css
+Styles for every music-related component such as albums, artists and view content.
+Some are redudant but exist for future features. */
+
 .horiz_search {
   max-height: 300px;
   min-width: 360px;
   overflow: auto;
   padding: 24px;
 }
-
 
 .album {
   text-align: center;

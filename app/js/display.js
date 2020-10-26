@@ -1,3 +1,6 @@
+// display.js
+// Display optimization scripts.
+
 function masonryAlbums() {
   allItems = $('#collectionAlbums').get(0).getElementsByClassName('album')
   for (x = 0; x < allItems.length; x++) {

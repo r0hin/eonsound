@@ -1,3 +1,6 @@
+// context.js
+// Right-click context menu related scripts
+
 sessionStorage.setItem("menuOpen", "false");
 contextMenuListener();
 
@@ -53,6 +56,13 @@ function checkElements(e) {
           artistContext(e, el)
           toggleMenuOff('artist');
         }
+        else {
+          el = clickInsideElement(e, 'spotifyPlaylist')
+          if (el) {
+            playlistContext(e, el)
+            toggleMenuOff('spotifyPlaylist')
+          }
+        }
       }
     }
 }
@@ -62,6 +72,7 @@ function toggleMenuOff(ignore) {
   document.getElementById("track_context").classList.remove("context_active");
   document.getElementById("album_context").classList.remove("context_active");
   document.getElementById("artist_context").classList.remove("context_active");
+  document.getElementById("spotifyPlaylist_context").classList.remove("context_active");
 
   if (ignore) {
     // Toggle off everything except for ignore
@@ -212,7 +223,7 @@ async function albumContext(e, el) {
 
   // OPEN BUTTON
   document.getElementById("openbtn").onclick = () => {
-    showAlbum(id);
+    openAlbum(id);
   };
 
   // ADD LIBRARY
@@ -260,7 +271,7 @@ async function artistContext(e, el) {
 
   // OPEN BUTTON
   document.getElementById("openbtnartist").onclick = () => {
-    showArtist(id);
+    openArtist(id);
   };
 
   // ADD LIBRARY
@@ -293,5 +304,37 @@ async function artistContext(e, el) {
   // Copy link
   document.getElementById('copybtnartist').onclick = async () => {
     console.log(' Artist Link');
+  }
+}
+
+async function playlistContext(e, el) {
+  e.preventDefault();
+  sessionStorage.setItem("menuOpen", "true");
+  
+  menu = document.getElementById("spotifyPlaylist_context");
+  menu.classList.add("context_active");
+  positionMenu(e, menu)
+
+  id = el.getAttribute("playlist_details");
+
+  // OPEN BUTTON
+  document.getElementById("openbtnplaylist").onclick = () => {
+    openPlaylist(id);
+  };
+
+  // ADD LIBRARY
+  document.getElementById("0addbtnplaylist").onclick = async () => {
+    // CAll function directly
+    addSpotifyPlaylistToLibrary(id)
+  };
+
+  // PLAY INFO
+  document.getElementById('infobtnplaylist').onclick = async () => {
+    console.log(' Playlist info');
+  }
+
+  // Copy link
+  document.getElementById('copybtnplaylist').onclick = async () => {
+    console.log(' Playlist Link');
   }
 }

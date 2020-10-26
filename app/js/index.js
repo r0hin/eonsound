@@ -1,4 +1,5 @@
-// Since all my code is lost, I will take this chance to rewrite everything (for the 3rd time), in a well-frmatted manner. 
+// index.js
+// Sign in / sign up page.
 
 var firebaseConfig = {
   apiKey: "AIzaSyBNf1JpByuDebVLq_lns8fYv4Pyo3kzvoM",

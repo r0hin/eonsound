@@ -1,3 +1,7 @@
+// views.js
+// Important scripts relating to displaying artists, albums, tracks, playlists and more.
+// Usually, these create a fullscreen element which is overlayed on top of the previous items.
+
 window.musicData = {}
 sessionStorage.removeItem('activeView')
 
@@ -261,4 +265,76 @@ async function openArtist(id) {
   initButtonsContained()
 
   console.log(data);
+}
+
+async function openPlaylist(id) {
+  // Open Spotify Playlist of ID
+  sessionStorage.setItem('activeView', id + 'PlaylistView')
+  console.log('Opening playlist of ' + id);
+
+  if ($(`#${id}PlaylistView`).length) {
+    $(`#${id}PlaylistView`).removeClass('hidden')
+    $(`#${id}PlaylistView`).removeClass('fadeOut')
+    $(`#${id}PlaylistView`).addClass('fadeIn')
+    return;
+  }
+
+  toggleloader();
+
+  // Playlist info
+  const result = await fetch( `https://api.spotify.com/v1/playlists/${id}`, { method: "GET", headers: { Authorization: `Bearer ${spotifyCode}`, }, } );
+  const data = await result.json();
+  if (data.error) { if (sessionStorage.getItem("errorAvoid") == "true") { Snackbar.show({ text: "An error occured while searching" }); return; } sessionStorage.setItem("errorAvoid", "true"); refreshCode(); openPlaylist(id);return; }
+  refreshCode(); sessionStorage.setItem("errorAvoid", "false");
+
+  // Build the album
+  p = document.createElement('div')
+  p.setAttribute('id', id + 'PlaylistView')
+  p.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'PlaylistView')
+
+  p.innerHTML = `
+    <div class="playViewGradient" id="${id}playlistgradientelement"></div>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}PlaylistView')"><i class="material-icons">close</i></button>
+    <div class="playlistHeader row">
+      <div class="col-sm">
+        <center>
+          <img crossOrigin="Anonymous" id="${id}cover" class="myPlaylistImg ${id}cover" src="${data.images[0].url}"></img>
+        </center>
+      </div>
+      <div class="col-sm">
+        <center>
+          <h1>${data.name}</h1>
+          <br>
+          <p class="playlistDescription">${data.description}</p>
+        </center>
+      </div>
+    </div>
+    <br><br>
+    <div class="row">
+      <div class="col-sm"><center><button onclick="playSongs('${id}')" class="btn-contained-primary playPlaylistBtn">Play</button></center></div>
+      <div class="col-sm"><center><button onclick="shuffleSongs('${id}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>
+    </div>
+    <br><br>
+    <div class="songList ${id}playlistSongs" id="${id}songList"></div>
+    <br><br>
+  `
+  document.getElementById('playlist_view').appendChild(p)
+  for (let j = 0; j < data.tracks.items.length; j++) {
+    const openNonUserPlaylistSong = data.tracks.items[j];
+    await albumSong(openNonUserPlaylistSong.track.id, openNonUserPlaylistSong.track, openNonUserPlaylistSong.track.id + 'playlistItem', id + 'songList', j, id, openNonUserPlaylistSong.track.album.images[0].url)
+  }
+  
+  compressedTrackList = []
+  for (let y = 0; y < data.tracks.items.length; y++) {
+    compressedTrackList.push(data.tracks.items[y].track)
+  }
+  musicData[id] = compressedTrackList
+
+  $(`#${id}PlaylistView`).imagesLoaded(() => {
+    colorThiefify('userPlaylistView', id + 'cover', id + 'playlistgradientelement')
+    $(`#${id}PlaylistView`).removeClass('hidden')
+    window.setTimeout(() => {toggleloader()}, 500)
+  })
+  initButtonsContained()
+  initButtonsText()
 }
