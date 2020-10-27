@@ -2,6 +2,10 @@ window.musicQueue = [];
 window.musicActive = {none: 'none'};
 window.musicHistory = [];
 window.player = new Plyr("audio", {})
+window.firstLoad = true
+window.activeParty = null
+window.animateMsgs = false
+window.owner = false
 
 $("#main_player").bind("ended", function () {
   endedSong();
@@ -18,6 +22,14 @@ document.getElementById("partyfield1").addEventListener("keyup", function (event
   if (event.keyCode === 13) {
     event.preventDefault();
     document.getElementById('gobtnjoin').click()
+  }
+});
+
+document.getElementById("newmsgbox").addEventListener("keyup", function (event) {
+  if (event.keyCode === 13) {
+    event.preventDefault();
+    sendMessage(document.getElementById("newmsgbox").value)
+    $("#newmsgbox").val('')
   }
 });
 
@@ -58,7 +70,7 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 window.db = firebase.firestore();
 
-firebase.auth().onAuthStateChanged(function (user) {
+firebase.auth().onAuthStateChanged(async function (user) {
   if (user) {
     // User is signed in.
 
@@ -69,7 +81,11 @@ firebase.auth().onAuthStateChanged(function (user) {
       return;
     }
 
+    doc = await db.collection('users').doc(user.uid).get()
+    cacheuser = doc.data()
+
     left()
+    joinParty('RIzuSLXaEMumj2EDCFjN')
 
   } else {
     window.location.replace("welcome.html");
@@ -80,32 +96,60 @@ async function createParty() {
   // Generate ID, show ID, open the ID.
 
   docRef = await db.collection('parties').add({
-    owner: user.uid
+    owner: user.uid,
+    messages: [],
+    queue: [],
+    requested: [],
+    map: [],
+    userData: [],
+    playing: {none: 'none'},
+    startedSong: firebase.firestore.FieldValue.serverTimestamp(),
   })
 
   Snackbar.show({text: "Party created"})
 
   joinParty(docRef.id)
-
 }
 
 async function joinParty(id) {
   // Opening party
+  window.activeParty = id
 
-  doc = await db.collection('parties').doc(id).get()
+  db.collection('parties').doc(id).onSnapshot(async (doc) => {
 
-  if (doc.data().owner == user.uid) {
-    $('#owner').removeClass('hidden')
-    $('#nonowner').addClass('hidden')
-    loadOwner(doc)
-  }
-  else {
-    $('#nonowner').removeClass('hidden')
-    $('#nonowner').addClass('hidden')
-    loadNonOwner(doc)
-  }
+    if (doc.data().messages.length > 36) {
+      // Clear em
+      await db.collection('parties').doc(id).update({
+        messages: [],
+      })
+      return;
+    }
 
-  joined()
+    tempMsgs = doc.data().messages
+    tempMsgs.splice(0, tempMsgs.length - 12)
+    buildMessages(tempMsgs)
+
+    animateMsgs = true
+
+    if (firstLoad) {
+      firstLoad = false
+      if (doc.data().owner == user.uid) {
+        window.owner = true
+        $('#owner').removeClass('hidden')
+        $('#nonowner').addClass('hidden')
+        loadOwner(doc)
+      }
+      else {
+        window.owner = false
+        $('#nonowner').removeClass('hidden')
+        $('#owner').addClass('hidden')
+        loadNonOwner(doc)
+      }
+
+      joined()
+    }
+  
+  })
 }
 
 async function joined() {
@@ -188,6 +232,8 @@ async function search(term) {
 
   console.log(data);
 
+  $('#musicSearch').empty()
+
   for (let i = 0; i < data.tracks.items.length; i++) {
     // Build search element.
     element = data.tracks.items[i]
@@ -261,7 +307,7 @@ async function queueSongWithoutData(id, skipMsg) {
       artists: artistToString(data.artists),
       id: data.id,
       name: data.name,
-      url: undefined,
+      url: null,
       spotifyURL: data.external_urls.spotify,
     }
 
@@ -342,8 +388,24 @@ async function loadSong(data) {
     $('#nowplayingbutton').get(0).removeAttribute('disabled')
     $('#nowplayingbutton').removeClass('btn-disabled')
     calculatePlayerWidths()
+
+// TE STATUS PLAYING SOOOOOOOOOOOOOOONG
+    if (owner) {
+      await db.collection('parties').doc(activeParty).update({
+        messages: firebase.firestore.FieldValue.arrayUnion({
+          name: cacheuser.name,
+          art: cacheuser.url,
+          content: musicActive,
+          eonsound: 'addSong',
+          skiddyo: Math.random(100000)
+        }) 
+      })
+    }
+
     player.play()
-    visualQ_build()
+    window.setTimeout(() => {
+      visualQ_build()
+    }, 800)
 
     resolve('successo expresso')
   })
@@ -352,6 +414,10 @@ async function loadSong(data) {
 async function endedSong() {
   // Song did end
   player.pause()
+
+  if (!owner) {
+    return;
+  }
 
   // Move active song to history
   musicHistory.push(musicActive);
@@ -398,7 +464,19 @@ function skipForward() {
   endedSong();
 }
 
-function visualQ_build() {
+async function visualQ_build() {
+  if (owner) {
+    await db.collection('parties').doc(activeParty).update({
+      messages: firebase.firestore.FieldValue.arrayUnion({
+        name: cacheuser.name,
+        art: cacheuser.url,
+        content: musicQueue,
+        eonsound: 'updateQueue',
+        skiddyo: Math.random(100000)
+      }) 
+    })
+  }  
+
   $('#queueItems').empty()
 
   document.getElementById('queueNow').innerHTML = `
@@ -434,6 +512,46 @@ function visualQ_build() {
     `
     
     document.getElementById('queueItems').appendChild(p)
+  }
+
+}
+
+function visualQ_build2(queue) {
+  $('#queueItems2').empty()
+
+  document.getElementById('queueNow2').innerHTML = `
+    <div class="userSong animated fadeInUp song" track_details="${musicActive.id}">
+      <img src="${musicActive.art}"></img>
+      <b>${musicActive.name}</b>
+      <p>${musicActive.artists}</p>
+    </div>
+  `
+
+  if (queue.length || musicActive.none !== 'none') {
+    $('#qesit2').removeClass('hidden')
+    $('#quenot2').addClass("hidden")
+  }
+  else {
+    $('#qesit2').addClass('hidden')
+    $('#quenot2').removeClass("hidden")
+  }
+
+  for (let i = 0; i < queue.length; i++) {
+    const data = queue[i]
+    p = document.createElement('div')
+    p.setAttribute('class', 'userSong animated flipInX song')
+    p.setAttribute('track_details', data.id)
+    p.onclick = () => {
+      playSongsAtQueueIndex('0', 'queue')
+    }
+  
+    p.innerHTML = `
+      <img src="${data.art}"></img>
+      <b>${data.name}</b>
+      <p>${data.artists}</p>
+    `
+    
+    document.getElementById('queueItems2').appendChild(p)
   }
 
 }
@@ -502,4 +620,85 @@ function showLoader() {
 function hideLoader() {
   $('#loader').removeClass('fadeInRight')
   $('#loader').addClass('fadeOutRight')
+}
+
+async function sendMessage(val) {
+
+  if (val.length < 2) {
+    Snackbar.show({text: "Too short."})
+    return;
+  }
+
+  await db.collection('parties').doc(activeParty).update({
+    messages: firebase.firestore.FieldValue.arrayUnion({
+      name: cacheuser.name,
+      art: cacheuser.url,
+      content: val,
+      eonsound: 'default',
+      skiddyo: Math.random(100000),
+    }) 
+  })
+  console.log('sending message of ', val);
+}
+
+function buildMessages(data) {
+  $('#messages').empty()
+  console.log('building messages of ', data);
+  for (let i = 0; i < data.length; i++) {
+    msg = data[i]
+    b = document.createElement('div')
+    b.classList.add('message')
+    b.classList.add('animated')
+    datalengthminusone = data.length - 1
+    latest = false
+    if (animateMsgs && i == datalengthminusone) {
+      latest = true
+      b.classList.add('fadeIn')
+    }
+
+    b.innerHTML = `
+      <img src="${msg.art}">
+      <h5>${msg.name}</h5>
+      <p>${msg.content}</p>
+   `
+
+    // CONDITONALS 
+
+    if (msg.eonsound == 'addSong') {
+      if (!owner && !firstLoad && latest) {
+        loadSong(msg.content)
+      }
+      b.classList.add('SysMsg')
+      b.innerHTML = `
+      <img src="${msg.content.art}">
+      <h5>New Track</h5>
+      <p>${msg.content.name}</p>
+   `
+    }
+
+
+    if (msg.eonsound == 'updateQueue') {
+      if (!owner && !firstLoad && latest) {
+        visualQ_build2(msg.content)
+      }
+      b.classList.add('SysMsg')
+      b.innerHTML = `
+      <h5>Updated Queue</h5>
+   `
+    }
+
+
+
+
+
+
+
+
+    document.getElementById("messages").appendChild(b)
+  }
+
+
+  window.setTimeout(() => {
+    document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+  }, 200)
 }
