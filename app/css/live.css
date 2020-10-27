@@ -354,3 +354,51 @@ body {
 .SysMsg img {
   border-radius: 4px;
 }
+
+.userItem {
+  background: transparent;
+  text-align: left;
+  padding: 16px;
+  transition: all 0.1s;
+}
+
+.userItem:hover {
+  background-color: var(--bg-tertiary);
+  border-radius: 12px;
+  transition: all 0.3s;
+  cursor: default;
+}
+
+.userItem img {
+  vertical-align: middle;
+  width: 36px; height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.userItem h4 {
+  line-height: 0px;
+  margin: 0 0 0 8px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.userItem button {
+  float: right;
+}
+
+.btn-danger {
+  /* Leave button */
+  position: absolute;
+  top: 24px;
+  left: 24px;
+}
+
+.pfpjoin {
+  border-radius: 50%;
+}
+
+.joinMsg {
+  background-color: var(--glass);
+}

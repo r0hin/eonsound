@@ -74,11 +74,25 @@
     </div>
   </div>
 
+  <div id="pending" class="hidden animated fadeIn">
+    <center>
+      <center>
+        <button onclick="leave()" class="btn-contained-danger">Leave Party</button>
+      </center>
+
+      <h3>Waiting for approval to join this party.</h3>
+    </center>
+  </div>
+
   <div id="joined" class="hidden animated fadeIn">
 
     <div id="content" class="shadow">
       <div id="owner" class="hidden animated fadeIn">
-        <h3>Connected.</h3> <p>You are the host.</p>
+        <center>
+          <h3>Connected.</h3> <p>You are the host.</p>
+          <button onclick="leave()" class="btn-contained-danger">Leave Party</button>
+        </center>
+        
 
         <div class="container inviteContainer">
           <div class="card">
@@ -90,7 +104,7 @@
                 <div class="col-9">
                   <h3>Invite your friends to the party!</h3>
                   <br>
-                  <button onclick="copyUrl()" class="btn-contained-primary">Copy Link</button>
+                  <!-- <button onclick="copyUrl()" class="btn-contained-primary">Copy Link</button> -->
                   <button onclick="copyCode()" class="btn-contained-primary">Copy Code</button>
                 </div>
               </div>
@@ -144,6 +158,10 @@
               <div class="card">
                 <div class="card-body">
                   <h3>Manage Guests</h3>
+                  <div id="listOfUsers"></div>
+                  <br>
+                  <b>Pending</b>
+                  <div id="pendingUsers"></div>
                 </div>
               </div>
             </div>
@@ -152,6 +170,11 @@
       </div>
   
       <div id="nonowner" class="hidden animated fadeIn">
+        <center>
+          <h3>Connected.</h3> <p>You are a guest.</p>
+          <button onclick="leave()" class="btn-contained-danger">Leave Party</button>
+        </center>
+
         <center>
           <br><br>
           <div id="qesit2" class="hidden animated fadeIn">

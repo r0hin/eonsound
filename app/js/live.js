@@ -6,6 +6,7 @@ window.firstLoad = true
 window.activeParty = null
 window.animateMsgs = false
 window.owner = false
+window.datae = {}
 
 $("#main_player").bind("ended", function () {
   endedSong();
@@ -111,11 +112,37 @@ async function createParty() {
   joinParty(docRef.id)
 }
 
+function showPending() {
+  $('#unjoined').addClass('hidden')
+  $('#joined').addClass('hidden')
+  $('#pending').removeClass('hidden')
+}
+
 async function joinParty(id) {
   // Opening party
   window.activeParty = id
 
-  db.collection('parties').doc(id).onSnapshot(async (doc) => {
+  listener = db.collection('parties').doc(id).onSnapshot(async (doc) => {
+
+    if (!doc.exists) {
+      Snackbar.show({text: "No party exists with this ID."})
+      return;
+    }
+
+    if (!doc.data().map.includes(user.uid) && doc.data().owner !== user.uid) {
+      // Not allowed, make a request
+      await db.collection('parties').doc(id).update({
+        requested: firebase.firestore.FieldValue.arrayUnion({
+          name: cacheuser.name,
+          photo: cacheuser.url,
+          uid: user.uid,
+        })
+      })
+      showPending()
+      return;
+    }
+
+    buildUsers(doc.data().userData, doc.data().requested)
 
     if (doc.data().messages.length > 36) {
       // Clear em
@@ -146,6 +173,16 @@ async function joinParty(id) {
         loadNonOwner(doc)
       }
 
+      await db.collection('parties').doc(activeParty).update({
+        messages: firebase.firestore.FieldValue.arrayUnion({
+          name: cacheuser.name,
+          art: cacheuser.url,
+          content: '',
+          eonsound: 'joined',
+          skiddyo: Math.random(100000)
+        }) 
+      })
+
       joined()
     }
   
@@ -154,11 +191,13 @@ async function joinParty(id) {
 
 async function joined() {
   $('#unjoined').addClass('hidden')
+  $('#pending').addClass('hidden')
   $('#joined').removeClass('hidden')
 }
 
 async function left() {
   $('#unjoined').removeClass('hidden')
+  $('#pending').addClass('hidden')
   $('#joined').addClass('hidden')
 }
 
@@ -688,6 +727,13 @@ function buildMessages(data) {
     }
 
 
+    if (msg.eonsound == 'joined') {
+      b.classList.add('SysMsg')
+      b.classList.add('joinMsg')
+      b.innerHTML = `
+        <h5>${msg.name} joined.</h5>
+      `
+    }
 
 
 
@@ -701,4 +747,82 @@ function buildMessages(data) {
   window.setTimeout(() => {
     document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
   }, 200)
+}
+
+async function buildUsers(users, requested) {
+  $('#pendingUsers').empty()
+  $('#listOfUsers').empty()
+  
+  for (let i = 0; i < users.length; i++) {
+    const element = users[i];
+
+    c = document.createElement('div')
+    c.classList.add('userItem')
+    window.datae[element.uid] = {
+      name: element.name,
+      photo: element.photo,
+      uid: element.uid
+    }
+    c.innerHTML = `
+      <img src="${element.photo}"></img>
+      <h4>${element.name}</h4>
+      <button onclick="remove('${element.uid}')" class="btn-contained-primary">Remove</button>
+    `
+    $('#listOfUsers').get(0).appendChild(c)
+    
+  }
+
+  if (requested.length == 0) {
+    $('#pendingUsers').html('No requests.')
+  }
+
+  for (let i = 0; i < requested.length; i++) {
+    const element = requested[i];
+
+    c = document.createElement('div')
+    c.classList.add('userItem')
+    window.datae[element.uid] = {
+      name: element.name,
+      photo: element.photo,
+      uid: element.uid
+    }
+    c.innerHTML = `
+      <img src="${element.photo}"></img>
+      <h4>${element.name}</h4>
+      <button onclick="approve('${element.uid}')" class="btn-contained-primary">Approve</button>
+    `
+    $('#pendingUsers').get(0).appendChild(c)
+    
+  }
+
+  initButtonsContained()
+}
+
+async function approve(uid) {
+  db.collection("parties").doc(activeParty).update({
+    requested: firebase.firestore.FieldValue.arrayRemove(datae[uid]),
+    map: firebase.firestore.FieldValue.arrayUnion(uid),
+    userData: firebase.firestore.FieldValue.arrayUnion(datae[uid])
+  })
+  // Get index of item an
+}
+
+async function remove(uid) {
+  db.collection('parties').doc(activeParty).update({
+    map: firebase.firestore.FieldValue.arrayRemove(uid),
+    userData: firebase.firestore.FieldValue.arrayRemove(datae[uid])
+  })
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(activeParty).then(function() {
+    Snackbar.show({text: "Copied!"})
+  }, function(err) {
+    alert('The code is: ' + activeParty)
+  });
+}
+
+function leave() {
+  listener()
+  left() 
 }
