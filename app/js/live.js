@@ -1,3 +1,6 @@
+// live.js
+// Includes all scripts for EonSound listening parties and live listening. 
+
 window.musicQueue = [];
 window.musicActive = {none: 'none'};
 window.musicHistory = [];
@@ -86,7 +89,6 @@ firebase.auth().onAuthStateChanged(async function (user) {
     cacheuser = doc.data()
 
     left()
-    joinParty('RIzuSLXaEMumj2EDCFjN')
 
   } else {
     window.location.replace("welcome.html");
