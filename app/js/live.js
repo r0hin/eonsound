@@ -146,7 +146,7 @@ async function joinParty(id) {
 
     buildUsers(doc.data().userData, doc.data().requested)
 
-    if (doc.data().messages.length > 36) {
+    if (doc.data().messages.length > 96) {
       // Clear em
       await db.collection('parties').doc(id).update({
         messages: [],
@@ -445,7 +445,7 @@ async function loadSong(data) {
 
     player.play()
     window.setTimeout(() => {
-      visualQ_build()
+      visualQ_build(true)
     }, 800)
 
     resolve('successo expresso')
@@ -505,13 +505,20 @@ function skipForward() {
   endedSong();
 }
 
-async function visualQ_build() {
+async function visualQ_build(skipMsg) {
+  if (!skipMsg) {
+    skip = false
+  }
+  else {
+    skip = true
+  }
   if (owner) {
     await db.collection('parties').doc(activeParty).update({
       messages: firebase.firestore.FieldValue.arrayUnion({
         name: cacheuser.name,
         art: cacheuser.url,
         content: musicQueue,
+        skip: skip,
         eonsound: 'updateQueue',
         skiddyo: Math.random(100000)
       }) 
@@ -722,6 +729,10 @@ function buildMessages(data) {
       if (!owner && !firstLoad && latest) {
         visualQ_build2(msg.content)
       }
+
+      if (msg.skip) {
+        continue;
+      }
       b.classList.add('SysMsg')
       b.innerHTML = `
       <h5>Updated Queue</h5>
@@ -825,6 +836,75 @@ function copyCode() {
 }
 
 function leave() {
+  player.pause()
   listener()
   left() 
+}
+
+
+async function switchDark(skipMsg) {
+  injectDark()
+  console.log('dark');
+  $('#AppTheme').html(`
+  :root {
+    --eon-primary: #FD2D55;
+    --eon-secondary: #fda22b;
+
+    --bg-primary: #13112F;
+    --bg-secondary: #1d1336;
+    --bg-tertiary: #2C2847;
+
+    --content-primary: #fff;
+    --content-secondary: #dadada;
+    --content-tertiary: #b3b3b3;
+
+    --contrast: #898992;
+    --glass: rgba(57, 36, 83, 0.472);
+  }
+  `)
+}
+
+async function switchLight(skipMsg) {
+  injectLight()
+  console.log('light');
+
+  $('#AppTheme').html(`
+  :root {
+    --eon-primary: #FD2D55;
+    --eon-secondary: #fda22b;
+  
+    --bg-primary: #FEFEFE;
+    --bg-secondary: #E5E4ED;
+    --bg-tertiary: #ffffff;
+  
+  
+  
+    --content-primary: #525056;
+    --content-secondary: #dadada;
+    --content-tertiary: #b3b3b3;
+  
+    --contrast: #e4e4eb;
+    --glass: rgb(253, 229, 250);
+  
+  }
+  `)
+}
+
+async function switchAuto(skipMsg) {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    switchDark(true)
+  }
+  else {
+    switchLight(true)
+  }
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    const newColorScheme = e.matches ? "dark" : "light";
+    if (newColorScheme == 'dark') {
+      switchDark(true)
+    }
+    else {
+      switchLight(true)
+    }
+  });
 }

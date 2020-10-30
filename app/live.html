@@ -37,7 +37,7 @@
   
   <div class="modal fade bd-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm" role="document"><div class="modal-content"><div class="modalheader"><h3>Error</h3></div><div class="modalbody"><p id="erorrModalMsg"></p><button type="button" class="btn-contained-primary block" data-dismiss="modal">dismiss</button></div></div></div></div>
   <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eonloaderelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><div class="progress-circular"><div class="progress-circular-wrapper"><div class="progress-circular-inner"><div class="progress-circular-left"><div class="progress-circular-spinner"></div></div><div class="progress-circular-gap"></div><div class="progress-circular-right"><div class="progress-circular-spinner"></div></div></div></div></div></center></div></div></div></div>
-  <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="material-icons doneicon">done</i></h1></center></div></div></div></div>
+  <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="bx bx-check doneicon"></i></h1></center></div></div></div></div>
   <div class="hidden animated fadeIn faster" id="bottom_sheet_background"></div>
 
   <div class="modal fade" id="partyJoinModal" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
@@ -61,7 +61,7 @@
   <div id="unjoined" class="hidden animated fadeIn">
     <div id="headerlive">
       <h1 class="animated zoomIn slow">EonSound Listening Parties</h1>
-      <button onclick="window.location.replace('app.html')" class="btn-text-primary animated fadeInUp">Return to App</button> <button class="btn-text-primary iconbtn animated fadeInRight"><i class="material-icons">help</i></button>
+      <button onclick="window.location.replace('app.html')" class="btn-text-primary animated fadeInUp">Return to App</button>
     </div>
 
     <div class="centered card">
@@ -154,7 +154,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm inviteContainer">
+            <div class="col-sm inviteContainer inviteContainer2">
               <div class="card">
                 <div class="card-body">
                   <h3>Manage Guests</h3>
@@ -216,11 +216,11 @@
       </p>
       <div class="songactions">
         <button onclick="skipPrevious()" class="btn-text-primary iconbtn">
-          <i class="material-icons">skip_previous</i>
+          <i class="bx">skip_previous</i>
         </button>
         <div class="dropdown">
           <button id="nowplayingbutton" disabled aria-haspopup="true" class="btn-text-primary iconbtn btn-disabled" data-toggle="dropdown">
-            <i class="material-icons">more_vert</i>
+            <i class="bx">more_vert</i>
           </button>
           <div class="dropdown-menu menu">
             <a id="playingaddplaylistbtn" data-toggle="modal" data-target="#playlistSelect" class="dr-item">Add to Playlist</a>
@@ -234,7 +234,7 @@
           </div>
         </div>
         <button onclick="skipForward()" class="btn-text-primary iconbtn">
-          <i class="material-icons">skip_next</i>
+          <i class="bx">skip_next</i>
         </button>
       </div>
       <div class="progress-circular hidden animated fadeIn" id="queueProgress"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
@@ -253,7 +253,7 @@
   <!-- Ripplet --> <script src="https://cdn.jsdelivr.net/npm/ripplet.js@0.3.0/umd/ripplet-declarative.min.js"></script>
   <!-- Waves --> <script src="https://eastcoastgang.github.io/style/release/cdn/waves.min.js"></script>
   <!-- East --> <script src="https://eastcoastgang.github.io/style/release/east.js"></script>
-  <script>injectDark()</script>
+  <!-- Injected App Theme --> <style id="AppTheme"></style>
 
   <!-- PLYR --> <link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
   <!-- Plyr --> <script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
@@ -266,5 +266,22 @@
 
   <!-- JS-->
   <!-- Live --> <script src="js/live.js"></script>
+
+  <script>
+    var x = localStorage.getItem('theme')
+    if (x == 'dark') {
+      switchDark(true)
+    }
+    else if (x == 'light') {
+      switchLight(true)
+    }
+    else {
+      switchAuto(true)
+    }
+    $('#loading').addClass('fadeOut')
+    window.setTimeout(() => {
+      $('#loading').addClass('hidden')
+    }, 500)
+  </script>
 </body>
 </html>

@@ -18,6 +18,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 }
 
 .tab {
+  padding-top: 50px;
   position: relative;
 }
 
@@ -104,7 +105,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 #content {
   position: fixed;
   z-index: 2;
-  box-shadow: -35px 0px 400px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: -35px 0px 400px 10px rgba(0, 0, 0, 0.1);
   right: 0px; top: 0px;
   height: 100%; width: calc(100% - 280px);
   padding: 36px; overflow-y: auto;
@@ -118,6 +119,10 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   border-radius: 12px;
   background-color: var(--bg-tertiary);
   padding: 12px;
+}
+
+#fakeusercard {
+  height: 92px; width: 232px; padding: 12px;
 }
 
 #usercard img {
@@ -144,9 +149,9 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 
 #player {
   position: fixed;
-  bottom: 0px; width: calc(100% - 16px);
+  bottom: 0px; width: calc(100% - 32px);
   height: 58px; padding: 4px;
-  margin: 8px; z-index: 3;
+  margin: 16px; z-index: 3;
   border-radius: 12px;
   background-color: var(--glass);
   backdrop-filter: blur(18px);
@@ -260,14 +265,14 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   z-index: 200000000000;
 }
 
-#electron {
+/* #electron {
   position: fixed;
   width: 100%;
   top: 0px; left: 0px;
-  height: 33px;
+  height: 50px;
   -webkit-app-region: drag;
-  z-index: 30000000000000000000000;
-}
+  z-index: 80;
+} */
 
 .showQueue {
   position: fixed;
@@ -304,4 +309,40 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 
 #queueNow .song{
   background-color: var(--contrast);
+}
+
+#nav {
+  position: fixed;
+  top: 0px; left: 280px;
+  width: calc(100% - 280px); height: 50px;
+  background-color: var(--glass);
+  backdrop-filter: blur(18px);
+  z-index: 40;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 6px 36px 6px 36px;
+
+
+  -webkit-app-region: drag;
+}
+
+#nav img {
+  position: absolute;
+  left: 12px;
+  width: 110px;
+}
+
+.tab-btn {
+  position: relative;
+}
+
+.tab-btn span {
+  margin-left: 48px;
+}
+
+.tab-btn .bx {
+  position: absolute;
+  top: 50%; transform: translate(0, -50%);
 }

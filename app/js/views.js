@@ -77,7 +77,7 @@ async function openAlbum(id) {
   g.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'AlbumView')
   g.setAttribute('id', id + 'AlbumView')
   g.innerHTML = `
-    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}AlbumView')"><i class="material-icons">close</i></button>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}AlbumView')"><i class='bx bx-x'></i></button>
 
     <div class="playlistHeader row">
       <div class="col-sm">
@@ -160,7 +160,7 @@ async function openUserPlaylist(id) {
 
   f.innerHTML = `
     <div class="playViewGradient" id="${playlistId}userplaylistgradientelement"></div>
-    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${playlistId}UserPlaylistView')"><i class="material-icons">close</i></button>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${playlistId}UserPlaylistView')"><i class='bx bx-x'></i></button>
     <div class="playlistHeader row">
       <div class="col-sm">
         <center>
@@ -236,7 +236,7 @@ async function openArtist(id) {
   g.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'ArtistView')
   g.setAttribute('id', id + 'ArtistView')
   g.innerHTML = `
-    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}ArtistView')"><i class="material-icons">close</i></button>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}ArtistView')"><i class='bx bx-x'></i></button>
 
     <img class="artistHero" src="${data.images[0].url}"></img>
     <br><br><br><br><br><br><br><br><br><br><br>
@@ -294,7 +294,7 @@ async function openPlaylist(id) {
 
   p.innerHTML = `
     <div class="playViewGradient" id="${id}playlistgradientelement"></div>
-    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}PlaylistView')"><i class="material-icons">close</i></button>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}PlaylistView')"><i class='bx bx-x'></i></button>
     <div class="playlistHeader row">
       <div class="col-sm">
         <center>

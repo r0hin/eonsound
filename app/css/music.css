@@ -155,6 +155,7 @@ Some are redudant but exist for future features. */
   padding: 36px; overflow-y: auto; z-index: 5;
   background-color: var(--bg-secondary);
   right: 0px; top: 0px;
+  padding-top: 86px;
 }
 
 .playlistHeader img {
@@ -206,7 +207,7 @@ Some are redudant but exist for future features. */
 
 .closePlaylistButton {
   position: absolute; z-index: 20;
-  top: 36px; left: 24px; height: 42px;
+  top: 86px; left: 24px; height: 48px; width: 48px;
   min-width: 0px; padding: 12px 8px 12px 8px;
   margin-right: 6px; margin-left: 6px; border-radius: 24px;
 

@@ -63,6 +63,10 @@ function showPlayer() {
       bottom: 86px !important;
       transition: all 0.5s !important;
     }
+    #fakeusercard {
+      bottom: 86px !important;
+      transition: all 0.5s !important;
+    }
     #loader {
 
     }
@@ -108,3 +112,6 @@ function colorThiefify(TYPE, imageID, containerID) {
   }
 
 }
+
+$('[data-toggle="tooltip"]').tooltip();
+

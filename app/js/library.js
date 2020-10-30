@@ -70,7 +70,7 @@ async function loadLibraryTracks() {
 
   for (let i = 0; i < cacheUserTracksData.length; i++) {
     const temporaryTrackItem = cacheUserTracksData[i];
-    if (cacheLikedArtists.includes(temporaryTrackItem.id)) {
+    if (cacheLikedTracks.includes(temporaryTrackItem.id)) {
       destinationID = 'favTracks'
     }
     else {

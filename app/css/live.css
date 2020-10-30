@@ -405,3 +405,15 @@ body {
 .joinMsg {
   background-color: var(--glass);
 }
+
+.musicContainer .card {
+  height: 450px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.inviteContainer2 .card {
+  height: 450px;
+  overflow-y: auto;
+  padding: 8px;
+}
