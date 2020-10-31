@@ -4,3 +4,4 @@ node_modules
 firebase-debug.log
 dist
 future.txt
+.firebaserc
