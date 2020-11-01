@@ -38,7 +38,6 @@ function album(id, data, objectID, destinationID) {
     }
 
     if (data.total_tracks && data.total_tracks == 1) {
-      console.log('ayo');
       data.name = data.name + ' - Single'
     }
 
@@ -485,7 +484,6 @@ async function loadSong(data) {
     musicActive = data
     musicActive.url = url
   
-    console.log(data);
     $('#main_player').get(0).setAttribute('src', url)
     $('#playing_album_cover').get(0).setAttribute('src', data.art)
     $('#playing_track_details').get(0).innerHTML = `<b>${data.name}</b>${data.artists}`
@@ -526,6 +524,7 @@ async function endedSong() {
     // Next song
     loadSong(musicQueue[0])
     musicQueue.splice(0, 1)
+    visualQ_build()
   }
   else {
     // End queue
@@ -575,7 +574,7 @@ function visualQ_build() {
     p.setAttribute('class', 'userSong animated flipInX song')
     p.setAttribute('track_details', data.id)
     p.onclick = () => {
-      playSongsAtQueueIndex('0', 'queue')
+      playSongsAtQueueIndex(i)
     }
   
     p.innerHTML = `
@@ -587,4 +586,9 @@ function visualQ_build() {
     document.getElementById('queueItems').appendChild(p)
   }
 
+}
+
+async function playSongsAtQueueIndex(index) {
+  musicQueue.splice('0', index)
+  skipForward() 
 }

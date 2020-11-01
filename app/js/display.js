@@ -95,7 +95,6 @@ function hideLoader() {
 
 function colorThiefify(TYPE, imageID, containerID) {
 
-  console.log(imageID);
   colors = colorThief.getColor(document.getElementById(imageID))
 
   switch (TYPE) {

@@ -160,7 +160,6 @@ exports.requestSong = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).htt
 
   body = await res.json();
   token = body.access_token;
-  console.log(token);
 
   res = await fetch("https://api.spotify.com/v1/tracks/" + data.trackID, {
     method: "get",
@@ -199,7 +198,6 @@ const tempLocalDir = path.dirname(tempLocalFile);
 const tempLocalJPEGFile = path.join(os.tmpdir(), JPEGFilePath);
 
 if (filePath.includes("logos/") || filePath.includes("covers/")) {
-  console.log(filePath);
   if (object.contentType.startsWith("image/png")) {
     console.log("Already a PNG.");
     return null;

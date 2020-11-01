@@ -36,8 +36,6 @@ async function openAlbum(id) {
     return;
   }
 
-  console.log(id);
-  console.log(cacheUserAlbums);
   window.aeo = id
   window.apo = cacheUserAlbums
 
@@ -235,14 +233,28 @@ async function openArtist(id) {
   g = document.createElement('div')
   g.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'ArtistView')
   g.setAttribute('id', id + 'ArtistView')
+  popularity = data.followers.total / 2000000
+  if (popularity >= 1)  {
+    popularity = 100
+  }
+  else {
+    popularity = popularity.toString().split('0.').pop()
+    popularity = popularity.substring(0, 2)
+    if (popularity[0] == '0') {
+      popularity = popularity[1]
+    }
+  }
   g.innerHTML = `
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}ArtistView')"><i class='bx bx-x'></i></button>
 
     <img class="artistHero" src="${data.images[0].url}"></img>
-    <br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br>
+    <center>
+      <h1>${data.name}</h1>
+      <p>${popularity}% Popularity</p>
+    </center>
+    <br><br><br><br><br>
     <div class="artist_albums" id="artist_albums_${data.id}"></div>
-
-    <h1>${data.name} Artist View</h1>
 
   `
   document.getElementById('artist_view').appendChild(g)

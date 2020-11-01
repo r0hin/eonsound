@@ -264,7 +264,6 @@ function shuffled(a) {
 
 async function switchDark(skipMsg) {
   injectDark()
-  console.log('dark');
   $('#AppTheme').html(`
   :root {
     --eon-primary: #FD2D55;
@@ -286,7 +285,6 @@ async function switchDark(skipMsg) {
 
 async function switchLight(skipMsg) {
   injectLight()
-  console.log('light');
 
   $('#AppTheme').html(`
   :root {

@@ -49,8 +49,6 @@ async function performSearch(q) {
 }
 
 async function buildSearch(data) {
-  console.log(data);
-
   // Data is an object containing fields: albums, artists, playlists, tracks
   $("#search_albums").empty();
   $("#search_artists").empty();
