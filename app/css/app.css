@@ -86,12 +86,12 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   margin-top: 12px;
   text-align: left;
   text-transform: none;
-  color: var(--content-primary);
+  color: var(--content-primary) !important;
 }
 
 #sidebar .tab-btn i {
   margin-right: 24px;
-  color: var(--content-tertiary);
+  color: var(--content-tertiary) !important;
 }
 
 #sidebar .tab-btn-active {
@@ -318,6 +318,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   background-color: var(--glass);
   backdrop-filter: blur(18px);
   z-index: 40;
+  border-left: 1px solid rgb(222, 220, 231, 0.1);
 
   display: flex;
   align-items: center;
@@ -345,4 +346,36 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 .tab-btn .bx {
   position: absolute;
   top: 50%; transform: translate(0, -50%);
+}
+
+
+.btn-outlined .waves-ripple {
+  background: var(--ripple-primary) !important;
+}
+
+.btn-text .waves-ripple {
+  background: var(--ripple-primary) !important;
+}
+
+.btn-contained {
+  background-color: var(--button-primary)  !important;
+}
+.btn-contained:hover {
+  background-color: var(--button-primary) !important;
+  color: rgb(226, 226, 226) !important;
+  opacity: 0.9;
+}
+.btn-outlined {
+  background-color: transparent !important;
+  color: var(--button-primary) !important;
+  border-color: var(--button-primary) !important;
+}
+.btn-outlined:hover {
+  background-color: var(--ripple-secondary) !important;
+}
+.btn-text {
+  color: var(--button-primary) !important;
+}
+.btn-text:hover {
+  background-color: var(--ripple-secondary) !important;
 }

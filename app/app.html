@@ -2,6 +2,24 @@
 <html lang="en">
 <head>
 
+  <!---==== THEME ====-->
+  <style id="appTheme">
+  :root{
+    --bg-primary:#f9f9f9;
+    --bg-secondary:#fff;
+    --bg-tertiary:#f6f6f6;
+    --bg-quaternary:#e7e7e7;
+    --eon-primary:#ce33e2;
+    --eon-secondary:rgb(252, 69, 145);
+    --content-primary:black;
+    --content-secondary:#0f0f0f;
+    --content-tertiary:#3b3b3b;
+    --contrast-primary:white;
+    --ripple-primary:rgba(240, 108, 245, 0.3);
+    --ripple-secondary:rgba(240, 108, 245, 0.1);
+    --button-primary:rgb(206, 51, 226)}
+  </style> 
+
   <meta charset="UTF-8">
   <!-- Favicons -->
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
@@ -254,7 +272,7 @@
         <p class="tab-subtitle">Playlists</p>
         <h2 class="tab-title">Favorites</h2>
       </div>
-      <button data-toggle="tooltip" data-placement="top" title="New Playlist" data-toggle="modal" data-target="#playlistCreate" class="float btn-text-primary iconbtn"> <i class='bx bx-plus-circle'></i> </button>
+      <button data-toggle="modal" data-target="#playlistCreate" class="float btn-text-primary iconbtn"> <i class='bx bx-plus-circle'></i> </button>
       <br><br>
       <div id="user_library_playlists"></div>
       <br><br>
@@ -349,10 +367,25 @@
         <div class="dropdown">
           <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown">Select Theme</button>
           <div class="dropdown-menu menu">
-            <a onclick="localStorage.setItem('theme', 'dark');switchDark()" class="dr-item">Dark Mode</a>
-            <a onclick="localStorage.setItem('theme', 'light');switchLight()" class="dr-item">Light Mode</a>
+            <a onclick="localStorage.setItem('es_theme_light', 'dark');refreshTheme()" class="dr-item">Dark Mode</a>
+            <a onclick="localStorage.setItem('es_theme_light', 'light');refreshTheme()" class="dr-item">Light Mode</a>
             <div class="dropdown-divider"></div>
-            <a onclick="localStorage.setItem('theme', 'auto');switchAuto()" class="dr-item">System Theme</a>
+            <a onclick="localStorage.setItem('es_theme_light', 'auto');refreshTheme()" class="dr-item">System Theme</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown">Select Color</button>
+          <div class="dropdown-menu menu">
+            <a onclick="localStorage.setItem('es_theme_color', 'blue');refreshTheme()" class="dr-item">Default</a>
+            <a onclick="localStorage.setItem('es_theme_color', 'blue');refreshTheme()" class="dr-item">Blue</a>
+            <a onclick="localStorage.setItem('es_theme_color', 'red');refreshTheme()" class="dr-item">Red</a>
+            <a onclick="localStorage.setItem('es_theme_color', 'orange');refreshTheme()" class="dr-item">Orange</a>
+            <a onclick="localStorage.setItem('es_theme_color', 'lime');refreshTheme()" class="dr-item">Lime</a>
+            <a onclick="localStorage.setItem('es_theme_color', 'aqua');refreshTheme()" class="dr-item">Aqua</a>
+            <a onclick="localStorage.setItem('es_theme_color', 'purple');refreshTheme()" class="dr-item">Purple</a>
+            <a onclick="localStorage.setItem('es_theme_color', 'pink');refreshTheme()" class="dr-item">Pink</a>
+            <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme()" class="dr-item">Hot Pink</a>
           </div>
         </div>
       </div>
@@ -463,7 +496,6 @@
   <!-- Ripplet --> <script src="https://cdn.jsdelivr.net/npm/ripplet.js@0.3.0/umd/ripplet-declarative.min.js"></script>
   <!-- East --> <script src="https://eastcoastgang.github.io/style/release/east.js"></script>
 
-  <!-- Injected App Theme --> <style id="AppTheme"></style>
   <!-- Plyr --> <script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
   <!-- Images Loaded --> <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
   <!-- Color Thief --> <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
@@ -486,25 +518,7 @@
   <!-- Playlists --> <script src="js/playlists.js"></script>
   <!-- Context Menu --> <script src="js/context.js"></script>
 
+  <script> refreshTheme(); window.setTimeout(( ) => { $('#loading').addClass('fadeOut'); window.setTimeout(() => { $('#loading').addClass('hidden') }, 500) }, 500)</script>
 
-  <!-- Theming -->
-  <script>
-    var x = localStorage.getItem('theme')
-    if (x == 'dark') {
-      switchDark(true)
-    }
-    else if (x == 'light') {
-      switchLight(true)
-    }
-    else {
-      switchAuto(true)
-    }
-    window.setTimeout(( ) => {
-      $('#loading').addClass('fadeOut')
-    window.setTimeout(() => {
-      $('#loading').addClass('hidden')
-    }, 500)
-    }, 500)
-  </script>
 </body>
 </html>

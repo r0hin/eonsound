@@ -2,22 +2,6 @@
 Color variables and styling for app-wide elements. */
 
 :root {
-  --eon-primary: #000000;
-  --eon-secondary: #000000;
-
-  --bg-primary: #000000;
-  --bg-secondary: #000000;
-  --bg-tertiary: #000000;
-
-
-
-  --content-primary: #000000;
-  --content-secondary: #000000;
-  --content-tertiary: #000000;
-
-  --contrast: #000000;
-  --glass: #000000;
-
   --plyr-color-main: var(--eon-primary);
   --plyr-audio-control-color: var(--content-primary);
 }

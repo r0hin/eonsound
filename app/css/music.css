@@ -157,7 +157,7 @@ Some are redudant but exist for future features. */
   position: fixed;
   height: 100%; width: calc(100% - 280px);
   padding: 36px; overflow-y: auto; z-index: 5;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   right: 0px; top: 0px;
   padding-top: 86px;
 }
@@ -237,7 +237,7 @@ Some are redudant but exist for future features. */
 .userSong {
   border-radius: 12px; width: 100%;
   padding: 12px; cursor: pointer;
-  background-color: var(--bg-secondary);
+  background: transparent;
   display: block;
 }
 
@@ -291,7 +291,7 @@ Some are redudant but exist for future features. */
 .albumSong {
   border-radius: 12px; width: 100%;
   padding: 12px; cursor: pointer;
-  background-color: var(--bg-secondary);
+  background-color: transparent;
   display: block;
 }
 
