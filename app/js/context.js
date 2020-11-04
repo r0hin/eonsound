@@ -151,14 +151,15 @@ async function trackContext(e, el) {
 
   document.getElementById('tracktoartist').onclick = async () => {
     // Get artist from track
-    data = goFetch(`tracks/${id}`)
+    data = await goFetch(`tracks/${id}`)
+    console.log(data);
     openArtist(data.artists[0].id)
     
   }
 
   document.getElementById('tracktoalbum').onclick = async () => {
     // Get artist from track
-    data = goFetch(`tracks/${id}`)
+    data = await goFetch(`tracks/${id}`)
     openAlbum(data.album.id)
     
   }

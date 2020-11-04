@@ -3,6 +3,7 @@
 // Usually, these create a fullscreen element which is overlayed on top of the previous items.
 
 window.musicData = {}
+window.activeMediaIndex = 3
 sessionStorage.removeItem('activeView')
 
 function hideCurrentView(id) {
@@ -30,9 +31,15 @@ async function openAlbum(id) {
   console.log('Opening album of ' + id);
 
   if ($(`#${id}AlbumView`).length) {
-    $(`#${id}AlbumView`).removeClass('hidden')
+    $(`#${id}AlbumView`).addClass('hidden')
+    $(`#${id}AlbumView`).removeClass('fadeIn')
     $(`#${id}AlbumView`).removeClass('fadeOut')
-    $(`#${id}AlbumView`).addClass('fadeIn')
+    window.setTimeout(() => {
+      $(`#${id}AlbumView`).addClass('fadeIn')
+      $(`#${id}AlbumView`).removeClass('hidden')
+    }, 80)
+    $(`#${id}AlbumView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+    activeMediaIndex++
     return;
   }
 
@@ -48,6 +55,8 @@ async function openAlbum(id) {
   g = document.createElement('div')
   g.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'AlbumView')
   g.setAttribute('id', id + 'AlbumView')
+  g.setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+  activeMediaIndex++
   g.innerHTML = `
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}AlbumView')"><i class='bx bx-x'></i></button>
 
@@ -109,9 +118,15 @@ async function openUserPlaylist(id) {
   sessionStorage.setItem('activeView', playlistId + 'UserPlaylistView')
 
   if ($(`#${id}UserPlaylistView`).length) {
-    $(`#${id}UserPlaylistView`).removeClass('hidden')
+    $(`#${id}UserPlaylistView`).addClass('hidden')
+    $(`#${id}UserPlaylistView`).removeClass('fadeIn')
     $(`#${id}UserPlaylistView`).removeClass('fadeOut')
-    $(`#${id}UserPlaylistView`).addClass('fadeIn')
+    window.setTimeout(() => {
+      $(`#${id}UserPlaylistView`).addClass('fadeIn')
+      $(`#${id}UserPlaylistView`).removeClass('hidden')
+    }, 80)
+    $(`#${id}UserPlaylistView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+    activeMediaIndex++
     return;
   }
 
@@ -124,6 +139,8 @@ async function openUserPlaylist(id) {
   f = document.createElement('div')
   f.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'UserPlaylistView')
   f.setAttribute('id', playlistId + 'UserPlaylistView')
+  f.setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+  activeMediaIndex++
 
   description = nopenPlaylist.description
   if (nopenPlaylist.description == '') {
@@ -181,9 +198,15 @@ async function openArtist(id) {
   console.log('Opening artist of ' + id);
 
   if ($(`#${id}ArtistView`).length) {
-    $(`#${id}ArtistView`).removeClass('hidden')
+    $(`#${id}ArtistView`).addClass('hidden')
+    $(`#${id}ArtistView`).removeClass('fadeIn')
     $(`#${id}ArtistView`).removeClass('fadeOut')
-    $(`#${id}ArtistView`).addClass('fadeIn')
+    window.setTimeout(() => {
+      $(`#${id}ArtistView`).removeClass('hidden')
+      $(`#${id}ArtistView`).addClass('fadeIn')
+    }, 80)
+    $(`#${id}ArtistView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+    activeMediaIndex++
     return;
   }
 
@@ -197,6 +220,8 @@ async function openArtist(id) {
   g = document.createElement('div')
   g.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'ArtistView')
   g.setAttribute('id', id + 'ArtistView')
+  g.setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+  activeMediaIndex++
   popularity = data.followers.total / 2000000
   if (popularity >= 1)  {
     popularity = 100
@@ -249,9 +274,15 @@ async function openPlaylist(id) {
   console.log('Opening playlist of ' + id);
 
   if ($(`#${id}PlaylistView`).length) {
-    $(`#${id}PlaylistView`).removeClass('hidden')
+    $(`#${id}PlaylistView`).addClass('hidden')
+    $(`#${id}PlaylistView`).removeClass('fadeIn')
     $(`#${id}PlaylistView`).removeClass('fadeOut')
-    $(`#${id}PlaylistView`).addClass('fadeIn')
+    window.setTimeout(() => {
+      $(`#${id}PlaylistView`).removeClass('hidden')
+      $(`#${id}PlaylistView`).addClass('fadeIn')
+    }, 80)
+    $(`#${id}PlaylistView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+    activeMediaIndex++
     return;
   }
 
@@ -264,6 +295,8 @@ async function openPlaylist(id) {
   p = document.createElement('div')
   p.setAttribute('id', id + 'PlaylistView')
   p.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'PlaylistView')
+  p.setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+  activeMediaIndex++
 
   p.innerHTML = `
     <div class="playViewGradient" id="${id}playlistgradientelement"></div>

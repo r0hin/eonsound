@@ -55,7 +55,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   height: 100%;
 
   backdrop-filter: blur(20px);
-  z-index: 40000;
+  z-index: 900000040000;
 }
 
 #unverified {
@@ -66,7 +66,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   height: 100%;
 
   backdrop-filter: blur(20px);
-  z-index: 40001;
+  z-index: 900000040001;
 }
 
 #sidebar {
@@ -95,11 +95,11 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 }
 
 #sidebar .tab-btn-active {
-  color: var(--eon-primary);
+  color: var(--eon-primary) !important;
 }
 
 #sidebar .tab-btn-active i {
-  color: var(--eon-primary);
+  color: var(--eon-primary) !important;
 }
 
 #content {
@@ -151,7 +151,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   position: fixed;
   bottom: 0px; width: calc(100% - 32px);
   height: 58px; padding: 4px;
-  margin: 16px; z-index: 3;
+  margin: 16px; z-index: 90000003;
   border-radius: 12px;
   background-color: var(--glass);
   backdrop-filter: blur(18px);
@@ -216,7 +216,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 
 #loader {
   position: fixed;
-  z-index: 20;
+  z-index: 900000020;
   bottom: 24px; right: 24px;
   padding: 24px; border-radius: 12px;
   background-color: var(--bg-secondary);
@@ -262,7 +262,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 }
 
 #playlistSelect {
-  z-index: 200000000000;
+  z-index: 9000000200000000000;
 }
 
 /* #electron {
@@ -277,7 +277,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 .showQueue {
   position: fixed;
   bottom: 180px; left: 16px;
-  padding: 4px; z-index: 8;
+  padding: 4px; z-index: 90000008;
   width: 232px;
 }
 
@@ -317,7 +317,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   width: calc(100% - 280px); height: 50px;
   background-color: var(--glass);
   backdrop-filter: blur(18px);
-  z-index: 40;
+  z-index: 900000040;
   border-left: 1px solid rgb(222, 220, 231, 0.1);
 
   display: flex;
