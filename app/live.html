@@ -3,6 +3,23 @@
 <head>
   <meta charset="UTF-8">
 
+  <style id="appTheme">
+    :root{
+      --bg-primary:#f9f9f9;
+      --bg-secondary:#fff;
+      --bg-tertiary:#f6f6f6;
+      --bg-quaternary:#e7e7e7;
+      --eon-primary:#ce33e2;
+      --eon-secondary:rgb(252, 69, 145);
+      --content-primary:black;
+      --content-secondary:#0f0f0f;
+      --content-tertiary:#3b3b3b;
+      --contrast-primary:white;
+      --ripple-primary:rgba(240, 108, 245, 0.3);
+      --ripple-secondary:rgba(240, 108, 245, 0.1);
+      --button-primary:rgb(206, 51, 226)}
+    </style> 
+
   <!-- Favicons -->
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -38,7 +55,7 @@
   <div class="modal fade bd-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm" role="document"><div class="modal-content"><div class="modalheader"><h3>Error</h3></div><div class="modalbody"><p id="erorrModalMsg"></p><button type="button" class="btn-contained-primary block" data-dismiss="modal">dismiss</button></div></div></div></div>
   <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eonloaderelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><div class="progress-circular"><div class="progress-circular-wrapper"><div class="progress-circular-inner"><div class="progress-circular-left"><div class="progress-circular-spinner"></div></div><div class="progress-circular-gap"></div><div class="progress-circular-right"><div class="progress-circular-spinner"></div></div></div></div></div></center></div></div></div></div>
   <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="bx bx-check doneicon"></i></h1></center></div></div></div></div>
-  <div class="hidden animated fadeIn faster" id="bottom_sheet_background"></div>
+  <div class="hidden animated fadeIn fastest" id="bottom_sheet_background"></div>
 
   <div class="modal fade" id="partyJoinModal" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -266,22 +283,9 @@
 
   <!-- JS-->
   <!-- Live --> <script src="js/live.js"></script>
+  <!-- Fetch --> <script src="js/fetch.js"></script>
+  <!-- Display --> <script src="js/display.js"></script>
 
-  <script>
-    var x = localStorage.getItem('theme')
-    if (x == 'dark') {
-      switchDark(true)
-    }
-    else if (x == 'light') {
-      switchLight(true)
-    }
-    else {
-      switchAuto(true)
-    }
-    $('#loading').addClass('fadeOut')
-    window.setTimeout(() => {
-      $('#loading').addClass('hidden')
-    }, 500)
-  </script>
+  <script> refreshTheme(); window.setTimeout(( ) => { $('#loading').addClass('fadeOut'); window.setTimeout(() => { $('#loading').addClass('hidden') }, 500) }, 500)</script>
 </body>
 </html>

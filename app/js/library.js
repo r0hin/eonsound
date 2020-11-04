@@ -191,10 +191,8 @@ async function addTrackToPlaylist(playlistID) {
   })
 
   // ADD TRACK TO LIBRARY
+  addTrackToLibrary(prepareTrackPlaylistTrack.id)
 
-  // ADD TRACK TO ARTISTS
-
-  // ADD TRACK TO SONGS
   Snackbar.show({text: "Song added."})
 }
 
@@ -206,34 +204,8 @@ async function addArtistToLibrary(id) {
     }
 
     // Gather data
-    const result = await fetch(
-      `https://api.spotify.com/v1/artists/${id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${spotifyCode}`,
-        },
-      }
-    );
-  
-    const data = await result.json();
-  
-    if (data.error) {
-      if (sessionStorage.getItem("errorAvoid") == "true") {
-        Snackbar.show({ text: "An error occured while searching" });
-        return;
-      }
-      console.log( "Error occured. Likely invalid code - request and do it again." );
-      sessionStorage.setItem("errorAvoid", "true");
-      refreshCode();
-      addArtistToLibrary(id);
-      return;
-    }
-  
-    // Has results in data
-    refreshCode();
-    sessionStorage.setItem("errorAvoid", "false");
-
+    data = await goFetch(`artists/${id}`)
+    
     await db.collection('users').doc(user.uid).collection('spotify').doc('artists').set({
       artists: firebase.firestore.FieldValue.arrayUnion({
         id: id,
@@ -261,34 +233,9 @@ async function addAlbumToLibrary(id, skipUI) {
     }
     // Gather album details
     // Album info
-    const result = await fetch(`https://api.spotify.com/v1/albums/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${spotifyCode}`,
-        },
-      }
-    );
-  
-    const data = await result.json();
-  
-    if (data.error) {
-      if (sessionStorage.getItem("errorAvoid") == "true") {
-        Snackbar.show({ text: "An error occured while searching" });
-        resolve('Ayo error skiddybobob')
-        return;
-      }
-      console.log( "Error occured. Likely invalid code - request and do it again." );
-      sessionStorage.setItem("errorAvoid", "true");
-      refreshCode();
-      await addAlbumToLibrary(id);
-      resolve('ptpot')
-      return;
-    }
-  
-    // Has results in data
-    refreshCode();
-    sessionStorage.setItem("errorAvoid", "false");
-  
+
+    data = await goFetch(`albums/${id}`)
+    
     // Add it to all the artists
     for (let i = 0; i < data.artists.length; i++) {
       await addArtistToLibrary(data.artists[i].id)
@@ -367,11 +314,8 @@ async function addSpotifyPlaylistToLibrary(id) {
     toggleloader(); Snackbar.show({text: "Converting..."})
 
     // Grab playlist data
-    const result = await fetch( `https://api.spotify.com/v1/playlists/${id}`, { method: "GET", headers: { Authorization: `Bearer ${spotifyCode}`, }, } );
-    const data = await result.json();
-    if (data.error) { if (sessionStorage.getItem("errorAvoid") == "true") { Snackbar.show({ text: "An error occured while searching" }); return; } sessionStorage.setItem("errorAvoid", "true"); refreshCode(); addSpotifyPlaylistToLibrary(id);return; }
-    refreshCode(); sessionStorage.setItem("errorAvoid", "false");
-
+    data = await goFetch(`playlists/${id}`)
+    
     await db.collection('users').doc(user.uid).collection('library').doc(id).set({
       name: data.name,
       publicity: "public",

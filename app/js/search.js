@@ -10,41 +10,7 @@ document.getElementById("searchbox").addEventListener("keyup", function (event) 
 
 async function performSearch(q) {
   $('#searchbox').val('')
-
-  const result = await fetch(
-    `https://api.spotify.com/v1/search?q=${q}&type=album,artist,playlist,track`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${spotifyCode}`,
-      },
-    }
-  );
-
-  const data = await result.json();
-
-  if (data.error) {
-    if (sessionStorage.getItem("errorAvoid") == "true") {
-      // Don't start a loop of errors wasting code use.
-      Snackbar.show({ text: "An error occured while searching" });
-      return;
-    }
-
-    console.log(
-      "Error occured. Likely invalid code - request and do it again."
-    );
-
-    sessionStorage.setItem("errorAvoid", "true");
-    refreshCode();
-    performSearch(q);
-    return;
-  }
-
-  // Has results in data
-
-  refreshCode();
-  sessionStorage.setItem("errorAvoid", "false");
-
+  data = await goFetch(`search?q=${q}&type=album,artist,playlist,track`)
   buildSearch(data);
 }
 

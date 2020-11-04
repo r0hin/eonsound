@@ -67,7 +67,7 @@
 <body>
   <!-- Electron Header -->
   <div id="electron"></div>
-  <div id="loading" class="animated faster"></div>
+  <div id="loading" class="animated fastest"></div>
 
   <!-- Preflight Modals-->  
   <div class="modal fade" id="playlistSelect" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
@@ -106,7 +106,7 @@
   <div class="modal fade bd-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm" role="document"><div class="modal-content"><div class="modalheader"><h3>Error</h3></div><div class="modalbody"><p id="erorrModalMsg"></p><button type="button" class="btn-contained-primary block" data-dismiss="modal">dismiss</button></div></div></div></div>
   <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eonloaderelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><div class="progress-circular"><div class="progress-circular-wrapper"><div class="progress-circular-inner"><div class="progress-circular-left"><div class="progress-circular-spinner"></div></div><div class="progress-circular-gap"></div><div class="progress-circular-right"><div class="progress-circular-spinner"></div></div></div></div></div></center></div></div></div></div>
   <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="bx bx-check doneicon"></i></h1></center></div></div></div></div>
-  <div class="hidden animated fadeIn faster" id="bottom_sheet_background"></div>
+  <div class="hidden animated fadeIn fastest" id="bottom_sheet_background"></div>
 
   <div id="unverified" class="hidden animated fadeIn slow">
     <div class="card centered animated fadeInUp">
@@ -168,7 +168,7 @@
   </div>
 
   <!-- Loader-->
-  <div class="loader shadow animated hidden faster" id="loader">
+  <div class="loader shadow animated hidden fastest" id="loader">
     <i class='bx bxs-cloud-download gradicon'></i>
     <div class="progress-circular animated zoomIn"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
   </div>
@@ -253,7 +253,7 @@
     <div id="song_view" class="song_view"> </div>
 
     <!-- Tabs -->
-    <div class="tab hidden animated fadeIn faster" id="queue">
+    <div class="tab hidden animated fadeIn fastest" id="queue">
       <div class="tabtitlebox">
         <p class="tab-subtitle">Queue</p>
         <h2 class="tab-title">Now Playing</h2>
@@ -267,7 +267,7 @@
       <div id="queueItems"></div>
       <br><br>
     </div>
-    <div class="tab hidden animated fadeIn faster" id="playlists">
+    <div class="tab hidden animated fadeIn fastest" id="playlists">
       <div class="tabtitlebox">
         <p class="tab-subtitle">Playlists</p>
         <h2 class="tab-title">Favorites</h2>
@@ -277,7 +277,7 @@
       <div id="user_library_playlists"></div>
       <br><br>
     </div>
-    <div class="tab hidden animated fadeIn faster" id="artists">
+    <div class="tab hidden animated fadeIn fastest" id="artists">
       <p class="tab-subtitle">Artists</p>
       <div id="favtext2" class="hidden animated fadeIn">
         <h2 class="tab-title">Favorites</h2>
@@ -290,7 +290,7 @@
       </div>
       <br><br>
     </div>
-    <div class="tab hidden animated fadeIn faster" id="albums">
+    <div class="tab hidden animated fadeIn fastest" id="albums">
       <p class="tab-subtitle">Albums</p>
       <div id="favtext" class="hidden animated fadeIn">
         <h2 class="tab-title">Favorites</h2>
@@ -303,7 +303,7 @@
       </div>
       <br><br>
     </div>
-    <div class="tab hidden animated fadeIn faster" id="songs">
+    <div class="tab hidden animated fadeIn fastest" id="songs">
       <p class="tab-subtitle">Songs</p>
       <div id="feattext" class="hidden animated fadeIn">
         <h2 class="tab-title">Featured</h2>
@@ -320,10 +320,27 @@
       </div>
       <br><br>
     </div>
-    <div class="tab hidden animated fadeIn faster" id="browse">
-      <h2 class="tab-title">Browse</h2>
+    <div class="tab hidden animated fadeIn fastest" id="browse">
+      <p class="tab-subtitle">Browse</p>
+
+      <div id="browse_load">
+        <br><br>
+        <center>
+          <div class="progress-circular animated zoomIn"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
+        </center>
+      </div>
+
+      <h2 class="tab-title">New Releases</h2>
+      <div id="browse_new" class="horiz_search"></div>
+
+      <h2 class="tab-title">Banger Vibes</h2>
+      <div id="browse_play" class="horiz_search"></div>
+
+      <h2 class="tab-title">Categories</h2>
+      <div id="browse_categories"></div>
+
     </div>
-    <div class="tab hidden animated fadeIn faster" id="search">
+    <div class="tab hidden animated fadeIn fastest" id="search">
       <h2 class="tab-title">Search</h2>
 
       <br><br>
@@ -361,32 +378,43 @@
       </div>
 
     </div>
-    <div class="tab hidden animated fadeIn faster" id="account">
+    <div class="tab hidden animated fadeIn fastest" id="account">
       <h2 class="tab-title">Account</h2>
-      <div>
-        <div class="dropdown">
-          <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown">Select Theme</button>
-          <div class="dropdown-menu menu">
-            <a onclick="localStorage.setItem('es_theme_light', 'dark');refreshTheme()" class="dr-item">Dark Mode</a>
-            <a onclick="localStorage.setItem('es_theme_light', 'light');refreshTheme()" class="dr-item">Light Mode</a>
-            <div class="dropdown-divider"></div>
-            <a onclick="localStorage.setItem('es_theme_light', 'auto');refreshTheme()" class="dr-item">System Theme</a>
+      <div class="row">
+        <div class="col-sm">
+          <div class="dropdown">
+            <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown">Select Theme</button>
+            <div class="dropdown-menu menu">
+              <a onclick="localStorage.setItem('es_theme_light', 'dark');refreshTheme()" class="dr-item">Dark Mode</a>
+              <a onclick="localStorage.setItem('es_theme_light', 'light');refreshTheme()" class="dr-item">Light Mode</a>
+              <div class="dropdown-divider"></div>
+              <a onclick="localStorage.setItem('es_theme_light', 'auto');refreshTheme()" class="dr-item">System Theme</a>
+            </div>
+          </div>
+  
+          <div class="dropdown">
+            <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown">Select Color</button>
+            <div class="dropdown-menu menu">
+              <a onclick="localStorage.setItem('es_theme_color', 'blue');refreshTheme()" class="dr-item">Default</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'blue');refreshTheme()" class="dr-item">Blue</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'red');refreshTheme()" class="dr-item">Red</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'orange');refreshTheme()" class="dr-item">Orange</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'lime');refreshTheme()" class="dr-item">Lime</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'aqua');refreshTheme()" class="dr-item">Aqua</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'purple');refreshTheme()" class="dr-item">Purple</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'pink');refreshTheme()" class="dr-item">Pink</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme()" class="dr-item">Hot Pink</a>
+            </div>
           </div>
         </div>
+        <div class="col-sm">
 
-        <div class="dropdown">
-          <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown">Select Color</button>
-          <div class="dropdown-menu menu">
-            <a onclick="localStorage.setItem('es_theme_color', 'blue');refreshTheme()" class="dr-item">Default</a>
-            <a onclick="localStorage.setItem('es_theme_color', 'blue');refreshTheme()" class="dr-item">Blue</a>
-            <a onclick="localStorage.setItem('es_theme_color', 'red');refreshTheme()" class="dr-item">Red</a>
-            <a onclick="localStorage.setItem('es_theme_color', 'orange');refreshTheme()" class="dr-item">Orange</a>
-            <a onclick="localStorage.setItem('es_theme_color', 'lime');refreshTheme()" class="dr-item">Lime</a>
-            <a onclick="localStorage.setItem('es_theme_color', 'aqua');refreshTheme()" class="dr-item">Aqua</a>
-            <a onclick="localStorage.setItem('es_theme_color', 'purple');refreshTheme()" class="dr-item">Purple</a>
-            <a onclick="localStorage.setItem('es_theme_color', 'pink');refreshTheme()" class="dr-item">Pink</a>
-            <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme()" class="dr-item">Hot Pink</a>
-          </div>
+          <center>
+            <img id="userpfp2" alt="">
+            <br>
+            <button onclick="preparenpicchange()" class="btn-outlined-primary">Change Profile Photo</button>
+          </center>
+
         </div>
       </div>
     </div>
@@ -409,6 +437,13 @@
       </li>
       <li class="context-menu__item">
         <button id="2addbtn" class="btn-text-primary contextbtn">Save to Liked</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="tracktoalbum" class="btn-text-primary contextbtn">Go To Album</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="tracktoartist" class="btn-text-primary contextbtn">Go To Artist</button>
       </li>
       <div class="context_divider"></div>
       <li class="context-menu__item">
@@ -483,8 +518,17 @@
     </ul>
   </nav>
 
+  <nav id="category_context" class="context-menu contextAnim">
+    <ul class="context-menu__items">
+      <li class="context-menu__item">
+        <button id="openbtncategory" class="btn-text-primary contextbtn">Open Category (coming soon)</button>
+      </li>
+    </ul>
+  </nav>
+
   <!-- Junk Containers -->
   <div id="pfpplayhost"></div>
+  <div id="pfpghost"></div>
 
   <!--=== JavaScript ===-->
   <!-- JQuery --> <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
@@ -513,6 +557,8 @@
   <!-- Views --> <script src="js/views.js"></script>
   <!-- Search --> <script src="js/search.js"></script>
   <!-- Social --> <script src="js/social.js"></script>
+  <!-- Fetch --> <script src="js/fetch.js"></script>
+  <!-- Browse --> <script src="js/browse.js"></script>
   <!-- Display --> <script src="js/display.js"></script>
   <!-- Library --> <script src="js/library.js"></script>
   <!-- Playlists --> <script src="js/playlists.js"></script>

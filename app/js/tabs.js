@@ -39,6 +39,12 @@ function tabe(tab) {
       case 'songs':
         loadLibraryTracks()
         break;
+      case 'browse':
+        interval = window.setInterval(() => { if (typeof(spotifyCode) !== "undefined") {
+          loadBrowse()
+          window.clearInterval(interval)
+        }}, 200)
+        break;
       default:
         break;
     }

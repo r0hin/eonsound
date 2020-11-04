@@ -10,13 +10,13 @@ var firebaseConfig = {
   messagingSenderId: "824179683788",
   appId: "1:824179683788:web:81830e10e40b4b887ded69",
 };
+
 firebase.initializeApp(firebaseConfig);
 window.db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User is signed in.
-
 		window.user = user;
 
     if (!user.emailVerified) {
@@ -25,24 +25,18 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 
     appContent();
+
   } else {
     window.location.replace("welcome.html");
   }
 });
 
 
-function sendVerification(el) {
-  user
-    .sendEmailVerification()
-    .then(function () {
-      $(el).addClass("hidden");
-      $("#sentEmail").removeClass("hidden");
-
-      // Email sent.
-    })
-    .catch(function (error) {
-      alert(error);
-    });
+async function sendVerification(el) {
+  await user.sendEmailVerification()
+  
+  $(el).addClass("hidden");
+  $("#sentEmail").removeClass("hidden");
 }
 
 async function appContent() {
@@ -62,6 +56,7 @@ async function appContent() {
   loadLibrary()
 
   $("#userpfp1").get(0).src = cacheuser.url;
+  $("#userpfp2").get(0).src = cacheuser.url;
   $("#usercard").imagesLoaded(function () {
     $("#usercard").removeClass("hidden");
   })
@@ -70,7 +65,6 @@ async function appContent() {
 
 async function createUser() {
   // Much to dangerous processes to create user locally. Refer to cloud function.
-
   // Duplicate formatting as to not take long for returning errors.
 
   if (/\s/g.test($("#usernamebox").val().toLowerCase())) {
@@ -97,8 +91,7 @@ async function createUser() {
   var createAccount = firebase.functions().httpsCallable("createAccount");
   createAccount({ username: username, displayname: name }).then((result) => {
     if (result.data) {
-      toggleloader();
-      showcomplete();
+      toggleloader(); showcomplete();
       window.setTimeout(() => {
         appContent();
 
@@ -118,12 +111,7 @@ async function createUser() {
 async function initSpotifyCode() {
   // Check if access token stored in database is valid
 
-  doc = await db
-    .collection("users")
-    .doc(user.uid)
-    .collection("access")
-    .doc("spotify")
-    .get();
+  doc = await db.collection("users").doc(user.uid).collection("access").doc("spotify").get();
 
   if (!doc.exists) {
     window.location.replace("auth.html");
@@ -139,46 +127,29 @@ async function initSpotifyCode() {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization:
-        "Basic YjJiMGU0MWQwYTNlNDQ2NGIxMmViYTY2NmExZGUzNmQ6Y2MwMWM3OTExYjRjNDE2ODliOTcxMDM0ZmY5NzM1ODc=",
+      Authorization: "Basic YjJiMGU0MWQwYTNlNDQ2NGIxMmViYTY2NmExZGUzNmQ6Y2MwMWM3OTExYjRjNDE2ODliOTcxMDM0ZmY5NzM1ODc=",
     },
     body: `grant_type=refresh_token&refresh_token=${token}`,
   });
+  
   if (result.status >= 400 && result.status < 600) {
     throw new Error("Bad response from server");
   }
+
   const data = await result.json();
+
   window.spotifyCode = data.access_token;
+
   } catch (error) {
     Snackbar.show({text: "If your password was changed, please reauthenticate <a href='auth.html'>here</a>."})
   }
 }
 
-async function refreshCode() {
-  const result = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization:
-        "Basic YjJiMGU0MWQwYTNlNDQ2NGIxMmViYTY2NmExZGUzNmQ6Y2MwMWM3OTExYjRjNDE2ODliOTcxMDM0ZmY5NzM1ODc=",
-    },
-    body: `grant_type=refresh_token&refresh_token=${spotifyToken}`,
-  });
-
-  const data = await result.json();
-  window.spotifyCode = data.access_token;
-}
-
 function logout() {
   Snackbar.show({ text: "Logging out..." });
-  window.setTimeout(() => {
-    firebase
-      .auth()
-      .signOut()
-      .then(function () {
-        // Sign-out successful.
-      });
-  }, 1500);
+  window.setTimeout(async () => {
+    await firebase.auth().signOut()
+  }, 500);
 }
 
 function preparenpicchange() {
@@ -210,20 +181,8 @@ async function changepfp() {
     showcomplete();
 
     // Change existing records
-    document.getElementById("pfpimg1").src =
-      "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/logos%2F" +
-      user.uid +
-      "." +
-      ext +
-      "?alt=media&" +
-      new Date().getTime();
-    document.getElementById("pfpimg2").src =
-      "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/logos%2F" +
-      user.uid +
-      "." +
-      ext +
-      "?alt=media&" +
-      new Date().getTime();
+    document.getElementById("userpfp1").src = "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/logos%2F" + user.uid + "." + ext + "?alt=media&" + new Date().getTime();
+    document.getElementById("userpfp2").src = "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/logos%2F" + user.uid + "." + ext + "?alt=media&" + new Date().getTime();
   }, 800);
 
   $("#newpicel").remove();

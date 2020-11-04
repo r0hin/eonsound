@@ -3,10 +3,33 @@ Styles for every music-related component such as albums, artists and view conten
 Some are redudant but exist for future features. */
 
 .horiz_search {
-  max-height: 300px;
+  max-height: 350px;
   min-width: 360px;
   overflow: auto;
   padding: 24px;
+}
+
+.category {
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  margin: 12px;
+  width: 200px;
+  cursor: pointer;
+}
+
+.category h3 {
+  color: var(--content-primary) !important;
+  margin: 12px;
+  max-height: 100%;
+  text-align: center;
+  line-height: 18px;
+  text-overflow:ellipsis; overflow: hidden; white-space: nowrap;
+}
+
+.category img {
+  width: 200px;
+  height: 200px;
 }
 
 .album {
@@ -48,7 +71,8 @@ Some are redudant but exist for future features. */
   margin-bottom: 36px;
 }
 
-.artist h4 {color: white !important;
+.artist h4 {
+  color: var(--content-primary) !important;
   margin: 0px;
   line-height: 18px;
   text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
@@ -249,8 +273,9 @@ Some are redudant but exist for future features. */
 .userSong b {
   display: inline-block;
   font-size: 18px;
-  margin: 0px; line-height: 0px;
+  margin: 0px; line-height: 12px;
   vertical-align: middle;
+  text-overflow:ellipsis; max-width: 80%; overflow: hidden; white-space: nowrap;
 }
 
 .userSong p {
@@ -392,4 +417,19 @@ Some are redudant but exist for future features. */
 .trackLibraryItem {
   background-color: var(--bg-primary);
   position: relative;
+}
+
+#browse_new {
+  white-space: nowrap;
+  margin-bottom: 26px;
+} 
+
+#browse_play {
+  white-space: nowrap;
+  margin-bottom: 26px;
+}
+
+#browse_categories {
+  text-align: center;
+  margin-bottom: 26px;
 }

@@ -17,11 +17,28 @@ function artistToString(artists) {
   return snippet
 }
 
+function category(id, data, objectID, destinationID) {
+  return new Promise((resolve, reject) => {
+    o = document.createElement('div')
+    o.setAttribute('category_details', id)
+    o.setAttribute('class', 'hidden animated fadeIn faster category')
+    o.id = objectID
+
+    o.innerHTML = `
+    <img onclick="openCategory('${id}')" src="${data.icons[0].url}">
+    <h3>${data.name}</h3>
+    `
+
+    $(`#${destinationID}`).get(0).appendChild(o)
+    resolve('banger')
+  })
+}
+
 function album(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
 
     a = document.createElement('div')
-    a.setAttribute('class', 'hidden animated fadeIn album')
+    a.setAttribute('class', 'hidden animated fadeIn faster album')
     a.setAttribute('album_details', id)
     a.id = objectID
 
@@ -66,7 +83,7 @@ function album(id, data, objectID, destinationID) {
 function artist(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     b = document.createElement('div')
-    b.setAttribute('class', 'hidden animated fadeIn artist')
+    b.setAttribute('class', 'hidden animated fadeIn faster artist')
     b.setAttribute('artist_details', id)
     b.id = objectID
 
@@ -90,7 +107,7 @@ function artist(id, data, objectID, destinationID) {
 function playlist(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     c = document.createElement('div')
-    c.setAttribute('class', 'hidden animated fadeIn playlist spotifyPlaylist')
+    c.setAttribute('class', 'hidden animated fadeIn faster playlist spotifyPlaylist')
     c.setAttribute('playlist_details', id)
     c.id = objectID
 
@@ -113,7 +130,7 @@ function playlist(id, data, objectID, destinationID) {
 function userPlaylist(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     e = document.createElement('div')
-    e.setAttribute('class', 'hidden animated fadeIn userPlaylist')
+    e.setAttribute('class', 'hidden animated fadeIn faster userPlaylist')
     e.setAttribute('playlist_details', id)
     e.setAttribute('onclick', "openUserPlaylist('" + id + "')")
     e.id = objectID
@@ -144,7 +161,7 @@ function track(id, data, objectID, destinationID, index, playlist) {
     if (playlist == 'tracks') {
       desintationSpecific = ' trackLibraryItem'
     }
-    o.setAttribute('class', 'hidden animated fadeIn userSong song' + desintationSpecific)
+    o.setAttribute('class', 'hidden animated fadeIn faster userSong song' + desintationSpecific)
     o.setAttribute('track_details', id)
     o.id = objectID
 
@@ -189,7 +206,7 @@ function track(id, data, objectID, destinationID, index, playlist) {
 function searchTrack(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     d = document.createElement('div')
-    d.setAttribute('class', 'hidden animated fadeIn track song')
+    d.setAttribute('class', 'hidden animated fadeIn faster track song')
     d.setAttribute('track_details', id)
     d.id = objectID
 
@@ -334,30 +351,8 @@ async function downloadSong(trackID, spotifyURL, trackName) {
 async function queueSongWithoutData(id, skipMsg) {
   return new Promise(async (resolve, reject) => {
     // Gather data, then queue
-    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${spotifyCode}`,
-      },
-    });
-
-    const data = await result.json();
-
-    if (data.error) {
-      if (sessionStorage.getItem("errorAvoid") == "true") {
-        Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
-        return;
-      }
-      console.log("Error occured. Likely invalid code - request and do it again.");
-      sessionStorage.setItem("errorAvoid", "true");
-      refreshCode();
-      queueSongWithoutData(id, skipMsg);
-      return;
-    }
-
-    refreshCode();
-    sessionStorage.setItem("errorAvoid", "false");
-
+    data = await goFetch(`tracks/${id}`)
+  
     savedData = {
       art: data.album.images[0].url,
       artists: artistToString(data.artists),
@@ -375,30 +370,9 @@ async function queueSongWithoutData(id, skipMsg) {
 async function playSongWithoutData(id) {
   return new Promise(async (resolve, reject) => {
     // Gather data, then queue
-    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${spotifyCode}`,
-      },
-    });
 
-    const data = await result.json();
-
-    if (data.error) {
-      if (sessionStorage.getItem("errorAvoid") == "true") {
-        Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
-        return;
-      }
-      console.log("Error occured. Likely invalid code - request and do it again.");
-      sessionStorage.setItem("errorAvoid", "true");
-      refreshCode();
-      queueSongWithoutData(id);
-      return;
-    }
-
-    refreshCode();
-    sessionStorage.setItem("errorAvoid", "false");
-
+    data = await goFetch(`tracks/${id}`)
+    
     savedData = {
       art: data.album.images[0].url,
       artists: artistToString(data.artists),

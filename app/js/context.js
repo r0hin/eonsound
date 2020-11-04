@@ -62,6 +62,13 @@ function checkElements(e) {
             playlistContext(e, el)
             toggleMenuOff('spotifyPlaylist')
           }
+          else {
+            el = clickInsideElement(e, 'category')
+            if (el) {
+              categoryContext(e, el)
+              toggleMenuOff('category')
+            }
+          }
         }
       }
     }
@@ -70,6 +77,7 @@ function checkElements(e) {
 function toggleMenuOff(ignore) {
   sessionStorage.setItem("menuOpen", "false");
   document.getElementById("track_context").classList.remove("context_active");
+  document.getElementById("category_context").classList.remove("context_active");
   document.getElementById("album_context").classList.remove("context_active");
   document.getElementById("artist_context").classList.remove("context_active");
   document.getElementById("spotifyPlaylist_context").classList.remove("context_active");
@@ -111,6 +119,23 @@ function positionMenu(e, menu) {
   }
 }
 
+
+async function categoryContext(e, el) {
+  e.preventDefault();
+  sessionStorage.setItem("menuOpen", "true");
+  
+  menu = document.getElementById("category_context");
+  menu.classList.add("context_active");
+  positionMenu(e, menu)
+
+  id = el.getAttribute("category_details")
+
+  document.getElementById('openbtncategory').onclick = async () => {
+    openCategory(id)
+  }
+}
+
+
 async function trackContext(e, el) {
   e.preventDefault();
   sessionStorage.setItem("menuOpen", "true");
@@ -120,6 +145,24 @@ async function trackContext(e, el) {
   positionMenu(e, menu)
 
   id = el.getAttribute("track_details")
+
+
+  // TRACK TO ALBUM/ARTIST
+
+  document.getElementById('tracktoartist').onclick = async () => {
+    // Get artist from track
+    data = goFetch(`tracks/${id}`)
+    openArtist(data.artists[0].id)
+    
+  }
+
+  document.getElementById('tracktoalbum').onclick = async () => {
+    // Get artist from track
+    data = goFetch(`tracks/${id}`)
+    openAlbum(data.album.id)
+    
+  }
+
 
   // PLAY BUTTON
   document.getElementById("playbtn").onclick = () => {
@@ -137,30 +180,7 @@ async function trackContext(e, el) {
   // ADD PLAYLIST  
   document.getElementById("0addbtn").onclick = async () => {
     // Get track details
-    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${spotifyCode}`,
-      },
-    });
-
-    const data = await result.json();
-
-    if (data.error) {
-      if (sessionStorage.getItem("errorAvoid") == "true") {
-        Snackbar.show({ text: "An error occured while loading library options."});
-        return;
-      }
-      console.log("Error occured. Likely invalid code - request and do it again.");
-      sessionStorage.setItem("errorAvoid", "true");
-      refreshCode();
-      document.getElementById("0addbtn").click();
-      return;
-    }
-
-    refreshCode();
-    sessionStorage.setItem("errorAvoid", "false");
-
+    data = goFetch(`tracks/${id}`)
     artists = artistToString(data.artists)
 
     url = await downloadSong(id, data.external_urls.spotify, data.name)

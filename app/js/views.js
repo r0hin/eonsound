@@ -42,37 +42,11 @@ async function openAlbum(id) {
   toggleloader();
 
   // Album info
-  const result = await fetch(
-    `https://api.spotify.com/v1/albums/${id}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${spotifyCode}`,
-      },
-    }
-  );
-
-  const data = await result.json();
-
-  if (data.error) {
-    if (sessionStorage.getItem("errorAvoid") == "true") {
-      Snackbar.show({ text: "An error occured while searching" });
-      return;
-    }
-    console.log( "Error occured. Likely invalid code - request and do it again." );
-    sessionStorage.setItem("errorAvoid", "true");
-    refreshCode();
-    openAlbum(id);
-    return;
-  }
-
-  // Has results in data
-  refreshCode();
-  sessionStorage.setItem("errorAvoid", "false");
-
+  data = await goFetch(`albums/${id}`)
+  
   // Build the album
   g = document.createElement('div')
-  g.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'AlbumView')
+  g.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'AlbumView')
   g.setAttribute('id', id + 'AlbumView')
   g.innerHTML = `
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}AlbumView')"><i class='bx bx-x'></i></button>
@@ -144,15 +118,15 @@ async function openUserPlaylist(id) {
   toggleloader();
 
   doc = await db.collection('users').doc(user.uid).collection('library').doc(playlistId).get()
-  openPlaylist = doc.data()
+  nopenPlaylist = doc.data()
 
   // Build the playlist
   f = document.createElement('div')
-  f.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'UserPlaylistView')
+  f.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'UserPlaylistView')
   f.setAttribute('id', playlistId + 'UserPlaylistView')
 
-  description = openPlaylist.description
-  if (openPlaylist.description == '') {
+  description = nopenPlaylist.description
+  if (nopenPlaylist.description == '') {
     description = 'No description set. Click to change.'
   }
 
@@ -162,7 +136,7 @@ async function openUserPlaylist(id) {
     <div class="playlistHeader row">
       <div class="col-sm">
         <center>
-          <img crossOrigin="Anonymous" id="${playlistId}cover" class="myPlaylistImg ${playlistId}cover" src="${openPlaylist.cover}"></img>
+          <img crossOrigin="Anonymous" id="${playlistId}cover" class="myPlaylistImg ${playlistId}cover" src="${nopenPlaylist.cover}"></img>
           <div class="myPlaylistOverlay">
             <a onclick="changePlayCover('${playlistId}')" class="btn-contained-primary animated fadeInUp">Change Cover</a>
           </div>
@@ -170,8 +144,8 @@ async function openUserPlaylist(id) {
       </div>
       <div class="col-sm">
         <center>
-          <h1>${openPlaylist.name}</h1>
-          <span class="chip">${openPlaylist.publicity}</span> <span class="chip">${openPlaylist.last_updated.toDate().toString().split('GMT').shift()}</span>
+          <h1>${nopenPlaylist.name}</h1>
+          <span class="chip">${nopenPlaylist.publicity}</span> <span class="chip">${nopenPlaylist.last_updated.toDate().toString().split('GMT').shift()}</span>
           <br><br>
           <p class="playlistDescription" oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({text: 'Description updated.', pos: 'top-right'})}, 3000)" contentEditable='true'>${description}</p>
         </center>
@@ -187,11 +161,11 @@ async function openUserPlaylist(id) {
     <br><br>
   `
   document.getElementById('userplaylist_view').appendChild(f)
-  for (let j = 0; j < openPlaylist.songs.length; j++) {
-    const openPlaylistSong = openPlaylist.songs[j];
-    await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
+  for (let j = 0; j < nopenPlaylist.songs.length; j++) {
+    const openPlaylistSong = nopenPlaylist.songs[j];
+    await userPlaylistSong(nopenPlaylist.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
   }
-  musicData[playlistId] = openPlaylist.songs
+  musicData[playlistId] = nopenPlaylist.songs
   $(`#${playlistId}UserPlaylistView`).imagesLoaded(() => {
     colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
     $(`#${id}UserPlaylistView`).removeClass('hidden')
@@ -216,22 +190,12 @@ async function openArtist(id) {
   toggleloader();
 
   // Artist info
-  const result = await fetch( `https://api.spotify.com/v1/artists/${id}`, { method: "GET", headers: { Authorization: `Bearer ${spotifyCode}`, }, } );
-  const data = await result.json();
-  if (data.error) { if (sessionStorage.getItem("errorAvoid") == "true") { Snackbar.show({ text: "An error occured while searching" }); return; } sessionStorage.setItem("errorAvoid", "true"); refreshCode(); openArtist(id);return; }
-  refreshCode(); sessionStorage.setItem("errorAvoid", "false");
-
-  // Artist Albums
-  const resultS = await fetch( `https://api.spotify.com/v1/artists/${id}/albums`, { method: "GET", headers: { Authorization: `Bearer ${spotifyCode}`, }, } );
-  const dataAlbums = await resultS.json();
-  if (dataAlbums.error) { if (sessionStorage.getItem("errorAvoid") == "true") { Snackbar.show({ text: "An error occured while searching" }); return; } sessionStorage.setItem("errorAvoid", "true"); refreshCode(); openArtist(id);return; }
-  refreshCode(); sessionStorage.setItem("errorAvoid", "false");
-
-  console.log(dataAlbums);
+  data = await goFetch(`artists/${id}`)
+  dataAlbums = await goFetch(`artists/${id}/albums`)
 
   // Build the album
   g = document.createElement('div')
-  g.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'ArtistView')
+  g.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'ArtistView')
   g.setAttribute('id', id + 'ArtistView')
   popularity = data.followers.total / 2000000
   if (popularity >= 1)  {
@@ -294,15 +258,12 @@ async function openPlaylist(id) {
   toggleloader();
 
   // Playlist info
-  const result = await fetch( `https://api.spotify.com/v1/playlists/${id}`, { method: "GET", headers: { Authorization: `Bearer ${spotifyCode}`, }, } );
-  const data = await result.json();
-  if (data.error) { if (sessionStorage.getItem("errorAvoid") == "true") { Snackbar.show({ text: "An error occured while searching" }); return; } sessionStorage.setItem("errorAvoid", "true"); refreshCode(); openPlaylist(id);return; }
-  refreshCode(); sessionStorage.setItem("errorAvoid", "false");
-
+  data = await goFetch(`playlists/${id}`)
+  
   // Build the album
   p = document.createElement('div')
   p.setAttribute('id', id + 'PlaylistView')
-  p.setAttribute('class', 'animated hidden fadeIn media_view faster ' + id + 'PlaylistView')
+  p.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'PlaylistView')
 
   p.innerHTML = `
     <div class="playViewGradient" id="${id}playlistgradientelement"></div>
@@ -349,4 +310,9 @@ async function openPlaylist(id) {
   })
   initButtonsContained()
   initButtonsText()
+}
+
+async function openCategory(id) {
+  console.log('Opening category of ', id);
+  Snackbar.show({text: "Coming soon"})
 }

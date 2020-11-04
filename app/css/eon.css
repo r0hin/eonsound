@@ -87,3 +87,10 @@ audio {
 .bx {
   font-size: 24px;
 }
+
+.fastest {
+  -webkit-animation-duration: .3s;
+  animation-duration: .3s;
+  -webkit-animation-duration: calc(var(--animate-duration)/3);
+  animation-duration: calc(var(--animate-duration)/3);
+}

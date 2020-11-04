@@ -239,39 +239,13 @@ async function initSpotifyCode() {
   }
 }
 
-async function refreshCode() {
-  const result = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded", Authorization: "Basic YjJiMGU0MWQwYTNlNDQ2NGIxMmViYTY2NmExZGUzNmQ6Y2MwMWM3OTExYjRjNDE2ODliOTcxMDM0ZmY5NzM1ODc=", },
-    body: `grant_type=refresh_token&refresh_token=${spotifyToken}`,
-  });
-
-  const data = await result.json();
-  window.spotifyCode = data.access_token;
-}
-
 async function search(term) {
   $('#searchbox1').val('')
   if (term == '') {
     return;
   }
 
-  const result = await fetch( `https://api.spotify.com/v1/search?q=${term}&type=track`, { method: "GET", headers: { Authorization: `Bearer ${spotifyCode}`, }, } );
-  const data = await result.json();
-
-  if (data.error) { 
-    if (sessionStorage.getItem("errorAvoid") == "true") {
-      // Don't start a loop of errors wasting code use.
-      Snackbar.show({ text: "An error occured while searching" });
-      return;
-    }
-    console.log("Error occured. Likely invalid code - request and do it again.");
-
-    sessionStorage.setItem("errorAvoid", "true");  refreshCode(); search(term); return;
-  }
-  refreshCode(); sessionStorage.setItem("errorAvoid", "false");
-
-  console.log(data);
+  data = await goFetch(`search?q=${term}&type=track`)
 
   $('#musicSearch').empty()
 
@@ -319,29 +293,8 @@ async function downloadSong(trackID, spotifyURL, trackName) {
 async function queueSongWithoutData(id, skipMsg) {
   return new Promise(async (resolve, reject) => {
     // Gather data, then queue
-    const result = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${spotifyCode}`,
-      },
-    });
 
-    const data = await result.json();
-
-    if (data.error) {
-      if (sessionStorage.getItem("errorAvoid") == "true") {
-        Snackbar.show({ text: "An error occured while playing song",  pos: 'top-right' });
-        return;
-      }
-      console.log("Error occured. Likely invalid code - request and do it again.");
-      sessionStorage.setItem("errorAvoid", "true");
-      refreshCode();
-      queueSongWithoutData(id, skipMsg);
-      return;
-    }
-
-    refreshCode();
-    sessionStorage.setItem("errorAvoid", "false");
+    data = await goFetch(`tracks/${id}`)
 
     savedData = {
       art: data.album.images[0].url,
@@ -839,72 +792,4 @@ function leave() {
   player.pause()
   listener()
   left() 
-}
-
-
-async function switchDark(skipMsg) {
-  injectDark()
-  console.log('dark');
-  $('#AppTheme').html(`
-  :root {
-    --eon-primary: #FD2D55;
-    --eon-secondary: #fda22b;
-
-    --bg-primary: #13112F;
-    --bg-secondary: #1d1336;
-    --bg-tertiary: #2C2847;
-
-    --content-primary: #fff;
-    --content-secondary: #dadada;
-    --content-tertiary: #b3b3b3;
-
-    --contrast: #898992;
-    --glass: rgba(57, 36, 83, 0.472);
-  }
-  `)
-}
-
-async function switchLight(skipMsg) {
-  injectLight()
-  console.log('light');
-
-  $('#AppTheme').html(`
-  :root {
-    --eon-primary: #FD2D55;
-    --eon-secondary: #fda22b;
-  
-    --bg-primary: #FEFEFE;
-    --bg-secondary: #E5E4ED;
-    --bg-tertiary: #ffffff;
-  
-  
-  
-    --content-primary: #525056;
-    --content-secondary: #dadada;
-    --content-tertiary: #b3b3b3;
-  
-    --contrast: #e4e4eb;
-    --glass: rgb(253, 229, 250);
-  
-  }
-  `)
-}
-
-async function switchAuto(skipMsg) {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    switchDark(true)
-  }
-  else {
-    switchLight(true)
-  }
-
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    const newColorScheme = e.matches ? "dark" : "light";
-    if (newColorScheme == 'dark') {
-      switchDark(true)
-    }
-    else {
-      switchLight(true)
-    }
-  });
 }
