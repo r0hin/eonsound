@@ -164,7 +164,7 @@ async function openUserPlaylist(id) {
           <h1>${nopenPlaylist.name}</h1>
           <span class="chip">${nopenPlaylist.publicity}</span> <span class="chip">${nopenPlaylist.last_updated.toDate().toString().split('GMT').shift()}</span>
           <br><br>
-          <p class="playlistDescription" oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({text: 'Description updated.', pos: 'top-right'})}, 3000)" contentEditable='true'>${description}</p>
+          <p class="playlistDescription" oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({pos: 'top-center',text: 'Description updated.')}, 3000)" contentEditable='true'>${description}</p>
         </center>
       </div>
     </div>
@@ -347,5 +347,5 @@ async function openPlaylist(id) {
 
 async function openCategory(id) {
   console.log('Opening category of ', id);
-  Snackbar.show({text: "Coming soon"})
+  Snackbar.show({pos: 'top-center',text: "Coming soon"})
 }

@@ -334,7 +334,7 @@ async function downloadSong(trackID, spotifyURL, trackName) {
     try {
       downloadedTrack = await requestSong({ trackID: trackID, trackURL: spotifyURL});
     } catch (error) {
-      Snackbar.show({text: `${trackName} could not be downloaded.`,  pos: 'top-right'})
+      Snackbar.show({pos: 'top-center',text: `${trackName} could not be downloaded.`})
       resolve('no')
     }
     if(typeof(downloadedTrack.data) == 'string') {
@@ -405,7 +405,7 @@ async function queueSong(data, skipMsg) {
       // There's a song playing so add it to queue
       musicQueue.push(data)
       if (!skipMsg) {
-        Snackbar.show({text: "Added to queue.", pos: 'top-right'})
+        Snackbar.show({pos: 'top-center',text: "Added to queue."})
         $('#showQueue').removeClass('hidden')
         visualQ_build()
       }

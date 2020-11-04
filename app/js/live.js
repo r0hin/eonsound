@@ -109,7 +109,7 @@ async function createParty() {
     startedSong: firebase.firestore.FieldValue.serverTimestamp(),
   })
 
-  Snackbar.show({text: "Party created"})
+  Snackbar.show({pos: 'top-center',text: "Party created."})
 
   joinParty(docRef.id)
 }
@@ -127,7 +127,7 @@ async function joinParty(id) {
   listener = db.collection('parties').doc(id).onSnapshot(async (doc) => {
 
     if (!doc.exists) {
-      Snackbar.show({text: "No party exists with this ID."})
+      Snackbar.show({pos: 'top-center',text: "No party exists with this ID."})
       return;
     }
 
@@ -225,17 +225,17 @@ async function initSpotifyCode() {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: "Basic YjJiMGU0MWQwYTNlNDQ2NGIxMmViYTY2NmExZGUzNmQ6Y2MwMWM3OTExYjRjNDE2ODliOTcxMDM0ZmY5NzM1ODc=", },
+      Authorization: "Basic YjJiMGU0MWQwYTNlNDQ2NGIxMmViYTY2NmExZGUzNmQ6Y2MwMWM3OTExYjRjNDE2ODliOTcxMDM0ZmY5NzM1ODc=",
     body: `grant_type=refresh_token&refresh_token=${token}`,
-  });
-  if (result.status >= 400 && result.status < 600) {
+    }});
+    if (result.status >= 400 && result.status < 600) {
     throw new Error("Bad response from server");
   }
   const data = await result.json();
   window.spotifyCode = data.access_token;
   } catch (error) {
     alert('Cannot authenticate. Try reauthenticating or contact support.')
-    Snackbar.show({text: "If your password was changed, please reauthenticate <a href='auth.html'>here</a>."})
+    Snackbar.show({pos: 'top-center',text: "If your password was changed, please reauthenticate <a href='auth.html'>here</a>."})
   }
 }
 
@@ -276,7 +276,7 @@ async function downloadSong(trackID, spotifyURL, trackName) {
     try {
       downloadedTrack = await requestSong({ trackID: trackID, trackURL: spotifyURL});
     } catch (error) {
-      Snackbar.show({text: `${trackName} could not be downloaded.`,  pos: 'top-right'})
+      Snackbar.show({pos: 'top-center',text: `${trackName} could not be downloaded.`})
       resolve('no')
     }
     if(typeof(downloadedTrack.data) == 'string') {
@@ -328,7 +328,7 @@ async function queueSong(data, skipMsg) {
       // There's a song playing so add it to queue
       musicQueue.push(data)
       if (!skipMsg) {
-        Snackbar.show({text: "Added to queue.", pos: 'top-right'})
+        Snackbar.show({pos: 'top-center',text: "Added " + data.name + " to queue."})
         $('#showQueue').removeClass('hidden')
         visualQ_build()
       }
@@ -626,7 +626,7 @@ function hideLoader() {
 async function sendMessage(val) {
 
   if (val.length < 2) {
-    Snackbar.show({text: "Too short."})
+    Snackbar.show({pos: 'top-center',text: "Your message is too short."})
     return;
   }
 
@@ -782,7 +782,7 @@ async function remove(uid) {
 
 function copyCode() {
   navigator.clipboard.writeText(activeParty).then(function() {
-    Snackbar.show({text: "Copied!"})
+    Snackbar.show({pos: 'top-center',text: "Copied code to clipboard!"})
   }, function(err) {
     alert('The code is: ' + activeParty)
   });

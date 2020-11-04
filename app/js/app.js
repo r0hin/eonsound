@@ -141,12 +141,12 @@ async function initSpotifyCode() {
   window.spotifyCode = data.access_token;
 
   } catch (error) {
-    Snackbar.show({text: "If your password was changed, please reauthenticate <a href='auth.html'>here</a>."})
+    Snackbar.show({pos: 'top-center',text: "If your password was changed, please reauthenticate <a href='auth.html'>here</a>."})
   }
 }
 
 function logout() {
-  Snackbar.show({ text: "Logging out..." });
+  Snackbar.show({pos: 'top-center', text: "Logging out..." });
   window.setTimeout(async () => {
     await firebase.auth().signOut()
   }, 500);

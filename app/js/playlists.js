@@ -37,7 +37,7 @@ async function createPlaylist() {
 
   var albumPhoto = firebase.functions().httpsCallable("albumPhoto");
   albumPhoto({ id: docRef.id }).then((result) => {
-    Snackbar.show({ text: `${name} created.` });
+    Snackbar.show({pos: 'top-center', text: `${name} created.` });
     window.setTimeout(() => {
       toggleloader();
       showcomplete();

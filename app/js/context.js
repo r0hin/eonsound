@@ -181,7 +181,7 @@ async function trackContext(e, el) {
   // ADD PLAYLIST  
   document.getElementById("0addbtn").onclick = async () => {
     // Get track details
-    data = goFetch(`tracks/${id}`)
+    data = await goFetch(`tracks/${id}`)
     artists = artistToString(data.artists)
 
     url = await downloadSong(id, data.external_urls.spotify, data.name)

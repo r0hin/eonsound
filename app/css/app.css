@@ -153,7 +153,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   height: 58px; padding: 4px;
   margin: 16px; z-index: 90000003;
   border-radius: 12px;
-  background-color: var(--glass);
+  background-color: var(--ripple-secondary);
   backdrop-filter: blur(18px);
 }
 
@@ -391,4 +391,14 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   position: absolute;
   left: 50%; top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.snackbar-container {
+  background-color: var(--ripple-secondary) !important;
+  backdrop-filter: blur(18px) !important;
+  z-index: 3000000000;
+}
+
+.snackbar-container div {
+  color: var(--content-primary) !important;
 }

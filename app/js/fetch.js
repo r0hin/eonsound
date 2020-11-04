@@ -26,7 +26,7 @@ async function goFetch(url) {
       const data = await result.json();
       
       if (data.error) {
-        Snackbar.show({text: "Error occured. Please try again later."})
+        Snackbar.show({pos: 'top-center',text: "Error occured. Please try again later."})
         refreshCode()
         reject(data)
         return;

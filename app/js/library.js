@@ -193,7 +193,7 @@ async function addTrackToPlaylist(playlistID) {
   // ADD TRACK TO LIBRARY
   addTrackToLibrary(prepareTrackPlaylistTrack.id)
 
-  Snackbar.show({text: "Song added."})
+  Snackbar.show({pos: 'top-center',text: "Added '" + prepareTrackPlaylistTrack.name + "' to a playlist."})
 }
 
 async function addArtistToLibrary(id) {
@@ -229,7 +229,7 @@ async function addAlbumToLibrary(id, skipUI) {
     }
 
     if (!skipUI) {
-      Snackbar.show({text: "Adding"})
+      Snackbar.show({pos: 'top-center',text: "Adding album to library..."})
     }
     // Gather album details
     // Album info
@@ -297,7 +297,7 @@ async function addAlbumToLibrary(id, skipUI) {
     $(`#addLibraryCol${id}`).addClass('hidden')
 
     if (!skipUI) {
-      Snackbar.show({text: "Added to library"})
+      Snackbar.show({pos: 'top-center',text: "Added " + data.name + " to library"})
     }
     resolve('skiddooo')
   })
@@ -311,7 +311,7 @@ async function addSpotifyPlaylistToLibrary(id) {
   // Spotify playlists to library:
   // Get playlist data, convert it, add the playlist. For each song, add the song, artist and album.
   return new Promise(async (resolve, reject) => {
-    toggleloader(); Snackbar.show({text: "Converting..."})
+    toggleloader(); Snackbar.show({pos: 'top-center',text: "Converting Spotify playlist to EonSound..."})
 
     // Grab playlist data
     data = await goFetch(`playlists/${id}`)
@@ -371,14 +371,14 @@ async function addSpotifyPlaylistToLibrary(id) {
 
       await addAlbumToLibrary(temporaryTrackItem.album.id, true)
 
-      Snackbar.show({text: `Added ${i}/${data.tracks.items.length}`})
+      Snackbar.show({pos: 'top-center',text: `Added ${i}/${data.tracks.items.length} tracks.`})
 
     }
 
     window.setTimeout(() => {
       toggleloader()
       showcomplete()
-      Snackbar.show({text: "Saved to library."})
+      Snackbar.show({pos: 'top-center',text: "Saved playlist to library."})
     }, 500)
     resolve('ayo')
   }) 
