@@ -247,6 +247,7 @@
   <div id="content">
     <!-- Views -->
     <div id="userplaylist_view" class="userplaylist_view"> </div>
+    <div id="category_view" class="category_view"> </div>
     <div id="playlist_view" class="playlist_view"> </div>
     <div id="artist_view" class="artist_view"> </div>
     <div id="album_view" class="album_view"> </div>
@@ -353,26 +354,18 @@
       <div id="searchResults">
         <center>
           <div class="row">
-            <div class="col-sm">
-              <h3>Albums</h3>
-              <div class="horiz_search shadow-sm" id="search_albums"></div>
-              <br><br>
-            </div>
-            <div class="col-sm">
-              <h3>Artists</h3>
-              <div class="horiz_search shadow-sm" id="search_artists"></div>
-              <br><br>
-            </div>
-            <div class="col-sm">
-              <h3>Playlists</h3>
-              <div class="horiz_search shadow-sm" id="search_playlists"></div>
-              <br><br>
-            </div>
-            <div class="col-sm">
-              <h3>Tracks</h3>
-              <div class="horiz_search shadow-sm" id="search_tracks"></div>
-              <br><br>
-            </div>
+            <h3 id="albumSearchText" class="hidden">Albums</h3>
+            <div class="horiz_search" id="search_albums"></div>
+            <br><br>
+            <h3 id="artistSearchText" class="hidden">Artists</h3>
+            <div class="horiz_search" id="search_artists"></div>
+            <br><br>
+            <h3 id="trackSearchText" class="hidden">Tracks</h3>
+            <div class="horiz_search" id="search_tracks"></div>
+            <br><br>
+            <h3 id="playlistSearchText" class="hidden">Playlists</h3>
+            <div class="horiz_search" id="search_playlists"></div>
+            <br><br>
           </div>
         </center>
       </div>
@@ -521,7 +514,14 @@
   <nav id="category_context" class="context-menu contextAnim">
     <ul class="context-menu__items">
       <li class="context-menu__item">
-        <button id="openbtncategory" class="btn-text-primary contextbtn">Open Category (coming soon)</button>
+        <button id="openbtncategory" class="btn-text-primary contextbtn">Open Category</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="infobtncategory" class="btn-text-primary contextbtn">Category Info</button>
+      </li>
+      <li class="context-menu__item">
+        <button id="copybtncategory" class="btn-text-primary contextbtn">Copy Link</button>
       </li>
     </ul>
   </nav>

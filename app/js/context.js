@@ -133,6 +133,14 @@ async function categoryContext(e, el) {
   document.getElementById('openbtncategory').onclick = async () => {
     openCategory(id)
   }
+
+  document.getElementById('copybtncategory').onclick = async () => {
+    console.log('copy link of' + id);
+  }
+
+  document.getElementById('infobtncategory').onclick = async () => {
+    console.log('info of' + id);
+  }
 }
 
 

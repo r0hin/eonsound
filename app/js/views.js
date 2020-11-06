@@ -346,6 +346,72 @@ async function openPlaylist(id) {
 }
 
 async function openCategory(id) {
+  sessionStorage.setItem('activeView', id + 'CategoryView')
   console.log('Opening category of ', id);
-  Snackbar.show({pos: 'top-center',text: "Coming soon"})
+  // Open Spotify Category of ID
+
+  if ($(`#${id}CategoryView`).length) {
+    $(`#${id}CategoryView`).addClass('hidden')
+    $(`#${id}CategoryView`).removeClass('fadeIn')
+    $(`#${id}CategoryView`).removeClass('fadeOut')
+    window.setTimeout(() => {
+      $(`#${id}CategoryView`).removeClass('hidden')
+      $(`#${id}CategoryView`).addClass('fadeIn')
+    }, 80)
+    $(`#${id}CategoryView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+    activeMediaIndex++
+    return;
+  }
+
+  toggleloader();
+
+  // Playlist info
+  data = await goFetch(`browse/categories/${id}`)
+  playlistData = await goFetch(`browse/categories/${id}/playlists`)
+  
+  // Build the category
+  p = document.createElement('div')
+  p.setAttribute('id', id + 'CategoryView')
+  p.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'CategoryView')
+  p.setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+  activeMediaIndex++
+
+  p.innerHTML = `
+    <div class="playViewGradient" id="${id}playlistgradientelement"></div>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}CategoryView')"><i class='bx bx-x'></i></button>
+    <div class="playlistHeader row">
+      <div class="col-sm">
+        <center>
+          <img crossOrigin="Anonymous" id="${id}cover" class="myPlaylistImg ${id}cover" src="${data.icons[0].url}"></img>
+        </center>
+      </div>
+      <div class="col-sm">
+        <center>
+          <h1>${data.name}</h1>
+        </center>
+      </div>
+    </div>
+    <br><br>
+    <div class="playlistList ${id}playlistSongs" id="${id}playlistList"></div>
+    <br><br>
+  `
+  document.getElementById('category_view').appendChild(p)
+
+  for (let j = 0; j < playlistData.playlists.items.length; j++) {
+    const openNonUserPlaylist = playlistData.playlists.items[j];
+    await playlist(openNonUserPlaylist.id, openNonUserPlaylist, openNonUserPlaylist.id + 'categoryplaylist', id + 'playlistList')
+
+    $(`#${openNonUserPlaylist.id}categoryplaylist`).imagesLoaded(() => {
+      $(`#${openNonUserPlaylist.id}categoryplaylist`).removeClass('hidden')
+    })
+  }
+
+  $(`#${id}CategoryView`).imagesLoaded(() => {
+    colorThiefify('userPlaylistView', id + 'cover', id + 'playlistgradientelement')
+    $(`#${id}CategoryView`).removeClass('hidden')
+    window.setTimeout(() => {toggleloader()}, 500)
+  })
+
+  initButtonsContained()
+  initButtonsText()
 }

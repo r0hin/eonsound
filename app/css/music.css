@@ -2,11 +2,16 @@
 Styles for every music-related component such as albums, artists and view content.
 Some are redudant but exist for future features. */
 
+#searchResults h3 {
+  margin: 24px 0px 0px 36px;
+}
+
 .horiz_search {
-  max-height: 350px;
-  min-width: 360px;
+  width: 100%;
   overflow: auto;
-  padding: 24px;
+  white-space: nowrap;
+  padding: 14px;
+  text-align: left;
 }
 
 .category {
@@ -30,6 +35,7 @@ Some are redudant but exist for future features. */
 .category img {
   width: 200px;
   height: 200px;
+  border-radius: 16px;
 }
 
 .album {
@@ -68,7 +74,6 @@ Some are redudant but exist for future features. */
   text-align: center;
   display: inline-block;
   margin: 0px 12px 0px 12px;
-  margin-bottom: 36px;
 }
 
 .artist h4 {
@@ -255,6 +260,12 @@ Some are redudant but exist for future features. */
 
 .songList {
   margin-top: 12px; width: 100%;
+  display: block; 
+}
+
+.playlistList {
+  margin-top: 12px; width: 100%;
+  text-align: center;
   display: block; 
 }
 

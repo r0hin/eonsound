@@ -10,7 +10,7 @@ document.getElementById("searchbox").addEventListener("keyup", function (event) 
 
 async function performSearch(q) {
   $('#searchbox').val('')
-  data = await goFetch(`search?q=${q}&type=album,artist,playlist,track`)
+  data = await goFetch(`search?q=${q}&type=album,artist,playlist,track&limit=10`)
   buildSearch(data);
 }
 
@@ -20,6 +20,11 @@ async function buildSearch(data) {
   $("#search_artists").empty();
   $("#search_playlists").empty();
   $("#search_tracks").empty();
+
+  if (!data.albums.items.length) { $('#albumSearchText').addClass('hidden') } else { $('#albumSearchText').removeClass('hidden') }
+  if (!data.artists.items.length) { $('#artistSearchText').addClass('hidden') } else { $('#artistSearchText').removeClass('hidden') }
+  if (!data.playlists.items.length) { $('#playlistSearchText').addClass('hidden') } else { $('#playlistSearchText').removeClass('hidden') }
+  if (!data.tracks.items.length) { $('#trackSearchText').addClass('hidden') } else { $('#trackSearchText').removeClass('hidden') }
 
   for (let i = 0; i < data.albums.items.length; i++) {
     // For each album
