@@ -60,7 +60,7 @@ async function openAlbum(id) {
   g.innerHTML = `
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}AlbumView')"><i class='bx bx-x'></i></button>
 
-    <div class="playlistHeader row">
+    <div class="albumHeader row">
       <div class="col-sm">
         <center>
           <img crossOrigin="Anonymous" id="${id}cover" class="albumImg ${id}cover" src="${data.images[0].url}"></img>
@@ -180,7 +180,7 @@ async function openUserPlaylist(id) {
   document.getElementById('userplaylist_view').appendChild(f)
   for (let j = 0; j < nopenPlaylist.songs.length; j++) {
     const openPlaylistSong = nopenPlaylist.songs[j];
-    await userPlaylistSong(nopenPlaylist.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
+    await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
   }
   musicData[playlistId] = nopenPlaylist.songs
   $(`#${playlistId}UserPlaylistView`).imagesLoaded(() => {

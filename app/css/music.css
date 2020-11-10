@@ -100,13 +100,13 @@ Some are redudant but exist for future features. */
   cursor: pointer;
 }
 
-.playlist h4 {color: white !important;
+.playlist h4 {color: var(--content-primary) !important;
   margin: 0px;
   line-height: 18px;
   text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
-.playlist p {color: white !important;
+.playlist p {color: var(--content-primary) !important;
   text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
@@ -160,7 +160,7 @@ Some are redudant but exist for future features. */
   cursor: pointer;
 }
 
-.userPlaylist h4 {color: white !important;
+.userPlaylist h4 {
   display: inline-block;
   vertical-align: middle;
   margin-left: 12px;
@@ -203,6 +203,19 @@ Some are redudant but exist for future features. */
 }
 
 .playlistHeader .chip {
+  background-color: var(--bg-secondary);
+  color: var(--content-primary);
+  margin: 4px;
+}
+
+.albumHeader img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.albumHeader .chip {
   background-color: var(--bg-secondary);
   color: var(--content-primary);
   margin: 4px;

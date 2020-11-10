@@ -159,17 +159,28 @@ async function trackContext(e, el) {
 
   document.getElementById('tracktoartist').onclick = async () => {
     // Get artist from track
-    data = await goFetch(`tracks/${id}`)
-    console.log(data);
-    openArtist(data.artists[0].id)
+    if (musicData[id]) { 
+      data = musicData[id]  
+    }
+    else {
+      data = await goFetch(`tracks/${id}`)
+      window.musicData[id] = data
+      openArtist(data.artists[0].id)
+    }
     
   }
 
   document.getElementById('tracktoalbum').onclick = async () => {
     // Get artist from track
-    data = await goFetch(`tracks/${id}`)
-    openAlbum(data.album.id)
-    
+    if (musicData[id]) { 
+      data = musicData[id]  
+    }
+    else {
+      data = await goFetch(`tracks/${id}`)
+      window.musicData[id] = data
+      openAlbum(data.album.id)
+    }
+  
   }
 
 
@@ -189,7 +200,13 @@ async function trackContext(e, el) {
   // ADD PLAYLIST  
   document.getElementById("0addbtn").onclick = async () => {
     // Get track details
-    data = await goFetch(`tracks/${id}`)
+    if (musicData[id]) {
+      data = musicData[id]  
+    }
+    else {
+      data = await goFetch(`tracks/${id}`)
+      window.musicData[id] = data
+    }
     artists = artistToString(data.artists)
 
     url = await downloadSong(id, data.external_urls.spotify, data.name)
