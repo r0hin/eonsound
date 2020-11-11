@@ -68,6 +68,13 @@ function checkElements(e) {
               categoryContext(e, el)
               toggleMenuOff('category')
             }
+            else {
+              el = clickInsideElement(e, 'userPlaylist')
+              if (el) {
+                userPlaylistContext(e, el)
+                toggleMenuOff('userPlaylist')
+              }
+            }
           }
         }
       }
@@ -81,6 +88,7 @@ function toggleMenuOff(ignore) {
   document.getElementById("album_context").classList.remove("context_active");
   document.getElementById("artist_context").classList.remove("context_active");
   document.getElementById("spotifyPlaylist_context").classList.remove("context_active");
+  document.getElementById("userPlaylist_context").classList.remove("context_active");
 
   if (ignore) {
     // Toggle off everything except for ignore
@@ -253,6 +261,40 @@ async function trackContext(e, el) {
   // Copy link
   document.getElementById('copybtn').onclick = async () => {
     console.log(' Song link');
+  }
+
+}
+
+async function userPlaylistContext(e, el) {
+  e.preventDefault();
+  sessionStorage.setItem("menuOpen", "true");
+  
+  menu = document.getElementById("userPlaylist_context");
+  menu.classList.add("context_active");
+  positionMenu(e, menu)
+
+  id = el.getAttribute("playlist_details")
+
+
+  // CTX BTNS
+
+  document.getElementById('openbtnuplay').onclick = async () => {
+    // Get artist from track
+    openUserPlaylist(id)
+  }
+
+  // SONG INFO
+  document.getElementById('infobtnuplay').onclick = async () => {
+    console.log(' Playlist info');
+  }
+
+  // Copy link
+  document.getElementById('copybtnuplay').onclick = async () => {
+    console.log(' Playlist link');
+  }
+
+  document.getElementById('deletebtnuplay').onclick = async () => {
+    deleteUserPlaylist(id)
   }
 
 }

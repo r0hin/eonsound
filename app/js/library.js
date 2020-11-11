@@ -234,16 +234,18 @@ async function addAlbumToLibrary(id, skipUI) {
     // Gather album details
     // Album info
 
-    data = await goFetch(`albums/${id}`)
-    
+
+    atoldata = await goFetch(`albums/${id}`)
+    console.log(atoldata);
+
     // Add it to all the artists
-    for (let i = 0; i < data.artists.length; i++) {
-      await addArtistToLibrary(data.artists[i].id)
+    for (let i = 0; i < atoldata.artists.length; i++) {
+      await addArtistToLibrary(atoldata.artists[i].id)
     }  
 
     // For each song, add record in firebase
-    for (let i = 0; i < data.tracks.items.length; i++) {
-      const trackoskidy = data.tracks.items[i];
+    for (let i = 0; i < atoldata.tracks.items.length; i++) {
+      const trackoskidy = atoldata.tracks.items[i];
       thisArtistSnippet = ''; thisArtistSnippet2 = ''; for (let i = 0; i < trackoskidy.artists.length; i++) {
         thisArtistSnippet = thisArtistSnippet + trackoskidy.artists[i].id + ';'
         thisArtistSnippet2 = thisArtistSnippet2 + trackoskidy.artists[i].name + ';'
@@ -251,7 +253,7 @@ async function addAlbumToLibrary(id, skipUI) {
 
       await db.collection("users").doc(user.uid).collection('spotify').doc('tracks').set({
         tracks: firebase.firestore.FieldValue.arrayUnion({
-          art: data.images[0].url,
+          art: atoldata.images[0].url,
           artists: thisArtistSnippet,
           artists_display: thisArtistSnippet2,
           name: trackoskidy.name,
@@ -262,29 +264,29 @@ async function addAlbumToLibrary(id, skipUI) {
     }
 
     // Add actual album now
-    thisAlbumArtistSnippet = '';thisAlbumArtistSnippet2 = '';for (let i = 0; i < data.artists.length; i++) {
-      thisAlbumArtistSnippet = thisAlbumArtistSnippet + data.artists[i].id + ';'
-      thisAlbumArtistSnippet2 = thisAlbumArtistSnippet2 + data.artists[i].name + ';'
+    thisAlbumArtistSnippet = '';thisAlbumArtistSnippet2 = '';for (let i = 0; i < atoldata.artists.length; i++) {
+      thisAlbumArtistSnippet = thisAlbumArtistSnippet + atoldata.artists[i].id + ';'
+      thisAlbumArtistSnippet2 = thisAlbumArtistSnippet2 + atoldata.artists[i].name + ';'
     }
 
     thisAlbumDataSnippet = {
-      art: data.images[0].url,
+      art: atoldata.images[0].url,
       artists: thisAlbumArtistSnippet,
       artists_display: thisAlbumArtistSnippet2,
-      name: data.name,
-      id: data.id,
+      name: atoldata.name,
+      id: atoldata.id,
     }
 
     await db.collection('users').doc(user.uid).collection('spotify').doc('albums').set({
       albums: firebase.firestore.FieldValue.arrayUnion(thisAlbumDataSnippet),
-      map: firebase.firestore.FieldValue.arrayUnion(data.id)
+      map: firebase.firestore.FieldValue.arrayUnion(atoldata.id)
     }, {merge: true})
   
     // Added, now build
 
-    await album(data.id, data, 'libraryItem' + data.id, 'collectionAlbums')
+    await album(atoldata.id, atoldata, 'libraryItem' + atoldata.id, 'collectionAlbums')
     cacheUserAlbumsData.push(thisAlbumDataSnippet)
-    cacheUserAlbums.push(data.id)
+    cacheUserAlbums.push(atoldata.id)
  
     updateAlbumViews()
     masonryAlbums()
@@ -297,7 +299,7 @@ async function addAlbumToLibrary(id, skipUI) {
     $(`#addLibraryCol${id}`).addClass('hidden')
 
     if (!skipUI) {
-      Snackbar.show({pos: 'top-center',text: "Added " + data.name + " to library"})
+      Snackbar.show({pos: 'top-center',text: "Added " + atoldata.name + " to library"})
     }
     resolve('skiddooo')
   })
@@ -308,18 +310,22 @@ async function addTrackToLibrary(id) {
 }
 
 async function addSpotifyPlaylistToLibrary(id) {
+  yc = confirm(`-= Convert Spotify Playlist of ID ${id} to EonSound Playlist =-\n\nThis will create an EonSound playlist and sequentially add each song to the playlist. It may take a while so you can click behind the loading icon to have it run in the background. \n\nClick to confirm:`)
+  if (!yc) {
+    return;
+  }
   // Spotify playlists to library:
   // Get playlist data, convert it, add the playlist. For each song, add the song, artist and album.
   return new Promise(async (resolve, reject) => {
     toggleloader(); Snackbar.show({pos: 'top-center',text: "Converting Spotify playlist to EonSound..."})
 
     // Grab playlist data
-    data = await goFetch(`playlists/${id}`)
+    sptoldata = await goFetch(`playlists/${id}`)
     
     await db.collection('users').doc(user.uid).collection('library').doc(id).set({
-      name: data.name,
+      name: sptoldata.name,
       publicity: "public",
-      description: data.description,
+      description: sptoldata.description,
       status: true,
       owner: {
         name: cacheuser.name,
@@ -335,7 +341,7 @@ async function addSpotifyPlaylistToLibrary(id) {
     await db.collection('users').doc(user.uid).set({
       playlistsPreview: firebase.firestore.FieldValue.arrayUnion({
         cover: "https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/covers%2F" + id + ".png?alt=media",
-        name: data.name,
+        name: sptoldata.name,
         status: true,
         id: id
       })
@@ -345,11 +351,13 @@ async function addSpotifyPlaylistToLibrary(id) {
     await albumPhoto({ id: id })
     
     // For each track
-    formattedTracks = []
-    for (let i = 0; i < data.tracks.items.length; i++) {
-      const temporaryTrackItem = data.tracks.items[i].track;
+    console.log(sptoldata);
+
+    for (let i = 0; i < sptoldata.tracks.items.length; i++) {
+      const temporaryTrackItem = sptoldata.tracks.items[i].track;
 
       // Add to playlist...
+      console.log(temporaryTrackItem);
 
       url = await downloadSong(temporaryTrackItem.id, temporaryTrackItem.external_urls.spotify, temporaryTrackItem.name)
 
@@ -371,7 +379,7 @@ async function addSpotifyPlaylistToLibrary(id) {
 
       await addAlbumToLibrary(temporaryTrackItem.album.id, true)
 
-      Snackbar.show({pos: 'top-center',text: `Added ${i}/${data.tracks.items.length} tracks.`})
+      Snackbar.show({pos: 'top-center',text: `Added ${i}/${sptoldata.tracks.items.length} tracks.`})
 
     }
 
@@ -581,4 +589,3 @@ function updateTrackViews() {
     $('#coltext3').addClass('hidden')
   }
 }
-

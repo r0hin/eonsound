@@ -40,6 +40,10 @@ Styling for the right-click context menus. */
   transition: all 0s !important;
 }
 
+.contextbtndanger {
+  color: var(--danger) !important;
+}
+
 .contextbtn:hover {
   transition: all 0.3s !important;
 }

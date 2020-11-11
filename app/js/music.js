@@ -141,6 +141,7 @@ function userPlaylist(id, data, objectID, destinationID) {
     `;
     
     g = document.createElement('button')
+    g.id = 'playlistSelectItem' + id
     g.setAttribute('class', 'animated fadeIn btn-text-primary playlistButton')
     g.innerHTML = data.name
     g.onclick = () => {

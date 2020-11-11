@@ -4,6 +4,7 @@
 
 const colorThief = new ColorThief();
 window.colorThief = new ColorThief();
+window.cacheUserPlaylists = {}
 
 async function createPlaylist() {
   toggleloader();
@@ -52,6 +53,11 @@ async function createPlaylist() {
 }
 
 async function loadUserPlaylists(playlists) {
+
+  // Add all playlists to the item
+  for (let i = 0; i < playlists.length; i++) {
+    cacheUserPlaylists[playlists[i].id] = playlists[i]
+  }
 
   if (!playlists) {
     userDoc2 = await db.collection("users").doc(user.uid).get()
@@ -106,4 +112,20 @@ function changePlayCover(id) {
   });
 
   $("#newPlayEl").click();
+}
+
+
+async function deleteUserPlaylist(id) {
+  yc = confirm('Are you sure you want to delete this playlist? \n\nThis action is irreversible')
+  if (!yc) {
+    return;
+  }
+  await db.collection('users').doc(user.uid).update({
+    playlistsPreview: firebase.firestore.FieldValue.arrayRemove(cacheUserPlaylists[id])
+  })
+  
+  $(`#${id}userlibraryplaylistelement`).remove()
+  $(`#playlistSelectItem${id}`).remove()
+
+  Snackbar.show({pos: 'top-center',text: "Playlist successfully deleted."})
 }

@@ -319,6 +319,7 @@ async function openPlaylist(id) {
     <div class="row">
       <div class="col-sm"><center><button onclick="playSongs('${id}')" class="btn-contained-primary playPlaylistBtn">Play</button></center></div>
       <div class="col-sm"><center><button onclick="shuffleSongs('${id}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>
+      <div class="col-sm"><center><button onclick="addSpotifyPlaylistToLibrary('${id}')" class="btn-contained-primary albumLibraryBtn">Add to Library</button></center></div>
     </div>
     <br><br>
     <div class="songList ${id}playlistSongs" id="${id}songList"></div>
