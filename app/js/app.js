@@ -220,3 +220,15 @@ function shuffled(a) {
   }
   return a;
 }
+
+async function copyText(text) {
+  return new Promise((resolve, reject) => {
+    navigator.clipboard.writeText(text).then(function() {
+      Snackbar.show({pos: 'top-center', text: "Copied link to clipboard."})
+      resolve('Yes')
+    }, function(err) {
+      alert("Unable to copy to clipboard. Text is shown below: \n\n" + text)
+      resolve('yes')
+    });
+  })
+}

@@ -142,9 +142,9 @@ async function categoryContext(e, el) {
     openCategory(id)
   }
 
-  document.getElementById('copybtncategory').onclick = async () => {
-    console.log('copy link of' + id);
-  }
+  // document.getElementById('copybtncategory').onclick = async () => {
+  //   console.log('copy link of' + id);
+  // } ""Should I add this??""
 
   document.getElementById('infobtncategory').onclick = async () => {
     console.log('info of' + id);
@@ -260,7 +260,7 @@ async function trackContext(e, el) {
 
   // Copy link
   document.getElementById('copybtn').onclick = async () => {
-    console.log(' Song link');
+    await copyText(`https://r0hin.github.io/eonsound/preview?type=track&id=${id}`)
   }
 
 }
@@ -288,10 +288,10 @@ async function userPlaylistContext(e, el) {
     console.log(' Playlist info');
   }
 
-  // Copy link
-  document.getElementById('copybtnuplay').onclick = async () => {
-    console.log(' Playlist link');
-  }
+  // // Copy link
+  // document.getElementById('copybtnuplay').onclick = async () => {
+  //   await copyText(`https://r0hin.github.io/eonsound/preview?type=userPlaylist&id=${id}`)
+  // } fuuture maybe
 
   document.getElementById('deletebtnuplay').onclick = async () => {
     deleteUserPlaylist(id)
@@ -343,7 +343,7 @@ async function albumContext(e, el) {
 
   // Copy link
   document.getElementById('copybtn2').onclick = async () => {
-    console.log(' Album info');
+    await copyText(`https://r0hin.github.io/eonsound/preview?type=album&id=${id}`)
   }
 }
 
@@ -391,7 +391,7 @@ async function artistContext(e, el) {
 
   // Copy link
   document.getElementById('copybtnartist').onclick = async () => {
-    console.log(' Artist Link');
+    await copyText(`https://r0hin.github.io/eonsound/preview?type=artist&id=${id}`)
   }
 }
 
@@ -423,6 +423,6 @@ async function playlistContext(e, el) {
 
   // Copy link
   document.getElementById('copybtnplaylist').onclick = async () => {
-    console.log(' Playlist Link');
+    await copyText(`https://r0hin.github.io/eonsound/preview?type=playlist&id=${id}`)
   }
 }
