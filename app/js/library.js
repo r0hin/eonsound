@@ -76,7 +76,8 @@ async function loadLibraryTracks() {
     else {
       destinationID = 'collectionTracks'
     }
-    await track(temporaryTrackItem.id, temporaryTrackItem, 'libraryItem' + temporaryTrackItem.id, destinationID, i, 'tracks')
+
+    await track(temporaryTrackItem.id, temporaryTrackItem, 'libraryItem' + temporaryTrackItem.id, destinationID, 'tracks')
 
     musicData['tracks'] = cacheUserTracksData
 
@@ -125,10 +126,6 @@ async function loadLibraryArtists() {
   }
 
   updateArtistViews()
-  
-  $('#collectionArtists').imagesLoaded(() => {
-    masonryArtists()  
-  })
 }
 
 async function loadLibraryAlbums() {
@@ -171,9 +168,6 @@ async function loadLibraryAlbums() {
 
   updateAlbumViews()
   
-  $('#collectionAlbums').imagesLoaded(() => {
-    masonryAlbums()  
-  })
 }
 
 async function addTrackToPlaylist(playlistID) {
@@ -215,12 +209,22 @@ async function addArtistToLibrary(id) {
       map: firebase.firestore.FieldValue.arrayUnion(id)
     }, {merge: true})
 
+    await artist(id, {
+      images: [{url: data.images[0].url}],
+      name: data.name,
+      id: id,
+    }, 'libraryItem' + id, 'collectionArtists')
+
+    $('#artists').imagesLoaded(() => {
+      $('#libraryItem' + id).removeClass("hidden");
+    }) 
+
     resolve('successo expresso')
     return;
   })
 }
 
-async function addAlbumToLibrary(id, skipUI) {
+async function addAlbumToLibrary(id, skipUI, SKIPTRACKSFORINFINITELOOP) {
   return new Promise(async (resolve, reject) => {
     if (cacheUserArtists.includes(id)) {
       // Already contains
@@ -244,23 +248,11 @@ async function addAlbumToLibrary(id, skipUI) {
     }  
 
     // For each song, add record in firebase
-    for (let i = 0; i < atoldata.tracks.items.length; i++) {
-      const trackoskidy = atoldata.tracks.items[i];
-      thisArtistSnippet = ''; thisArtistSnippet2 = ''; for (let i = 0; i < trackoskidy.artists.length; i++) {
-        thisArtistSnippet = thisArtistSnippet + trackoskidy.artists[i].id + ';'
-        thisArtistSnippet2 = thisArtistSnippet2 + trackoskidy.artists[i].name + ';'
+    if (!SKIPTRACKSFORINFINITELOOP) {
+      // If its coming from track to library, do not add tracks in library omg.
+      for (let i = 0; i < atoldata.tracks.items.length; i++) {
+        await addTrackToLibrary(atoldata.tracks.items[i], atoldata, false, false)
       }
-
-      await db.collection("users").doc(user.uid).collection('spotify').doc('tracks').set({
-        tracks: firebase.firestore.FieldValue.arrayUnion({
-          art: atoldata.images[0].url,
-          artists: thisArtistSnippet,
-          artists_display: thisArtistSnippet2,
-          name: trackoskidy.name,
-          id: trackoskidy.id,
-        }),
-        map: firebase.firestore.FieldValue.arrayUnion(trackoskidy.id)
-      }, {merge: true})
     }
 
     // Add actual album now
@@ -284,12 +276,14 @@ async function addAlbumToLibrary(id, skipUI) {
   
     // Added, now build
 
-    await album(atoldata.id, atoldata, 'libraryItem' + atoldata.id, 'collectionAlbums')
     cacheUserAlbumsData.push(thisAlbumDataSnippet)
     cacheUserAlbums.push(atoldata.id)
- 
+
+    await album(atoldata.id, atoldata, 'libraryItem' + atoldata.id, 'collectionAlbums')
+    $('#albums').imagesLoaded(() => {
+      $('#libraryItem' + atoldata.id).removeClass("hidden");
+    })   
     updateAlbumViews()
-    masonryAlbums()
 
     if (!skipUI) {
       showcomplete()
@@ -305,8 +299,53 @@ async function addAlbumToLibrary(id, skipUI) {
   })
 }
 
-async function addTrackToLibrary(id) {
-  console.log('Add track to library');
+async function addTrackToLibrary(data, atoldata, showFeedback, addAlbumToo) {
+  return new Promise(async (resolve, reject) => {
+    trackoskidy = data // compatibility
+
+    thisArtistSnippet = ''; thisArtistSnippet2 = ''; for (let i = 0; i < data.artists.length; i++) {
+      thisArtistSnippet = thisArtistSnippet + data.artists[i].id + ';'
+      thisArtistSnippet2 = thisArtistSnippet2 + data.artists[i].name + ';'
+    }
+  
+    await db.collection("users").doc(user.uid).collection('spotify').doc('tracks').set({
+      tracks: firebase.firestore.FieldValue.arrayUnion({
+        art: atoldata.images[0].url,
+        artists: thisArtistSnippet,
+        artists_display: thisArtistSnippet2,
+        name: trackoskidy.name,
+        id: trackoskidy.id,
+      }),
+      map: firebase.firestore.FieldValue.arrayUnion(trackoskidy.id)
+    }, {merge: true})
+  
+    cacheUserTracks.push(trackoskidy.id)
+    cacheUserTracksData.push({
+      art: atoldata.images[0].url,
+      artists: thisArtistSnippet,
+      artists_display: thisArtistSnippet2,
+      name: trackoskidy.name,
+      id: trackoskidy.id,
+    })
+
+    if (addAlbumToo) {
+      // Try add album:
+      console.log('Adding albu mfrom track');
+      await addAlbumToLibrary(atoldata.id, true, true)
+    }
+
+    trackoskidy.art = atoldata.images[0].url
+    window.setTimeout(async () => {
+      await track(trackoskidy.id, trackoskidy, 'libraryItem' + trackoskidy.id, 'collectionTracks', 'tracks')
+    }, 250);
+  
+    if (showFeedback) {
+      Snackbar.show({text: data.name + ' added to your library.', pos: 'top-center'})
+    }
+
+    resolve('potpot')
+    return;
+  })
 }
 
 async function addSpotifyPlaylistToLibrary(id) {
@@ -412,7 +451,6 @@ async function favAlbum(id) {
     $(`#favAlbums`).append($(`#libraryItem${id}`))
     cacheLikedAlbums.push(id)
 
-    masonryAlbums() 
     updateAlbumViews()
   }, 650)
 
@@ -433,7 +471,6 @@ async function unfavAlbum(id) {
     $(`#collectionAlbums`).append($(`#libraryItem${id}`))
     cacheLikedAlbums.splice(cacheLikedAlbums.indexOf(id), 1);
 
-    masonryAlbums() 
     updateAlbumViews()
   }, 650)
 }
@@ -504,7 +541,6 @@ async function favArtist(id) {
     $(`#favArtists`).append($(`#libraryItem${id}`))
     cacheLikedArtists.push(id)
 
-    masonryArtists() 
     updateArtistViews()
   }, 650)
 
@@ -525,7 +561,6 @@ async function unfavArtist(id) {
     $(`#collectionArtists`).append($(`#libraryItem${id}`))
     cacheLikedArtists.splice(cacheLikedArtists.indexOf(id), 1);
 
-    masonryArtists() 
     updateArtistViews()
   }, 650)
 }

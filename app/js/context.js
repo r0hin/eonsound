@@ -234,8 +234,17 @@ async function trackContext(e, el) {
 
   // ADD LIBRARY
   document.getElementById('1addbtn').onclick = async () => {
-    // Call directly
-    addTrackToLibrary(id)
+
+    if (musicData[id]) {
+      data = musicData[id]
+    }
+    else {
+      data = await goFetch(`tracks/${id}`)
+      musicData[id] = data
+    }
+
+    // Call directly with data
+    addTrackToLibrary(data, data.album, true, true)
   }
 
   // ADD LIKED

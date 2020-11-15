@@ -156,7 +156,7 @@ function userPlaylist(id, data, objectID, destinationID) {
   })
 }
 
-function track(id, data, objectID, destinationID, index, playlist) {
+function track(id, data, objectID, destinationID, playlist) {
   return new Promise((resolve, reject) => {
     o = document.createElement('div')
     if (playlist == 'tracks') {
