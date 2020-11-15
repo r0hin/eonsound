@@ -397,7 +397,7 @@ Some are redudant but exist for future features. */
 }
 
 .albumFooter {
-  background-color: transparent;
+  background-color: var(--bg-primary);
   transition: all 0.5s;
 
   padding: 12px;

@@ -220,23 +220,7 @@ async function initSpotifyCode() {
 
   token = doc.data().access; window.spotifyToken = token;
   // Exchange refresh token for a new token
-  try {
-    const result = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: "Basic YjJiMGU0MWQwYTNlNDQ2NGIxMmViYTY2NmExZGUzNmQ6Y2MwMWM3OTExYjRjNDE2ODliOTcxMDM0ZmY5NzM1ODc=",
-    body: `grant_type=refresh_token&refresh_token=${token}`,
-    }});
-    if (result.status >= 400 && result.status < 600) {
-    throw new Error("Bad response from server");
-  }
-  const data = await result.json();
-  window.spotifyCode = data.access_token;
-  } catch (error) {
-    alert('Cannot authenticate. Try reauthenticating or contact support.')
-    Snackbar.show({pos: 'top-center',text: "If your password was changed, please reauthenticate <a href='auth.html'>here</a>."})
-  }
+  refreshCode()
 }
 
 async function search(term) {

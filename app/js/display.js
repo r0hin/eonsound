@@ -136,10 +136,15 @@ function refreshTheme() {
     partone = '--bg-primary: #f9f9f9;  --bg-secondary: #fff; --bg-tertiary: #f6f6f6; --bg-quaternary: #e7e7e7;'
     partthree = '--content-primary: black; --content-secondary: #0f0f0f; --content-tertiary: #3b3b3b; --contrast-primary: white; '
   }
-  else {
+  else if (light == 'dark') {
     injectDark()
     partone = '--bg-primary: #0D0D0D; --bg-secondary: #1D1C24; --bg-tertiary: #2F2E36; --bg-quaternary: #2F2E36;'
     partthree = '--content-primary: white; --content-secondary: #c8c8c8; --content-tertiary: #5c5c5c; --contrast-primary: black; '
+  }
+
+  else {
+    switchAuto(true)
+    return;
   }
 
   switch (color) {
