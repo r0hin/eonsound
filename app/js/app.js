@@ -40,7 +40,6 @@ async function sendVerification(el) {
 }
 
 async function appContent() {
-  tabe('browse')
   initSpotifyCode();
 
   doc = await db.collection("app").doc("details").get();

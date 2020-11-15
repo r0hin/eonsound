@@ -137,7 +137,7 @@ function userPlaylist(id, data, objectID, destinationID) {
     
     e.innerHTML = `
     <img id="${objectID}image" class="${id}cover" crossOrigin="Anonymous" src="${data.cover}&${new Date().getTime()}">
-    <h4>${data.name}</h4>
+    <h4 id="${id}name0">${data.name}</h4>
     `;
     
     g = document.createElement('button')

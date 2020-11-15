@@ -402,3 +402,21 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 .snackbar-container div {
   color: var(--content-primary) !important;
 }
+
+.list-group-item {
+  background-color: var(--bg-secondary);
+  color: var(--content-primary);
+}
+
+.list-group-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--content-primary);
+}
+
+.list-group-item:first-child {
+  border-radius: 24px 24px 0px 0px;
+}
+
+.list-group-item:last-child {
+  border-radius: 0px 0px 24px 24px;
+}

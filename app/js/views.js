@@ -4,6 +4,7 @@
 
 window.musicData = {}
 window.activeMediaIndex = 3
+window.cacheUserPlaylistData = {}
 sessionStorage.removeItem('activeView')
 
 function hideCurrentView(id) {
@@ -132,8 +133,16 @@ async function openUserPlaylist(id) {
 
   toggleloader();
 
-  doc = await db.collection('users').doc(user.uid).collection('library').doc(playlistId).get()
-  nopenPlaylist = doc.data()
+  if (cacheUserPlaylistData[playlistId]) {
+    // Cache exists
+    nopenPlaylist = cacheUserPlaylistData[playlistId]
+  }
+  else {
+    // Cache doesnt exist
+    doc = await db.collection('users').doc(user.uid).collection('library').doc(playlistId).get()
+    cacheUserPlaylistData[playlistId] = doc.data()
+    nopenPlaylist = doc.data()
+  }
 
   // Build the playlist
   f = document.createElement('div')
@@ -159,16 +168,28 @@ async function openUserPlaylist(id) {
           </div>
         </center>
       </div>
-      <div class="col-sm">
-        <center>
-          <h1>${nopenPlaylist.name}</h1>
-          <span class="chip">${nopenPlaylist.publicity}</span> <span class="chip">${nopenPlaylist.last_updated.toDate().toString().split('GMT').shift()}</span>
-          <br><br>
-          <p class="playlistDescription" oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({pos: 'top-center',text: 'Description updated.'})}, 3000)" contentEditable='true'>${description}</p>
-        </center>
-      </div>
     </div>
-    <br><br>
+    <br>
+
+    <center class="playlistHeader2">
+      <h1 id="${playlistId}name0">${nopenPlaylist.name}</h1>
+      <p class="playlistDescription" oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({pos: 'top-center',text: 'Description updated.'})}, 3000)" contentEditable='true'>${description}</p>
+    </center>
+
+    <center class="playlistActions">
+      <button onclick="userPlaylistInfo('${id}')" class="animated fadeInUp slow btn-text-primary">
+        <i class='bx bx-info-circle'></i>
+      </button>
+      <button onclick="deleteUserPlaylist('${id}')" class="animated fadeInUp slow btn-text-primary">
+        <i class='bx bx-trash'></i>
+      </button>
+      <button onclick="renameUserPlaylist('${id}')" class="animated fadeInUp slow btn-text-primary">
+        <i class='bx bx-pencil'></i>
+      </button>
+    </center>
+
+    <br>
+
     <div class="row">
       <div class="col-sm"><center><button onclick="playSongs('${playlistId}')" class="btn-contained-primary playPlaylistBtn">Play</button></center></div>
       <div class="col-sm"><center><button onclick="shuffleSongs('${playlistId}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>

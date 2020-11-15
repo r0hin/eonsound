@@ -9,6 +9,10 @@ window.cacheUserPlaylists = {}
 async function createPlaylist() {
   toggleloader();
   name = $("#playlistnamebox").val();
+  if (name == '' || name == " ") {
+    Snackbar.show({text: "Please enter a valid name.", pos: 'top-center'})
+    return;
+  }
   $("#playlistnamebox").get(0).value = "";
 
   docRef = await db.collection("users").doc(user.uid).collection("library").add({
@@ -128,4 +132,63 @@ async function deleteUserPlaylist(id) {
   $(`#playlistSelectItem${id}`).remove()
 
   Snackbar.show({pos: 'top-center',text: "Playlist successfully deleted."})
+}
+
+async function userPlaylistInfo(id) {
+
+  if (!cacheUserPlaylistData[id]) {
+    doc = await db.collection('users').doc(user.uid).collection('library').doc(id).get()
+    cacheUserPlaylistData[id] = doc.data()
+  }
+
+  $('#playlistInfo').modal('toggle')
+  $('#plinfo0').html(cacheUserPlaylistData[id].name)
+  $('#plinfo1').html(cacheUserPlaylistData[id].songs.length)
+  $('#plinfo2').html(cacheUserPlaylistData[id].last_updated.toDate().toString().split('GM').shift())
+  $('#plinfo3').html(cacheUserPlaylistData[id].created_at.toDate().toString().split('GM').shift())
+  $('#plinfo4').html(cacheUserPlaylistData[id].publicity)
+  $('#plinfo5').html(id)
+}
+
+async function renameUserPlaylist(id) {
+  newName = prompt('What would you like to rename this playlist to? \n\n')
+  if (newName == '' || newName == " ") {
+    Snackbar.show({text: "Please enter a valid name.", pos: 'top-center'})
+    return;
+  }
+  // Make the requests
+
+  await db.collection("users").doc(user.uid).collection('library').doc(id).update({
+    name: newName,
+  })
+
+
+  doc = await db.collection('users').doc(user.uid).get()
+  renameMatch = undefined;
+  // Get index of item with id id
+  for (let i = 0; i < doc.data().playlistsPreview.length; i++) {
+    if (doc.data().playlistsPreview[i].id == id) {
+      renameMatch = i
+      break;
+    }    
+  }
+
+  if (renameMatch == undefined) {
+    alert('Internal Error')
+    return;
+  }
+
+  newData = doc.data().playlistsPreview
+  newData[renameMatch].name = newName
+
+  await db.collection('users').doc(user.uid).update({
+    playlistsPreview: newData
+  })
+
+  // Change the UI
+  $(`#${id}name0`).html(newName)
+  $(`#${id}name1`).html(newName)
+  $(`#playlistSelectItem${id}`).html(newName)
+
+  Snackbar.show({text: "Playlist successfully renamed.", pos: 'top-center'}) 
 }

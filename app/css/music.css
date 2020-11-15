@@ -191,13 +191,16 @@ Some are redudant but exist for future features. */
   padding-top: 86px;
 }
 
-.playlistHeader h1 {
-  color: white;
+.playlistHeader2 h1 {
+  font-size: 34px;
+  text-transform: uppercase;
+  font-weight: 600;
+  width: 100%;
 }
 
 .playlistHeader img {
-  width: 180px;
-  height: 180px;
+  width: 250px;
+  height: 250px;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -269,6 +272,7 @@ Some are redudant but exist for future features. */
 
 .closePlaylistButton:hover {
   color: var(--eon-primary) !important;
+  background-color: var(--bg-primary) !important;
 }
 
 .songList {
@@ -322,11 +326,23 @@ Some are redudant but exist for future features. */
 }
 
 .shufflePlaylistBtn {
-  background-color: var(--contrast) !important;
+  background-color: grey !important;
   color: var(--content-primary) !important;
   border-radius: 12px;
   width: 200px;
   height: 40px;
+}
+
+.playPlaylistBtn:hover {
+  transform: scale(1.10);
+  background-color: var(--eon-primary) !important;
+  transition: all 0.5s;
+}
+
+.shufflePlaylistBtn:hover {
+  transform: scale(1.10);
+  background-color: grey !important;
+  transition: all 0.5s;
 }
 
 .albumLibraryBtn {

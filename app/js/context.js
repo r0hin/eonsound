@@ -292,9 +292,15 @@ async function userPlaylistContext(e, el) {
     openUserPlaylist(id)
   }
 
-  // SONG INFO
+  // PLAYLIST INFO
   document.getElementById('infobtnuplay').onclick = async () => {
-    console.log(' Playlist info');
+    userPlaylistInfo(id)
+  }
+
+  // Playlist rename
+
+  document.getElementById('infobtnurename').onclick = async () => {
+    renameUserPlaylist(id)
   }
 
   // // Copy link
