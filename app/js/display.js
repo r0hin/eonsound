@@ -134,12 +134,12 @@ function refreshTheme() {
   if (light == 'light') {
     injectLight()
     partone = '--bg-primary: #f9f9f9;  --bg-secondary: #fff; --bg-tertiary: #ededed; --bg-quaternary: #e7e7e7;'
-    partthree = '--content-primary: black; --content-secondary: #0f0f0f; --content-tertiary: #3b3b3b; --contrast-primary: white; '
+    partthree = '--content-primary: black; --content-secondary: #0f0f0f; --content-tertiary: #3b3b3b; --contrast-primary: white; --glow: rgba(125, 125, 125, 0.2);'
   }
   else if (light == 'dark') {
     injectDark()
     partone = '--bg-primary: #181c3a; --bg-secondary: #090d28; --bg-tertiary: #1b263b; --bg-quaternary: #2F2E36;'
-    partthree = '--content-primary: white; --content-secondary: #c8c8c8; --content-tertiary: #5c5c5c; --contrast-primary: black; '
+    partthree = '--content-primary: white; --content-secondary: #c8c8c8; --content-tertiary: #5c5c5c; --contrast-primary: black; --glow: rgba(125, 125, 125, 0.2);'
   }
 
   else {
@@ -211,4 +211,69 @@ async function switchAuto(skipMSG) {
 function switchColor(color) {
   localStorage.setItem('es_theme_color', color)  
   refreshTheme()
+}
+
+function artistToString(artists) {
+  if (artists.length == 1) {
+    return artists[0].name
+  }
+  
+  snippet = ''
+
+  for (let i = 0; i < artists.length; i++) {
+    const artist = artists[i].name;
+    if (i == artists.length - 1) {
+      // Last item
+      snippet = snippet + 'and ' + artist
+    }
+    else {
+      // Regular item
+      snippet = snippet + artist + ', '
+    }
+  }
+
+  return snippet
+}
+
+function genresToString(genres) {
+  if (genres.length == 1) {
+    return artists[0]
+  }
+  
+  snippet = ''
+
+  for (let i = 0; i < genres.length; i++) {
+    const genre = genres[i];
+    if (i == genres.length - 1) {
+      // Last item
+      snippet = snippet + 'and ' + genre
+    }
+    else {
+      // Regular item
+      snippet = snippet + genre + ', '
+    }
+  }
+
+  return snippet
+}
+
+
+function nFormatter(num, digits) {
+  var si = [
+    { value: 1, symbol: "" },
+    { value: 1E3, symbol: "k" },
+    { value: 1E6, symbol: "M" },
+    { value: 1E9, symbol: "G" },
+    { value: 1E12, symbol: "T" },
+    { value: 1E15, symbol: "P" },
+    { value: 1E18, symbol: "E" }
+  ];
+  var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  var i;
+  for (i = si.length - 1; i > 0; i--) {
+    if (num >= si[i].value) {
+      break;
+    }
+  }
+  return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }

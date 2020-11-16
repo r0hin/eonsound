@@ -5,6 +5,7 @@
 window.musicData = {}
 window.activeMediaIndex = 3
 window.cacheUserPlaylistData = {}
+window.activeLoading = false
 sessionStorage.removeItem('activeView')
 
 function hideCurrentView(id) {
@@ -27,6 +28,13 @@ function hideCurrentView(id) {
 }
 
 async function openAlbum(id) {
+  if (activeLoading) {
+    console.error('Trying to load too fast. Stopped an action.')
+    return
+  }
+  else {
+    activeLoading = true
+  }
   // Open spotify album of id
   sessionStorage.setItem('activeView', id + 'AlbumView')
   console.log('Opening album of ' + id);
@@ -41,13 +49,12 @@ async function openAlbum(id) {
     }, 80)
     $(`#${id}AlbumView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
     activeMediaIndex++
+    activeLoading = false
     return;
   }
 
   window.aeo = id
   window.apo = cacheUserAlbums
-
-  toggleloader();
 
   // Album info
   data = await goFetch(`albums/${id}`)
@@ -95,7 +102,6 @@ async function openAlbum(id) {
   $(`#${id}AlbumView`).imagesLoaded(() => {
     // colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
     $(`#${id}AlbumView`).removeClass('hidden')
-    window.setTimeout(() => {toggleloader()}, 500)
 
     if (cacheUserAlbums.includes(id)) {
       // Added, don't show add button
@@ -109,11 +115,19 @@ async function openAlbum(id) {
   initButtonsContained()
   initButtonsText()
 
-  console.log(data);
+  activeLoading = false
 
 }
 
 async function openUserPlaylist(id) {
+  if (activeLoading) {
+    console.error('Trying to load too fast. Stopped an action.')
+    return
+  }
+  else {
+    activeLoading = true
+  }
+
   console.log('Opening playlist of ' + id);
   playlistId = id
   sessionStorage.setItem('activeView', playlistId + 'UserPlaylistView')
@@ -128,10 +142,9 @@ async function openUserPlaylist(id) {
     }, 80)
     $(`#${id}UserPlaylistView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
     activeMediaIndex++
+    activeLoading = false
     return;
   }
-
-  toggleloader();
 
   if (cacheUserPlaylistData[playlistId]) {
     // Cache exists
@@ -199,6 +212,8 @@ async function openUserPlaylist(id) {
     <br><br>
   `
   document.getElementById('userplaylist_view').appendChild(f)
+  $(`#${id}UserPlaylistView`).removeClass('hidden')
+
   for (let j = 0; j < nopenPlaylist.songs.length; j++) {
     const openPlaylistSong = nopenPlaylist.songs[j];
     await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
@@ -206,14 +221,22 @@ async function openUserPlaylist(id) {
   musicData[playlistId] = nopenPlaylist.songs
   $(`#${playlistId}UserPlaylistView`).imagesLoaded(() => {
     colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
-    $(`#${id}UserPlaylistView`).removeClass('hidden')
-    window.setTimeout(() => {toggleloader()}, 500)
   })
   initButtonsContained()
   initButtonsText()
+
+  activeLoading = false
 }
 
 async function openArtist(id) {
+  if (activeLoading) {
+    console.error('Trying to load too fast. Stopped an action.')
+    return
+  }
+  else {
+    activeLoading = true
+  }
+
   // Open spotify album of id
   sessionStorage.setItem('activeView', id + 'ArtistView')
   console.log('Opening artist of ' + id);
@@ -228,14 +251,14 @@ async function openArtist(id) {
     }, 80)
     $(`#${id}ArtistView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
     activeMediaIndex++
+    activeLoading = false
     return;
   }
 
-  toggleloader();
-
   // Artist info
   data = await goFetch(`artists/${id}`)
-  dataAlbums = await goFetch(`artists/${id}/albums`)
+  dataTracks = await goFetch(`artists/${id}/top-tracks?country=us`)
+  dataAlbums = await goFetch(`artists/${id}/albums?include_groups=album`)
 
   // Build the album
   g = document.createElement('div')
@@ -256,21 +279,63 @@ async function openArtist(id) {
   }
   g.innerHTML = `
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}ArtistView')"><i class='bx bx-x'></i></button>
-
     <img class="artistHero" src="${data.images[0].url}"></img>
-    <br><br><br><br>
-    <center>
+    <div class="artistHeaderLeft">
       <h1>${data.name}</h1>
-      <p>${popularity}% Popularity</p>
-    </center>
+      <p>${popularity}% EonSound Popularity</p>
+    </div>
+    <div class="artistHeaderRight">
+    <button class="btn-contained-primary shuffleArtistBtn"><i class='bx bx-shuffle'></i></button>
+    <button class="btn-contained-primary playArtistBtn"><i class='bx bx-play'></i></button>
+    </div>
     <br><br><br><br><br>
+    <h4>Featured Albums</h4>
     <div class="artist_albums" id="artist_albums_${data.id}"></div>
+    <div class="row artist_content">
+      <div class="col-sm">
+        <h3>Popular</h3>
+        <div class="songList ${id}artistSongs" id="${id}artistSongs"></div>
+      </div>
+      <div class="col-sm">
+        <h3>Details</h3>
+
+        <div class="card artist_details">
+          <div class="card_body">
+            <img src="${data.images[0].url}"></img>
+            <h3>${data.name}</h3>
+            <p>${genresToString(data.genres)}.</p>
+
+            <div class="row">
+              <div class="col-sm">
+                <h2>${nFormatter(data.followers.total, 1)}</h2>
+                <h4>Followers</h4>
+              </div>
+              <div class="col-sm">
+                <h2>${data.popularity}%</h2>
+                <h4>Popularity</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
   `
   document.getElementById('artist_view').appendChild(g)
+  $(`#${id}ArtistView`).removeClass('hidden')
   
   // Fill up artist albums
+  // Remove possible duplices cause some records reupload albums basically just wasting space.....
+  preventDuplicateArtistAlbumsCache = []
   for (let i = 0; i < dataAlbums.items.length; i++) {
+    if (preventDuplicateArtistAlbumsCache.includes(dataAlbums.items[i].name)) {
+      continue;
+    }
+    else {
+      preventDuplicateArtistAlbumsCache.push(dataAlbums.items[i].name)
+    }
+    
     await album(dataAlbums.items[i].id, dataAlbums.items[i], dataAlbums.items[i].id + 'albumItem', `artist_albums_${data.id}`)
     $('#' + dataAlbums.items[i].id + 'albumItem').imagesLoaded(() => {
       // colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
@@ -278,18 +343,30 @@ async function openArtist(id) {
     })
   }
 
-  $(`#${id}ArtistView`).imagesLoaded(() => {
-    // colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
-    $(`#${id}ArtistView`).removeClass('hidden')
-    window.setTimeout(() => {toggleloader()}, 500)
-  })
+  // Fill up artist tracks
+  for (let j = 0; j < dataTracks.tracks.length; j++) {
+    const openArtistSong = dataTracks.tracks[j];
+    await albumSong(openArtistSong.id, openArtistSong, id + openArtistSong.id, id + 'artistSongs', j, id, openArtistSong.album.images[0].url)
+  }
+
+  // $(`#${id}ArtistView`).imagesLoaded(() => {
+  //   colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
+  // })
 
   initButtonsContained()
 
-  console.log(data);
+  activeLoading = false
 }
 
 async function openPlaylist(id) {
+  if (activeLoading) {
+    console.error('Trying to load too fast. Stopped an action.')
+    return
+  }
+  else {
+    activeLoading = true
+  }
+
   // Open Spotify Playlist of ID
   sessionStorage.setItem('activeView', id + 'PlaylistView')
   console.log('Opening playlist of ' + id);
@@ -304,10 +381,9 @@ async function openPlaylist(id) {
     }, 80)
     $(`#${id}PlaylistView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
     activeMediaIndex++
+    activeLoading = false
     return;
   }
-
-  toggleloader();
 
   // Playlist info
   data = await goFetch(`playlists/${id}`)
@@ -347,6 +423,8 @@ async function openPlaylist(id) {
     <br><br>
   `
   document.getElementById('playlist_view').appendChild(p)
+  $(`#${id}PlaylistView`).removeClass('hidden')
+
   for (let j = 0; j < data.tracks.items.length; j++) {
     const openNonUserPlaylistSong = data.tracks.items[j];
     await albumSong(openNonUserPlaylistSong.track.id, openNonUserPlaylistSong.track, openNonUserPlaylistSong.track.id + 'playlistItem', id + 'songList', j, id, openNonUserPlaylistSong.track.album.images[0].url)
@@ -360,14 +438,22 @@ async function openPlaylist(id) {
 
   $(`#${id}PlaylistView`).imagesLoaded(() => {
     colorThiefify('userPlaylistView', id + 'cover', id + 'playlistgradientelement')
-    $(`#${id}PlaylistView`).removeClass('hidden')
-    window.setTimeout(() => {toggleloader()}, 500)
   })
   initButtonsContained()
   initButtonsText()
+
+  activeLoading = false
 }
 
 async function openCategory(id) {
+  if (activeLoading) {
+    console.error('Trying to load too fast. Stopped an action.')
+    return
+  }
+  else {
+    activeLoading = true
+  }
+
   sessionStorage.setItem('activeView', id + 'CategoryView')
   console.log('Opening category of ', id);
   // Open Spotify Category of ID
@@ -382,10 +468,9 @@ async function openCategory(id) {
     }, 80)
     $(`#${id}CategoryView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
     activeMediaIndex++
+    activeLoading = false
     return;
   }
-
-  toggleloader();
 
   // Playlist info
   data = await goFetch(`browse/categories/${id}`)
@@ -418,6 +503,7 @@ async function openCategory(id) {
     <br><br>
   `
   document.getElementById('category_view').appendChild(p)
+  $(`#${id}CategoryView`).removeClass('hidden')
 
   for (let j = 0; j < playlistData.playlists.items.length; j++) {
     const openNonUserPlaylist = playlistData.playlists.items[j];
@@ -430,10 +516,10 @@ async function openCategory(id) {
 
   $(`#${id}CategoryView`).imagesLoaded(() => {
     colorThiefify('userPlaylistView', id + 'cover', id + 'playlistgradientelement')
-    $(`#${id}CategoryView`).removeClass('hidden')
-    window.setTimeout(() => {toggleloader()}, 500)
   })
 
   initButtonsContained()
   initButtonsText()
+
+  activeLoading = false
 }

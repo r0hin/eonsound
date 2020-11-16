@@ -1,51 +1,52 @@
 // fetch.js 
-// Code readability functions for fetching spotify data.
+// Code readability functions for fetching spotify fetchData.
 
 async function goFetch(url) {
   return new Promise(async (resolve, reject) => {
 
-    const result = await fetch(`https://api.spotify.com/v1/${url}`, {
+    fetchResult = await fetch(`https://api.spotify.com/v1/${url}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${spotifyCode}`,
       },
     });
 
-    const data = await result.json();
+    fetchData = await fetchResult.json();
 
-    if (data.error) {
+    if (fetchData.error) {
+      console.log(fetchData.error);
       refreshCode()
 
-      const result = await fetch(`${url}`, {
+      result = await fetch(`https://api.spotify.com/v1/${url}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${spotifyCode}`,
         },
       });
   
-      const data = await result.json();
-      
-      if (data.error) {
+      fetchData = await result.json();
+
+      if (fetchData.error) {
         Snackbar.show({pos: 'top-center',text: "Error occured. Please try again later."})
         refreshCode()
-        reject(data)
+        reject(fetchData)
         return;
       }
 
       refreshCode()
-      resolve(data)
-      return data
+      resolve(fetchData)
+      return fetchData
     }
 
     refreshCode()
-    resolve(data)
-    return data
+    resolve(fetchData)
+    return fetchData
 
   })  
 }
 
 async function refreshCode() {
-  const result = await fetch("https://accounts.spotify.com/api/token", {
+  result = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -55,6 +56,6 @@ async function refreshCode() {
     body: `grant_type=refresh_token&refresh_token=${spotifyToken}`,
   });
 
-  const data = await result.json();
-  window.spotifyCode = data.access_token;
+  fetchData = await result.json();
+  window.spotifyCode = fetchData.access_token;
 }

@@ -89,8 +89,8 @@ audio {
 }
 
 .fastest {
-  -webkit-animation-duration: .3s;
-  animation-duration: .3s;
-  -webkit-animation-duration: calc(var(--animate-duration)/3);
-  animation-duration: calc(var(--animate-duration)/3);
+  -webkit-animation-duration: .2s;
+  animation-duration: .2s;
+  -webkit-animation-duration: calc(var(--animate-duration)/4);
+  animation-duration: calc(var(--animate-duration)/4);
 }

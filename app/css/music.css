@@ -286,38 +286,6 @@ Some are redudant but exist for future features. */
   display: block; 
 }
 
-.userSong {
-  border-radius: 12px; width: 100%;
-  padding: 12px; cursor: pointer;
-  background: transparent;
-  display: block;
-}
-
-.userSong img {
-  display: inline-block; border-radius: 4px;
-  width: 36px; margin-right: 12px;
-}
-
-.userSong b {
-  display: inline-block;
-  font-size: 18px;
-  margin: 0px; line-height: 12px;
-  vertical-align: middle;
-  text-overflow:ellipsis; max-width: 80%; overflow: hidden; white-space: nowrap;
-}
-
-.userSong p {
-  transform: translate(0, -50%);
-  position: absolute;
-  top: 50%; right: 12px;
-  margin: 0px; line-height: 0px;
-}
-
-.userSong:hover {
-  background-color: var(--bg-tertiary);
-  transition: all 0.1s;
-}
-
 .playPlaylistBtn {
   background-color: var(--eon-primary) !important;
   border-radius: 12px;
@@ -353,34 +321,42 @@ Some are redudant but exist for future features. */
   height: 40px;
 }
 
-.albumSong {
+.Song {
   border-radius: 12px; width: 100%;
-  padding: 12px; cursor: pointer;
-  background-color: transparent;
+  padding: 8px; cursor: pointer;
+  background: transparent;
   display: block;
 }
 
-.albumSong img {
+.Song img {
   display: inline-block; border-radius: 4px;
   width: 36px; margin-right: 12px;
 }
 
-.albumSong b {
+.track_data {
   display: inline-block;
-  font-size: 18px;
-  margin: 0px; line-height: 0px;
+  width: calc(100% - 36px - 12px - 12px);
   vertical-align: middle;
 }
 
-.albumSong p {color: white !important;
-  transform: translate(0, -50%);
-  position: absolute;
-  top: 50%; right: 12px;
-  margin: 0px; line-height: 0px;
+.Song b {
+  display: inline-block;
+  font-size: 18px;
+  margin: 0px; line-height: 12px;
+  text-overflow:ellipsis; max-width: 100%; overflow: hidden; white-space: nowrap;
+  padding-bottom: 2px;
 }
 
-.albumSong:hover {
-  background-color: var(--bg-tertiary);
+.Song p {
+  margin: 0px;
+  padding-top: 2px;
+  line-height: 8px;
+  font-size: 6px;
+  color: var(--content-secondary);
+}
+
+.Song:hover {
+  background-color: var(--glow);
   transition: all 0.1s;
 }
 
@@ -456,4 +432,60 @@ Some are redudant but exist for future features. */
 #browse_categories {
   text-align: center;
   margin-bottom: 26px;
+}
+
+.artistHeaderLeft {
+  position: absolute;
+  left: 140px;
+}
+
+.artistHeaderLeft h1 {
+  text-transform: uppercase;
+  font-size: 48px;
+  font-weight: 600;
+}
+
+.artistHeaderLeft p {
+  margin-top: -12px;
+}
+
+.playArtistBtn {
+  background-color: var(--eon-primary) !important;
+  color: var(--content-primary) !important;
+  right: 24px !important;
+  top: 86px; height: 48px; width: 48px;
+  min-width: 0px; padding: 12px 8px 12px 8px;
+  margin-right: 6px; margin-left: 6px; border-radius: 24px; 
+  position: absolute; z-index: 900000020;
+}
+
+.shuffleArtistBtn {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--content-primary) !important;
+  top: 86px; right: 84px; height: 48px; width: 48px;
+  min-width: 0px; padding: 12px 8px 12px 8px;
+  margin-right: 6px; margin-left: 6px; border-radius: 24px; 
+  position: absolute; z-index: 900000020;
+}
+
+.shuffleArtistBtn:hover {
+  color: var(--eon-primary) !important;
+  background-color: var(--bg-primary) !important;
+}
+
+.artist_content h3{
+  margin-top: 24px;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+
+.artist_details {
+  text-align: center;
+  padding: 24px;
+}
+
+.artist_details img {
+  width: 180px;
+  border-radius: 50%;
 }

@@ -40,6 +40,24 @@ async function sendVerification(el) {
 }
 
 async function appContent() {
+
+  if (window.location.href.includes('firebaseapp')) {
+    // Production version: show browse
+    if (!localStorage.getItem('firstTimeOpen')) {
+      localStorage.setItem('firstTimeOpen', '.')
+      tabe('first')
+    }
+    else {
+      tabe('browse')
+    }
+  }
+  else {
+    if (!localStorage.getItem('firstTimeOpen')) {
+      localStorage.setItem('firstTimeOpen', '.')
+      tabe('first')
+    }
+  }
+
   initSpotifyCode();
 
   doc = await db.collection("app").doc("details").get();
@@ -186,28 +204,6 @@ async function changepfp() {
   }, 800);
 
   $("#newpicel").remove();
-}
-
-function artistToString(artists) {
-  if (artists.length == 1) {
-    return artists[0].name
-  }
-  
-  snippet = ''
-
-  for (let i = 0; i < artists.length; i++) {
-    const artist = artists[i].name;
-    if (i == artists.length - 1) {
-      // Last item
-      snippet = snippet + 'and ' + artist
-    }
-    else {
-      // Regular item
-      snippet = snippet + artist + ', '
-    }
-  }
-
-  return snippet
 }
 
 function shuffled(a) {

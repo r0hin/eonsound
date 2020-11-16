@@ -130,7 +130,7 @@ function playlist(id, data, objectID, destinationID) {
 function userPlaylist(id, data, objectID, destinationID) {
   return new Promise((resolve, reject) => {
     e = document.createElement('div')
-    e.setAttribute('class', 'hidden animated fadeIn faster userPlaylist')
+    e.setAttribute('class', 'hidden animated fadeIn faster shadow userPlaylist')
     e.setAttribute('playlist_details', id)
     e.setAttribute('onclick', "openUserPlaylist('" + id + "')")
     e.id = objectID
@@ -162,7 +162,7 @@ function track(id, data, objectID, destinationID, playlist) {
     if (playlist == 'tracks') {
       desintationSpecific = ' trackLibraryItem'
     }
-    o.setAttribute('class', 'hidden animated fadeIn faster userSong song' + desintationSpecific)
+    o.setAttribute('class', 'hidden animated fadeIn faster Song song' + desintationSpecific)
     o.setAttribute('track_details', id)
     o.id = objectID
     
@@ -193,9 +193,11 @@ function track(id, data, objectID, destinationID, playlist) {
     
     o.innerHTML = `
     <div class="content">
-    <img src="${data.art}"></img>
-    <b>${data.name}</b>
-    <p>${artists}</p>
+      <img src="${data.art}"></img>
+      <div class="track_data">
+        <b>${data.name}</b>
+        <p>${artists}</p>
+      </div>
     </div>
     `
     
@@ -232,7 +234,7 @@ function searchTrack(id, data, objectID, destinationID) {
 function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
   return new Promise((resolve, reject) => {
     f = document.createElement('div')
-    f.setAttribute('class', 'userSong animated flipInX song')
+    f.setAttribute('class', 'Song animated flipInX song')
     f.setAttribute('id', objectID)
     f.setAttribute('track_details', id)
     f.onclick = () => {
@@ -241,8 +243,10 @@ function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
     
     f.innerHTML = `
     <img src="${data.art}"></img>
-    <b>${data.name}</b>
-    <p>${data.artists}</p>
+    <div class="track_data">
+      <b>${data.name}</b>
+      <p>${data.artists}</p>
+    </div>
     `
     $(`#${destinationID}`).get(0).appendChild(f)
     resolve('Success')
@@ -252,7 +256,7 @@ function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
 function albumSong(id, data, objectID, destinationID, index, album, art) {
   return new Promise((resolve, reject) => {
     h = document.createElement('div')
-    h.setAttribute('class', 'albumSong animated flipInX song')
+    h.setAttribute('class', 'Song animated flipInX song')
     h.setAttribute('id', objectID)
     h.setAttribute('track_details', id)
     h.onclick = () => {
@@ -261,9 +265,11 @@ function albumSong(id, data, objectID, destinationID, index, album, art) {
     
     h.innerHTML = `
     <div class="content">
-    <img src="${art}"></img>
-    <b>${data.name}</b>
-    <p>${artistToString(data.artists)}</p>
+      <img src="${art}"></img>
+      <div class="track_data">
+        <b>${data.name}</b>
+        <p>${artistToString(data.artists)}</p>
+      </div>
     </div>
     `
     $(`#${destinationID}`).get(0).appendChild(h)
@@ -568,7 +574,7 @@ function visualQ_build() {
   $('#queueItems').empty()
   
   document.getElementById('queueNow').innerHTML = `
-  <div class="userSong animated fadeInUp song" track_details="${musicActive.id}">
+  <div class="Song animated fadeInUp song" track_details="${musicActive.id}">
   <img src="${musicActive.art}"></img>
   <b>${musicActive.name}</b>
   <p>${musicActive.artists}</p>
@@ -578,7 +584,7 @@ function visualQ_build() {
   for (let i = 0; i < musicQueue.length; i++) {
     const data = musicQueue[i]
     p = document.createElement('div')
-    p.setAttribute('class', 'userSong animated flipInX song')
+    p.setAttribute('class', 'Song animated flipInX song')
     p.setAttribute('track_details', data.id)
     p.onclick = () => {
       playSongsAtQueueIndex(i)
@@ -586,8 +592,10 @@ function visualQ_build() {
     
     p.innerHTML = `
     <img src="${data.art}"></img>
-    <b>${data.name}</b>
-    <p>${data.artists}</p>
+    <div class="track_data">
+      <b>${data.name}</b>
+      <p>${data.artists}</p>
+    </div>
     `
     
     document.getElementById('queueItems').appendChild(p)
