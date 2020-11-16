@@ -15,6 +15,7 @@ async function createPlaylist() {
   }
   $("#playlistnamebox").get(0).value = "";
 
+  $('#nothingInPlaylists').addClass('hidden')
   docRef = await db.collection("users").doc(user.uid).collection("library").add({
     name: name,
     publicity: "public",
@@ -67,6 +68,10 @@ async function loadUserPlaylists(playlists) {
     userDoc2 = await db.collection("users").doc(user.uid).get()
     window.cacheuser = userDoc2.data();
     playlists = userDoc2.data().playlistsPreview
+  }
+
+  if (!playlists.length) {
+    $('#nothingInPlaylists').removeClass('hidden')
   }
   
   for (let i = 0; i < playlists.length; i++) {

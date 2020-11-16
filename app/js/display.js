@@ -277,3 +277,12 @@ function nFormatter(num, digits) {
   }
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
+
+function reOrderAlbumLibrary(id) {
+  console.log('Sorting album based off track indexes.');
+
+  var $wrapper = $(`#${id}AlbumSongslib`)
+  $wrapper.find('.song').sort(function(a, b) {
+    return +a.getAttribute('track_album_index') - +b.getAttribute('track_album_index')
+  }).appendTo($wrapper);
+}

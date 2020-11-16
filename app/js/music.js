@@ -34,7 +34,7 @@ function category(id, data, objectID, destinationID) {
   })
 }
 
-function album(id, data, objectID, destinationID) {
+function album(id, data, objectID, destinationID, library) {
   return new Promise((resolve, reject) => {
     
     a = document.createElement('div')
@@ -42,8 +42,8 @@ function album(id, data, objectID, destinationID) {
     a.setAttribute('album_details', id)
     a.id = objectID
     
-    if (data.artists_formatted) {
-      artists = data.artists_formatted
+    if (typeof(data.artists) == 'string') {
+      artists = data.artists
     }
     else {
       artists = artistToString(data.artists)
@@ -60,7 +60,7 @@ function album(id, data, objectID, destinationID) {
     
     a.innerHTML = `
     <div class="content shadow">
-    <img id="${data.id}PreviewImage" crossOrigin="Anonymous" onclick="openAlbum('${data.id}')" src="${data.images[0].url}">
+    <img id="${data.id}PreviewImage" crossOrigin="Anonymous" onclick="openAlbum('${data.id}', ${library})" src="${data.images[0].url}">
     <div id="${data.id}PreviewFooter" class="albumFooter">
     <h4>${data.name}</h4>
     <p>${artists}</p>
@@ -166,9 +166,8 @@ function track(id, data, objectID, destinationID, playlist) {
     o.setAttribute('track_details', id)
     o.id = objectID
     
-    if (data.artists_display) {
-      // Use first for now
-      artists = data.artists_display.split(';').shift()
+    if (typeof(data.artists) == 'string') {
+      artists = data.artists
     }
     else {
       artists = artistToString(data.artists)
@@ -193,7 +192,7 @@ function track(id, data, objectID, destinationID, playlist) {
     
     o.innerHTML = `
     <div class="content">
-      <img src="${data.art}"></img>
+      <img src="${art}"></img>
       <div class="track_data">
         <b>${data.name}</b>
         <p>${artists}</p>
@@ -260,16 +259,22 @@ function albumSong(id, data, objectID, destinationID, index, album, art) {
     h.setAttribute('class', 'Song animated flipInX song')
     h.setAttribute('id', objectID)
     h.setAttribute('track_details', id)
+    num = undefined; if (data.track_number) { num = data.track_number } else { num = data.item_num }
+    h.setAttribute('track_album_index', num)
     h.onclick = () => {
       playSongsAtIndex(index, album)
     }
     
+    // Artist formatting
+    if (typeof(data.artists) == 'string') { albumsongartists = data.artists }
+    else { albumsongartists = artistToString(data.artists) }
+
     h.innerHTML = `
     <div class="content">
       <img src="${art}"></img>
       <div class="track_data">
         <b>${data.name}</b>
-        <p>${artistToString(data.artists)}</p>
+        <p>${albumsongartists}</p>
       </div>
     </div>
     `
@@ -580,15 +585,20 @@ function skipForward() {
 function visualQ_build() {
   $('#queueItems').empty()
   
-  document.getElementById('queueNow').innerHTML = `
-  <div class="Song animated fadeInUp song" track_details="${musicActive.id}">
-    <img src="${musicActive.art}"></img>
-    <div class="track_details">
-      <b>${musicActive.name}</b>
-      <p>${musicActive.artists}</p>
+  if (musicActive.none !== 'none') {
+    document.getElementById('queueNow').innerHTML = `
+    <div class="Song animated fadeInUp song" track_details="${musicActive.id}">
+      <img src="${musicActive.art}"></img>
+      <div class="track_details">
+        <b>${musicActive.name}</b>
+        <p>${musicActive.artists}</p>
+      </div>
     </div>
-  </div>
-  `
+    `
+  }
+  else {
+    document.getElementById('queueNow').innerHTML = ''
+  }
   
   for (let i = 0; i < musicQueue.length; i++) {
     const data = musicQueue[i]

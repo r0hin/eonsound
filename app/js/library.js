@@ -22,6 +22,7 @@ async function loadLibrary() {
   }
   else {
     window.cacheUserArtists = []
+    window.cacheUserArtistsData = []
   }
 
   doc = await db.collection('users').doc(user.uid).collection('spotify').doc('albums').get()
@@ -35,6 +36,7 @@ async function loadLibrary() {
   }
   else {
     window.cacheUserAlbums = []
+    window.cacheUserAlbumsData = []
   }
 
   doc = await db.collection('users').doc(user.uid).collection('spotify').doc('tracks').get()
@@ -48,6 +50,7 @@ async function loadLibrary() {
   }
   else {
     window.cacheUserTracks = []
+    window.cacheUserTracksData = []
   }
 }
 
@@ -66,6 +69,11 @@ async function loadLibraryTracks() {
 
   if (cacheLikedTracks.length) {
     $('#favtext3').removeClass('hidden')
+  }
+
+  if (!cacheLikedTracks.length && !cacheUserTracks.length) {
+    // no items
+    $('#nothingInSongs').removeClass('hidden')
   }
 
   for (let i = 0; i < cacheUserTracksData.length; i++) {
@@ -104,6 +112,11 @@ async function loadLibraryArtists() {
 
   if (cacheLikedArtists.length) {
     $('#favtext2').removeClass('hidden')
+  }
+
+  if (!cacheLikedArtists.length && !cacheUserArtists.length) {
+    // no items
+    $('#nothingInArtists').removeClass('hidden')
   }
 
   for (let i = 0; i < cacheUserArtistsData.length; i++) {
@@ -145,6 +158,11 @@ async function loadLibraryAlbums() {
     $('#favtext').removeClass('hidden')
   }
 
+  if (!cacheLikedAlbums.length && !cacheUserAlbums.length) {
+    // no items
+    $('#nothingInAlbums').removeClass('hidden')
+  }
+
   for (let i = 0; i < cacheUserAlbumsData.length; i++) {
     const temporaryAlbumItem = cacheUserAlbumsData[i];
     if (cacheLikedAlbums.includes(temporaryAlbumItem.id)) {
@@ -156,10 +174,10 @@ async function loadLibraryAlbums() {
     await album(temporaryAlbumItem.id, {
       images: [{url: temporaryAlbumItem.art}],
       // Only do first artist for now
-      artists_formatted:temporaryAlbumItem.artists_display.split(';')[0],
+      artists: temporaryAlbumItem.artists,
       name: temporaryAlbumItem.name,
       id: temporaryAlbumItem.id,
-    }, 'libraryItem' + temporaryAlbumItem.id, destinationID)
+    }, 'libraryItem' + temporaryAlbumItem.id, destinationID, true)
 
     $('#albums').imagesLoaded(() => {
       $('#libraryItem' + temporaryAlbumItem.id).removeClass("hidden");
@@ -193,7 +211,7 @@ async function addTrackToPlaylist(playlistID) {
   })
 
   // ADD TRACK TO LIBRARY
-  addTrackToLibrary(prepareTrackPlaylistTrack.id)
+  addTrackToLibrary(prepareTrackPlaylistTrack.id, true, true)
 
   // REFLECT IN UI
   if (cacheUserPlaylistData[playlistID]) {
@@ -232,8 +250,9 @@ async function addArtistToLibrary(id) {
 
     $('#artists').imagesLoaded(() => {
       $('#libraryItem' + id).removeClass("hidden");
+      $('#nothingInArtists').addClass('hidden')
+      $('#coltext2').removeClass('hidden')
     }) 
-
     resolve('successo expresso')
     return;
   })
@@ -271,16 +290,10 @@ async function addAlbumToLibrary(id, skipUI, SKIPTRACKSFORINFINITELOOP) {
       }
     }
 
-    // Add actual album now
-    thisAlbumArtistSnippet = '';thisAlbumArtistSnippet2 = '';for (let i = 0; i < atoldata.artists.length; i++) {
-      thisAlbumArtistSnippet = thisAlbumArtistSnippet + atoldata.artists[i].id + ';'
-      thisAlbumArtistSnippet2 = thisAlbumArtistSnippet2 + atoldata.artists[i].name + ';'
-    }
-
     thisAlbumDataSnippet = {
       art: atoldata.images[0].url,
-      artists: thisAlbumArtistSnippet,
-      artists_display: thisAlbumArtistSnippet2,
+      artists: artistToString(atoldata.artists),
+      artists_code: atoldata.artists[0].id,
       name: atoldata.name,
       id: atoldata.id,
     }
@@ -295,9 +308,10 @@ async function addAlbumToLibrary(id, skipUI, SKIPTRACKSFORINFINITELOOP) {
     cacheUserAlbumsData.push(thisAlbumDataSnippet)
     cacheUserAlbums.push(atoldata.id)
 
-    await album(atoldata.id, atoldata, 'libraryItem' + atoldata.id, 'collectionAlbums')
+    await album(atoldata.id, atoldata, 'libraryItem' + atoldata.id, 'collectionAlbums', true)
     $('#albums').imagesLoaded(() => {
       $('#libraryItem' + atoldata.id).removeClass("hidden");
+      $('#nothingInAlbums').addClass('hidden')
     })   
     updateAlbumViews()
 
@@ -317,17 +331,23 @@ async function addAlbumToLibrary(id, skipUI, SKIPTRACKSFORINFINITELOOP) {
 
 async function addTrackToLibrary(trackID, showFeedback, showAlbumToo) {
   // TrackID: the id of the track. Data will be handled here optimized.
+  // We don't know the album ID of the song in some scenarios so make sure the album is fkijgnj included
   // Show feedback: to show feedback thats it added.
   // Show album too: To add the album of track to library as well. Should be to false if we're adding all songs in an album.
 
   return new Promise(async(resolve, reject) => {
     // First, get the track data
     if (!musicData[trackID]) {
-      trackLibraryData = goFetch('tracks/' + trackID)
+      trackLibraryData = await goFetch('tracks/' + trackID)
       musicData[trackID] = trackLibraryData
     }
     else {
       trackLibraryData = musicData[trackID]
+      if (!trackLibraryData.album) {
+        trackLibraryData = await goFetch('tracks/' + trackID)
+        musicData[trackID] = trackLibraryData
+        trackLibraryData = musicData[trackID]
+      }
     }
 
     // Now, format the artists
@@ -336,7 +356,10 @@ async function addTrackToLibrary(trackID, showFeedback, showAlbumToo) {
     // Update the database
     dataToPush = {
       art: trackLibraryData.album.images[0].url,
+      album: trackLibraryData.album.id,
       artists: artists,
+      explicit: trackLibraryData.explicit,
+      item_num: trackLibraryData.track_number,
       name: trackLibraryData.name,
       id: trackID,
     }
@@ -357,6 +380,15 @@ async function addTrackToLibrary(trackID, showFeedback, showAlbumToo) {
 
     window.setTimeout(async () => {
       await track(trackID, trackLibraryData, 'libraryItem' + trackID, 'collectionTracks', 'tracks')
+      await albumSong(trackID, trackLibraryData, trackLibraryData.album.id + trackID + 'lib',trackLibraryData.album.id + 'AlbumSongslib', 0, trackLibraryData.album.id + 'lib', trackLibraryData.album.images[0].url)
+      reOrderAlbumLibrary(trackLibraryData.album.id)
+
+      $('#songs').imagesLoaded(() => {
+        $('#libraryItem' + trackID).removeClass("hidden");
+        $('#nothingInSongs').addClass('hidden')
+        $('#coltext3').removeClass('hidden')
+      })  
+
       if (showFeedback) {
         Snackbar.show({text: data.name + ' added to your library.', pos: 'top-center'})
       }

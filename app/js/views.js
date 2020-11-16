@@ -19,7 +19,7 @@ function hideCurrentView(id) {
     }, 400)
     return;
   }
-  // Do it for all:
+  // Do it all:
   $('.media_view').removeClass('fadeIn')
   $('.media_view').addClass('fadeOut')
   window.setTimeout(() => {
@@ -27,27 +27,39 @@ function hideCurrentView(id) {
   }, 400)
 }
 
-async function openAlbum(id) {
+async function openAlbum(id, library) {
   if (activeLoading) {
     console.error('Trying to load too fast. Stopped an action.')
     return
   }
   else {
     activeLoading = true
+    window.setTimeout(() => {
+      activeLoading = false
+    }, 1500)
   }
   // Open spotify album of id
   sessionStorage.setItem('activeView', id + 'AlbumView')
   console.log('Opening album of ' + id);
 
-  if ($(`#${id}AlbumView`).length) {
-    $(`#${id}AlbumView`).addClass('hidden')
-    $(`#${id}AlbumView`).removeClass('fadeIn')
-    $(`#${id}AlbumView`).removeClass('fadeOut')
+  if (library) {
+    openAlbumLibraryStatus = 'lib'
+    showFullAbum = `<button data-toggle="tooltip" data-placement="top" title="Show Full Album" onclick="openAlbum('${id}')" class="animated fadeInUp btn-text-primary"> <i class='bx bx-list-plus'></i> </button>`
+  }
+  else {
+    openAlbumLibraryStatus = ''
+    showFullAbum = ''
+  }
+
+  if ($(`#${id}${openAlbumLibraryStatus}AlbumView`).length) {
+    $(`#${id}${openAlbumLibraryStatus}AlbumView`).addClass('hidden')
+    $(`#${id}${openAlbumLibraryStatus}AlbumView`).removeClass('fadeIn')
+    $(`#${id}${openAlbumLibraryStatus}AlbumView`).removeClass('fadeOut')
     window.setTimeout(() => {
-      $(`#${id}AlbumView`).addClass('fadeIn')
-      $(`#${id}AlbumView`).removeClass('hidden')
+      $(`#${id}${openAlbumLibraryStatus}AlbumView`).addClass('fadeIn')
+      $(`#${id}${openAlbumLibraryStatus}AlbumView`).removeClass('hidden')
     }, 80)
-    $(`#${id}AlbumView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+    $(`#${id}${openAlbumLibraryStatus}AlbumView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
     activeMediaIndex++
     activeLoading = false
     return;
@@ -57,60 +69,145 @@ async function openAlbum(id) {
   window.apo = cacheUserAlbums
 
   // Album info
-  data = await goFetch(`albums/${id}`)
+  if (!library) {
+    // Get required data from API.
+    data = await goFetch(`albums/${id}`)
+    musicData[id] = data
+    openAlbumData = {
+      id: data.id,
+      artists: artistToString(data.artists),
+      artists_code: data.artists[0].id,
+      art: data.images[0].url,
+      name: data.name,
+    }
+  }
+  else {
+    // Get required data from cache.
+
+    // Get index of item in map...
+    match = undefined
+    for (let i = 0; i < cacheUserAlbums.length; i++) {
+      if (cacheUserAlbums[i] == id) {
+        match = i
+      } 
+    }
+    if (match == undefined) {
+      alert("Internal Error")
+    }
+
+    openAlbumData = {
+      id: cacheUserAlbumsData[match].id,
+      artists: cacheUserAlbumsData[match].artists,
+      artists_code: cacheUserAlbumsData[match].artists_code,
+      art: cacheUserAlbumsData[match].art,
+      name: cacheUserAlbumsData[match].name,
+    }
+  }
   
   // Build the album
   g = document.createElement('div')
-  g.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'AlbumView')
-  g.setAttribute('id', id + 'AlbumView')
+  g.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + openAlbumLibraryStatus + 'AlbumView')
+  g.setAttribute('id', id + openAlbumLibraryStatus + 'AlbumView')
   g.setAttribute('style', `z-index: ${activeMediaIndex} !important`)
   activeMediaIndex++
   g.innerHTML = `
-    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}AlbumView')"><i class='bx bx-x'></i></button>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}${openAlbumLibraryStatus}AlbumView')"><i class='bx bx-x'></i></button>
+
+    <center class="albumSide0">
+      <div class="content">
+        <img crossOrigin="Anonymous" id="${id}cover" class="albumImg ${id}cover" src="${openAlbumData.art}"></img>
+        <br><br>
+        <div id="${id}Librarychip${openAlbumLibraryStatus}" class="hidden animated fadeInUp">
+          <span class="chip">Library</span>
+        </div>
+      </div>
+    </center>
 
     <div class="row">
       <div class="col-4">
-        <center class="albumSide0">
-          <img crossOrigin="Anonymous" id="${id}cover" class="albumImg ${id}cover" src="${data.images[0].url}"></img>
-        </center>
       </div>
       <div class="col-8">
         <div class="albumHeader">
-          <h1>${data.name}</h1>
-          <p>${artistToString(data.artists)}</p>
+          <h1>${openAlbumData.name}</h1>
+          <p>${openAlbumData.artists}</p>
         </div>
         <center class="playlistActions">
-          <button onclick="openArtist('${data.artists[0].id}')" class="animated fadeInUp slow btn-text-primary">
+          <button data-toggle="tooltip" data-placement="top" title="Show Artist" onclick="openArtist('${openAlbumData.artists_code}')" class="animated fadeInUp btn-text-primary">
             <i class='bx bx-user-voice'></i>
           </button>
-          <button onclick="albumInfo('${id}')" class="animated fadeInUp slow btn-text-primary">
+          <button data-toggle="tooltip" data-placement="top" title="Album Info" onclick="albumInfo('${id}')" class="animated fadeInUp btn-text-primary">
             <i class='bx bx-info-circle'></i>
           </button>
-          <button id="addLibraryCol${id}" onclick="addAlbumToLibrary('${id}')" class="hidden animated fadeInUp slow btn-text-primary">
+          <button data-toggle="tooltip" data-placement="top" title="Add to Library" id="addLibraryCol${id}" onclick="addAlbumToLibrary('${id}')" class="hidden animated fadeInUp btn-text-primary">
             <i class='bx bx-add-to-queue'></i>
           </button>
+          ${showFullAbum}
         </center>
         <br>
         <div class="row">
           <div class="col-sm"><center><button onclick="playSongs('${id}')" class="btn-contained-primary playPlaylistBtn">Play</button><br><br></center></div>
           <div class="col-sm"><center><button onclick="shuffleSongs('${id}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button><br><br></center></div>
         </div>
-        <div class="songList ${id}AlbumSongs" id="${id}AlbumSongs"></div>
+        <div class="songList ${id}AlbumSongs${openAlbumLibraryStatus}" id="${id}AlbumSongs${openAlbumLibraryStatus}"></div>
       </div>
     </div>
     <br><br><br>
   `
   document.getElementById('album_view').appendChild(g)
+  $(`#${id}${openAlbumLibraryStatus}AlbumView`).removeClass('hidden')
 
-  for (let j = 0; j < data.tracks.items.length; j++) {
-    const openAlbumSong = data.tracks.items[j];
-    await albumSong(openAlbumSong.id, openAlbumSong, id + openAlbumSong.id, id + 'AlbumSongs', j, id, data.images[0].url)
+  // Two different track algorithms required if library or not:
+
+  if (!library) {
+    // Get from data
+    for (let j = 0; j < data.tracks.items.length; j++) {
+      const openAlbumSong = data.tracks.items[j];
+      await albumSong(openAlbumSong.id, openAlbumSong, id + openAlbumSong.id, id + 'AlbumSongs' + openAlbumLibraryStatus, j, id, data.images[0].url)
+    }
+    musicData[id] = data.tracks.items
   }
-  musicData[id] = data.tracks.items
+  else {
+    // Get from list of library tracks
+    dataToBuild = []
+    for (let j = 0; j < cacheUserTracksData.length; j++) {
+      if (cacheUserTracksData[j].album == id) {
+        dataToBuild.push({
+          id: cacheUserTracksData[j].id,
+          name: cacheUserTracksData[j].name,
+          artists: cacheUserTracksData[j].artists,
+          item_num: cacheUserTracksData[j].item_num,
+          album: {
+            id: cacheUserTracksData[j].album,
+            images: [
+              {
+                url: cacheUserTracksData[j].art
+              }
+            ]
+          }
+        })
+      }      
+    }
+
+    // Reorganize the dataToBuild depending on item_num
+
+    // Build it sequentially
+    dataToBuild.forEach(async dataToBuildItem => {
+      await albumSong(dataToBuildItem.id, dataToBuildItem, id + dataToBuildItem.id + openAlbumLibraryStatus, id + 'AlbumSongs' + openAlbumLibraryStatus, 0, id + openAlbumLibraryStatus, dataToBuildItem.album.images[0].url)
+    });
+
+    reOrderAlbumLibrary(id)
+
+  }
 
   $(`#${id}AlbumView`).imagesLoaded(() => {
     // colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
-    $(`#${id}AlbumView`).removeClass('hidden')
+
+    if (library) {
+      $(`#${id}Librarychip${openAlbumLibraryStatus}`).removeClass('hidden')
+    }
+    else {
+      $(`#${id}Librarychip${openAlbumLibraryStatus}`).addClass('hidden')
+    }
 
     if (cacheUserAlbums.includes(id)) {
       // Added, don't show add button
@@ -121,10 +218,13 @@ async function openAlbum(id) {
       $(`#addLibraryCol${id}`).removeClass('hidden')
     }
   })
+
+  activeLoading = false;
+  
   initButtonsContained()
   initButtonsText()
-
-  activeLoading = false
+  $('[data-toggle="tooltip"]').tooltip();
+  return;
 
 }
 
@@ -135,6 +235,9 @@ async function openUserPlaylist(id) {
   }
   else {
     activeLoading = true
+    window.setTimeout(() => {
+      activeLoading = false
+    }, 1500)
   }
 
   console.log('Opening playlist of ' + id);
@@ -199,13 +302,13 @@ async function openUserPlaylist(id) {
     </center>
 
     <center class="playlistActions">
-      <button onclick="userPlaylistInfo('${id}')" class="animated fadeInUp slow btn-text-primary">
+      <button onclick="userPlaylistInfo('${id}')" class="animated fadeInUp btn-text-primary">
         <i class='bx bx-info-circle'></i>
       </button>
-      <button onclick="deleteUserPlaylist('${id}')" class="animated fadeInUp slow btn-text-primary">
+      <button onclick="deleteUserPlaylist('${id}')" class="animated fadeInUp btn-text-primary">
         <i class='bx bx-trash'></i>
       </button>
-      <button onclick="renameUserPlaylist('${id}')" class="animated fadeInUp slow btn-text-primary">
+      <button onclick="renameUserPlaylist('${id}')" class="animated fadeInUp btn-text-primary">
         <i class='bx bx-pencil'></i>
       </button>
     </center>
@@ -244,6 +347,9 @@ async function openArtist(id) {
   }
   else {
     activeLoading = true
+    window.setTimeout(() => {
+      activeLoading = false
+    }, 1500)
   }
 
   // Open spotify album of id
@@ -373,6 +479,9 @@ async function openPlaylist(id) {
   }
   else {
     activeLoading = true
+    window.setTimeout(() => {
+      activeLoading = false
+    }, 1500)
   }
 
   // Open Spotify Playlist of ID
@@ -460,6 +569,9 @@ async function openCategory(id) {
   }
   else {
     activeLoading = true
+    window.setTimeout(() => {
+      activeLoading = false
+    }, 1500)
   }
 
   sessionStorage.setItem('activeView', id + 'CategoryView')

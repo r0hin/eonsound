@@ -333,11 +333,13 @@
       </div>
       <button data-toggle="modal" data-target="#playlistCreate" class="float btn-text-primary iconbtn"> <i class='bx bx-plus-circle'></i> </button>
       <br><br>
+      <div class="hidden animated fadeIn" id="nothingInPlaylists"> <center> <br><br> <h3><i class="bx bx-border-none gradicon"></i></h3> <h2>No Created Playlists</h2> <p>Create a playlist to add songs to!</p> </center> </div>
       <div id="user_library_playlists"></div>
       <br><br>
     </div>
     <div class="tab hidden animated fadeIn fastest" id="artists">
       <p class="tab-subtitle">Artists</p>
+      <div class="hidden animated fadeIn" id="nothingInArtists"> <center> <br><br> <h3><i class="bx bx-border-none gradicon"></i></h3> <h2>Empty Artist Library</h2> <p>Add artists to your library and it will show up here!</p> </center> </div>
       <div id="favtext2" class="hidden animated fadeIn">
         <h2 class="tab-title">Favorites</h2>
         <div id="favArtists"></div>
@@ -351,6 +353,7 @@
     </div>
     <div class="tab hidden animated fadeIn fastest" id="albums">
       <p class="tab-subtitle">Albums</p>
+      <div class="hidden animated fadeIn" id="nothingInAlbums"> <center> <br><br> <h3><i class="bx bx-border-none gradicon"></i></h3> <h2>Empty Album Library</h2> <p>Add albums to your library and it will show up here!</p> </center> </div>
       <div id="favtext" class="hidden animated fadeIn">
         <h2 class="tab-title">Favorites</h2>
         <div id="favAlbums"></div>
@@ -364,6 +367,7 @@
     </div>
     <div class="tab hidden animated fadeIn fastest" id="songs">
       <p class="tab-subtitle">Songs</p>
+      <div class="hidden animated fadeIn" id="nothingInSongs"> <center> <br><br> <h3><i class="bx bx-border-none gradicon"></i></h3> <h2>Empty Song Library</h2> <p>Add songs to your library and it will show up here!</p> </center> </div>
       <div id="feattext" class="hidden animated fadeIn">
         <h2 class="tab-title">Featured</h2>
         <div id="featuredTracks"></div>

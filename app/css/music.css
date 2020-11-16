@@ -199,10 +199,29 @@ Some are redudant but exist for future features. */
 }
 
 .playlistHeader img {
-  width: 250px;
-  height: 250px;
+  width: 90%;
+  height: 90%;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.albumSide0 .content {
+  max-width: 25%;
+  min-height: 1px;
+  padding: 108px 20px 0px 20px;
+  text-align: center;
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+}
+
+.albumSide0 {
+  position: absolute;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: calc(100% - 32px);
+  height: 100%;
+  text-align: left;
 }
 
 .playlistHeader .chip {
@@ -231,18 +250,8 @@ Some are redudant but exist for future features. */
   font-weight: 600;
 }
 
-.albumSide0 {
-  position: sticky;
-  width: 100%;
-  top: 30%; transform: translate(0, -50%);
-}
-
 .albumHeader p {
   color: var(--content-secondary);
-}
-
-.col-4 {
-  min-height: 600px;
 }
 
 .albumHeader .chip {
@@ -417,7 +426,7 @@ Some are redudant but exist for future features. */
 }
 
 
-#artists, #albums, #playlists {
+#artists, #albums, #playlists, #songs {
   margin: 12px 48px;
 }
 
