@@ -195,7 +195,7 @@
   <!-- Header Navigation-->
 
   <div class="fadeInDown" id="nav">
-    <img class="animated fadeInLeft slower" src="assets/eonsound.png" alt="">
+    <img class="animated fadeInUp slower" src="assets/eonsound.png" alt="">
 
     <button onclick="tabe('queue')" id="showQueue" data-toggle="tooltip" data-placement="bottom" title="Show Queue" class="animated fadeInUp slow btn-text-primary animated hidden">
       <i class='bx bx-list-check' ></i>
@@ -228,7 +228,7 @@
         </button>
         <div class="dropdown-menu menu">
           <a id="playingaddplaylistbtn" data-toggle="modal" data-target="#playlistSelect" class="dr-item">Add to Playlist</a>
-          <a onclick="addTrackToLibrary(prepare_library_changes)" class="dr-item">Add to Library</a>
+          <a id="addLibrary0" class="dr-item">Add to Library</a>
           <div class="dropdown-divider"></div>
           <a id="goAlbum0" class="dr-item">Go to Album</a>
           <a id="goArtist0" class="dr-item">Go to Artist</a>
@@ -323,6 +323,7 @@
 
       <h2 class="tab-title">Up Next</h2>
       <div id="queueItems"></div>
+      <br><br>
       <br><br>
     </div>
     <div class="tab hidden animated fadeIn fastest" id="playlists">
@@ -502,6 +503,7 @@
       <li class="context-menu__item">
         <button id="copybtn" class="btn-text-primary contextbtn">Copy Link</button>
       </li>
+      <div id="trackdeletecontent"></div>
     </ul>
   </nav>
 

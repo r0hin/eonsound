@@ -152,6 +152,9 @@ async function userPlaylistInfo(id) {
 
 async function renameUserPlaylist(id) {
   newName = prompt('What would you like to rename this playlist to? \n\n')
+  if (!newName) {
+    return;
+  }
   if (newName == '' || newName == " ") {
     Snackbar.show({text: "Please enter a valid name.", pos: 'top-center'})
     return;
@@ -191,4 +194,8 @@ async function renameUserPlaylist(id) {
   $(`#playlistSelectItem${id}`).html(newName)
 
   Snackbar.show({text: "Playlist successfully renamed.", pos: 'top-center'}) 
+}
+
+async function removeTrackFromPlaylist(songID, playlistID) {
+  console.log('remove from play', songID, playlistID);
 }

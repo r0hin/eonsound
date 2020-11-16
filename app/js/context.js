@@ -161,7 +161,7 @@ async function trackContext(e, el) {
   positionMenu(e, menu)
 
   id = el.getAttribute("track_details")
-
+  contextPlaylist = el.getAttribute("track_playlist")
 
   // TRACK TO ALBUM/ARTIST
 
@@ -211,23 +211,14 @@ async function trackContext(e, el) {
     if (musicData[id]) {
       data = musicData[id]  
     }
+
     else {
       data = await goFetch(`tracks/${id}`)
       window.musicData[id] = data
     }
-    artists = artistToString(data.artists)
 
-    url = await downloadSong(id, data.external_urls.spotify, data.name)
-
-    window.prepare_library_changes = {
-      id: id,
-      url: url.data,
-      art: data.album.images[0].url,
-      artists: artists,
-      name: data.name,
-      length: data.duration_ms,
-      type: 'track',
-    };
+    // This is all the data you need to add to playlist.
+    window.prepare_library_changes = data
 
     $('#playlistSelect').modal('toggle')
   };
@@ -270,6 +261,18 @@ async function trackContext(e, el) {
   // Copy link
   document.getElementById('copybtn').onclick = async () => {
     await copyText(`https://r0hin.github.io/eonsound/preview?type=track&id=${id}`)
+  }
+
+  if (contextPlaylist) {
+    // We know this track is in a playlist. Offer button to remove it
+    $('#trackdeletecontent').html(`
+      <div class="context_divider"></div>
+      <button onclick="removeTrackFromPlaylist('${id}', '${contextPlaylist}')" class="btn-text-danger contextbtn contextbtndanger">Remove from Playlist</button>
+    `)
+    initButtonsText()
+  }
+  else {
+    $('#trackdeletecontent').html(``)
   }
 
 }

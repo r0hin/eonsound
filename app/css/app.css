@@ -109,7 +109,6 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   right: 0px; top: 0px;
   height: 100%; width: calc(100% - 280px);
   padding: 36px; overflow-y: auto;
-  border-left: 1px solid rgb(222, 220, 231, 0.1);
 }
 
 #usercard {
@@ -318,7 +317,6 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   background-color: var(--glass);
   backdrop-filter: blur(18px);
   z-index: 900000040;
-  border-left: 1px solid rgb(222, 220, 231, 0.1);
 
   display: flex;
   align-items: center;

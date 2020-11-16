@@ -68,28 +68,37 @@ async function openAlbum(id) {
   g.innerHTML = `
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}AlbumView')"><i class='bx bx-x'></i></button>
 
-    <div class="albumHeader row">
-      <div class="col-sm">
-        <center>
+    <div class="row">
+      <div class="col-4">
+        <center class="albumSide0">
           <img crossOrigin="Anonymous" id="${id}cover" class="albumImg ${id}cover" src="${data.images[0].url}"></img>
         </center>
       </div>
-      <div class="col-sm">
-        <center>
+      <div class="col-8">
+        <div class="albumHeader">
           <h1>${data.name}</h1>
           <p>${artistToString(data.artists)}</p>
+        </div>
+        <center class="playlistActions">
+          <button onclick="openArtist('${data.artists[0].id}')" class="animated fadeInUp slow btn-text-primary">
+            <i class='bx bx-user-voice'></i>
+          </button>
+          <button onclick="albumInfo('${id}')" class="animated fadeInUp slow btn-text-primary">
+            <i class='bx bx-info-circle'></i>
+          </button>
+          <button id="addLibraryCol${id}" onclick="addAlbumToLibrary('${id}')" class="hidden animated fadeInUp slow btn-text-primary">
+            <i class='bx bx-add-to-queue'></i>
+          </button>
         </center>
+        <br>
+        <div class="row">
+          <div class="col-sm"><center><button onclick="playSongs('${id}')" class="btn-contained-primary playPlaylistBtn">Play</button><br><br></center></div>
+          <div class="col-sm"><center><button onclick="shuffleSongs('${id}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button><br><br></center></div>
+        </div>
+        <div class="songList ${id}AlbumSongs" id="${id}AlbumSongs"></div>
       </div>
     </div>
-    <br><br>
-    <div class="row">
-      <div class="col-sm"><center><button onclick="playSongs('${id}')" class="btn-contained-primary playPlaylistBtn">Play</button></center></div>
-      <div class="col-sm"><center><button onclick="shuffleSongs('${id}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>
-      <div class="col-sm hidden animated fadeIn" id="addLibraryCol${id}"><center><button onclick="addAlbumToLibrary('${id}')" class="btn-contained-primary albumLibraryBtn">Add to Library</button></center></div>
-    </div>
-    <br><br>
-    <div class="songList ${id}AlbumSongs" id="${id}AlbumSongs"></div>
-    <br><br>
+    <br><br><br>
   `
   document.getElementById('album_view').appendChild(g)
 
@@ -209,7 +218,7 @@ async function openUserPlaylist(id) {
     </div>
     <br><br>
     <div class="songList ${playlistId}playlistSongs" id="${playlistId}playlistSongs"></div>
-    <br><br>
+    <br><br><br>
   `
   document.getElementById('userplaylist_view').appendChild(f)
   $(`#${id}UserPlaylistView`).removeClass('hidden')
@@ -258,7 +267,7 @@ async function openArtist(id) {
   // Artist info
   data = await goFetch(`artists/${id}`)
   dataTracks = await goFetch(`artists/${id}/top-tracks?country=us`)
-  dataAlbums = await goFetch(`artists/${id}/albums?include_groups=album`)
+  dataAlbums = await goFetch(`artists/${id}/albums?include_groups=album,single`)
 
   // Build the album
   g = document.createElement('div')
@@ -285,8 +294,8 @@ async function openArtist(id) {
       <p>${popularity}% EonSound Popularity</p>
     </div>
     <div class="artistHeaderRight">
-    <button class="btn-contained-primary shuffleArtistBtn"><i class='bx bx-shuffle'></i></button>
-    <button class="btn-contained-primary playArtistBtn"><i class='bx bx-play'></i></button>
+      <button class="btn-contained-primary shuffleArtistBtn"><i class='bx bx-shuffle'></i></button>
+      <button class="btn-contained-primary playArtistBtn"><i class='bx bx-play'></i></button>
     </div>
     <br><br><br><br><br>
     <h4>Featured Albums</h4>
@@ -298,29 +307,28 @@ async function openArtist(id) {
       </div>
       <div class="col-sm">
         <h3>Details</h3>
+        <center>
+          <div class="card artist_details">
+            <div class="card_body">
+              <img src="${data.images[0].url}"></img>
+              <h3>${data.name}</h3>
+              <p>${genresToString(data.genres)}.</p>
 
-        <div class="card artist_details">
-          <div class="card_body">
-            <img src="${data.images[0].url}"></img>
-            <h3>${data.name}</h3>
-            <p>${genresToString(data.genres)}.</p>
-
-            <div class="row">
-              <div class="col-sm">
-                <h2>${nFormatter(data.followers.total, 1)}</h2>
-                <h4>Followers</h4>
-              </div>
-              <div class="col-sm">
-                <h2>${data.popularity}%</h2>
-                <h4>Popularity</h4>
+              <div class="row">
+                <div class="col-sm">
+                  <h2>${nFormatter(data.followers.total, 1)}</h2>
+                  <h4>Followers</h4>
+                </div>
+                <div class="col-sm">
+                  <h2>${data.popularity}%</h2>
+                  <h4>Popularity</h4>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
+        </center>
       </div>
     </div>
-
   `
   document.getElementById('artist_view').appendChild(g)
   $(`#${id}ArtistView`).removeClass('hidden')
@@ -420,7 +428,7 @@ async function openPlaylist(id) {
     </div>
     <br><br>
     <div class="songList ${id}playlistSongs" id="${id}songList"></div>
-    <br><br>
+    <br><br><br>
   `
   document.getElementById('playlist_view').appendChild(p)
   $(`#${id}PlaylistView`).removeClass('hidden')
@@ -500,7 +508,7 @@ async function openCategory(id) {
     </div>
     <br><br>
     <div class="playlistList ${id}playlistSongs" id="${id}playlistList"></div>
-    <br><br>
+    <br><br><br>
   `
   document.getElementById('category_view').appendChild(p)
   $(`#${id}CategoryView`).removeClass('hidden')

@@ -211,11 +211,38 @@ Some are redudant but exist for future features. */
   margin: 4px;
 }
 
-.albumHeader img {
-  width: 180px;
-  height: 180px;
+.albumImg {
+  width: 100%;
   object-fit: cover;
   border-radius: 8px;
+  display: inline-block;
+}
+
+.albumHeader {
+  padding-left: 24px;
+  text-align: left;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.albumHeader h1 {
+  text-transform: uppercase;
+  font-size: 44px;
+  font-weight: 600;
+}
+
+.albumSide0 {
+  position: sticky;
+  width: 100%;
+  top: 30%; transform: translate(0, -50%);
+}
+
+.albumHeader p {
+  color: var(--content-secondary);
+}
+
+.col-4 {
+  min-height: 600px;
 }
 
 .albumHeader .chip {
@@ -299,6 +326,12 @@ Some are redudant but exist for future features. */
   border-radius: 12px;
   width: 200px;
   height: 40px;
+}
+
+.albumLibraryBtn:hover {
+  transform: scale(1.10);
+  background-color: orange !important;
+  transition: all 0.5s;
 }
 
 .playPlaylistBtn:hover {

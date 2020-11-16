@@ -174,20 +174,35 @@ async function addTrackToPlaylist(playlistID) {
   // GET TRACK INFO
   const prepareTrackPlaylistTrack = prepare_library_changes
 
+  const prepareForLibraryTrack = {
+    name: prepareTrackPlaylistTrack.name,
+    id: prepareTrackPlaylistTrack.id,
+    art: prepareTrackPlaylistTrack.album.images[0].url,
+    artists: artistToString(prepareTrackPlaylistTrack.artists),
+    length: prepareTrackPlaylistTrack.duration_ms
+  }
+
   // GET TRACK DOWNLOAD URL
   if (!prepareTrackPlaylistTrack.url) {
-    prepareTrackPlaylistTrack.url = await downloadSong(prepareTrackPlaylistTrack.id, prepareTrackPlaylistTrack.spotifyURL, prepareTrackPlaylistTrack.name)
+    prepareForLibraryTrack.url = await downloadSong(prepareTrackPlaylistTrack.id, prepareTrackPlaylistTrack.spotifyURL, prepareTrackPlaylistTrack.name)
   }
   
   // ADD TRACK TO PLAYLIST
   await db.collection('users').doc(user.uid).collection('library').doc(playlistID).update({
-    songs: firebase.firestore.FieldValue.arrayUnion(prepareTrackPlaylistTrack)
+    songs: firebase.firestore.FieldValue.arrayUnion(prepareForLibraryTrack)
   })
 
   // ADD TRACK TO LIBRARY
   addTrackToLibrary(prepareTrackPlaylistTrack.id)
 
-  Snackbar.show({pos: 'top-center',text: "Added '" + prepareTrackPlaylistTrack.name + "' to a playlist."})
+  // REFLECT IN UI
+  if (cacheUserPlaylistData[playlistID]) {
+    // If its loaded, you update the UI and use the cache data as the queue idnex.
+    await userPlaylistSong(prepareForLibraryTrack.id, prepareForLibraryTrack, playlistID + prepareForLibraryTrack.id, playlistID + 'playlistSongs', cacheUserPlaylistData[playlistID].songs.length, playlistId )
+    // If it's not loaded, theres no problem since it will get loaded next time you view it.
+  }
+
+  Snackbar.show({pos: 'top-center',text: "Added '" + prepareForLibraryTrack.name + "' to a playlist."})
 }
 
 async function addArtistToLibrary(id) {
@@ -251,7 +266,8 @@ async function addAlbumToLibrary(id, skipUI, SKIPTRACKSFORINFINITELOOP) {
     if (!SKIPTRACKSFORINFINITELOOP) {
       // If its coming from track to library, do not add tracks in library omg.
       for (let i = 0; i < atoldata.tracks.items.length; i++) {
-        await addTrackToLibrary(atoldata.tracks.items[i], atoldata, false, false)
+        musicData[atoldata.tracks.items[i].id] = atoldata.tracks.items[i]
+        await addTrackToLibrary(atoldata.tracks.items[i].id, false, false)
       }
     }
 
@@ -299,52 +315,56 @@ async function addAlbumToLibrary(id, skipUI, SKIPTRACKSFORINFINITELOOP) {
   })
 }
 
-async function addTrackToLibrary(data, atoldata, showFeedback, addAlbumToo) {
-  return new Promise(async (resolve, reject) => {
-    trackoskidy = data // compatibility
+async function addTrackToLibrary(trackID, showFeedback, showAlbumToo) {
+  // TrackID: the id of the track. Data will be handled here optimized.
+  // Show feedback: to show feedback thats it added.
+  // Show album too: To add the album of track to library as well. Should be to false if we're adding all songs in an album.
 
-    thisArtistSnippet = ''; thisArtistSnippet2 = ''; for (let i = 0; i < data.artists.length; i++) {
-      thisArtistSnippet = thisArtistSnippet + data.artists[i].id + ';'
-      thisArtistSnippet2 = thisArtistSnippet2 + data.artists[i].name + ';'
+  return new Promise(async(resolve, reject) => {
+    // First, get the track data
+    if (!musicData[trackID]) {
+      trackLibraryData = goFetch('tracks/' + trackID)
+      musicData[trackID] = trackLibraryData
     }
-  
+    else {
+      trackLibraryData = musicData[trackID]
+    }
+
+    // Now, format the artists
+    artists = artistToString(trackLibraryData.artists)
+
+    // Update the database
+    dataToPush = {
+      art: trackLibraryData.album.images[0].url,
+      artists: artists,
+      name: trackLibraryData.name,
+      id: trackID,
+    }
     await db.collection("users").doc(user.uid).collection('spotify').doc('tracks').set({
-      tracks: firebase.firestore.FieldValue.arrayUnion({
-        art: atoldata.images[0].url,
-        artists: thisArtistSnippet,
-        artists_display: thisArtistSnippet2,
-        name: trackoskidy.name,
-        id: trackoskidy.id,
-      }),
-      map: firebase.firestore.FieldValue.arrayUnion(trackoskidy.id)
+      tracks: firebase.firestore.FieldValue.arrayUnion(dataToPush),
+      map: firebase.firestore.FieldValue.arrayUnion(trackID)
     }, {merge: true})
-  
-    cacheUserTracks.push(trackoskidy.id)
-    cacheUserTracksData.push({
-      art: atoldata.images[0].url,
-      artists: thisArtistSnippet,
-      artists_display: thisArtistSnippet2,
-      name: trackoskidy.name,
-      id: trackoskidy.id,
-    })
 
-    if (addAlbumToo) {
-      // Try add album:
-      console.log('Adding albu mfrom track');
-      await addAlbumToLibrary(atoldata.id, true, true)
+    // Reflect in the UI
+    cacheUserTracks.push(trackID)
+    cacheUserTracksData.push(dataToPush)
+
+    if (showAlbumToo) {
+      // Try to add the album if its requested
+      console.log('Adding album as well from track');
+      await addAlbumToLibrary(trackLibraryData.album.id, true, true)
     }
 
-    trackoskidy.art = atoldata.images[0].url
     window.setTimeout(async () => {
-      await track(trackoskidy.id, trackoskidy, 'libraryItem' + trackoskidy.id, 'collectionTracks', 'tracks')
+      await track(trackID, trackLibraryData, 'libraryItem' + trackID, 'collectionTracks', 'tracks')
+      if (showFeedback) {
+        Snackbar.show({text: data.name + ' added to your library.', pos: 'top-center'})
+      }
     }, 250);
-  
-    if (showFeedback) {
-      Snackbar.show({text: data.name + ' added to your library.', pos: 'top-center'})
-    }
 
     resolve('potpot')
     return;
+
   })
 }
 

@@ -137,7 +137,7 @@ function userPlaylist(id, data, objectID, destinationID) {
     
     e.innerHTML = `
     <img id="${objectID}image" class="${id}cover" crossOrigin="Anonymous" src="${data.cover}&${new Date().getTime()}">
-    <h4 id="${id}name0">${data.name}</h4>
+    <h4 id="${id}name1">${data.name}</h4>
     `;
     
     g = document.createElement('button')
@@ -237,6 +237,7 @@ function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
     f.setAttribute('class', 'Song animated flipInX song')
     f.setAttribute('id', objectID)
     f.setAttribute('track_details', id)
+    f.setAttribute('track_playlist', playlist)
     f.onclick = () => {
       playSongsAtIndex(index, playlist)
     }
@@ -483,6 +484,11 @@ async function loadSong(data) {
       window.prepare_library_changes = data
     }
 
+    // Track to library
+    $('#addLibrary0').get(0).onclick = async() => {
+      addTrackToLibrary(id)
+    }
+
     // Track to album/artist
     $('#goAlbum0').get(0).onclick = async () => {
       if (musicData[data.id]) { 
@@ -494,6 +500,7 @@ async function loadSong(data) {
       }
       openAlbum(data.album.id)
     }
+
     $('#goArtist0').get(0).onclick = async () => {
       if (musicData[data.id]) { 
         data = musicData[data.id]  
@@ -575,9 +582,11 @@ function visualQ_build() {
   
   document.getElementById('queueNow').innerHTML = `
   <div class="Song animated fadeInUp song" track_details="${musicActive.id}">
-  <img src="${musicActive.art}"></img>
-  <b>${musicActive.name}</b>
-  <p>${musicActive.artists}</p>
+    <img src="${musicActive.art}"></img>
+    <div class="track_details">
+      <b>${musicActive.name}</b>
+      <p>${musicActive.artists}</p>
+    </div>
   </div>
   `
   
