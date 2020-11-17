@@ -59,16 +59,20 @@ async function createPlaylist() {
 
 async function loadUserPlaylists(playlists) {
 
+  if (!playlists) {
+    userDoc2 = await db.collection("users").doc(user.uid).get()
+    window.cacheuser = userDoc2.data();
+    playlists = userDoc2.data().playlistsPreview
+    if (!playlists) {
+      playlists = []
+    }
+  }
+
   // Add all playlists to the item
   for (let i = 0; i < playlists.length; i++) {
     cacheUserPlaylists[playlists[i].id] = playlists[i]
   }
 
-  if (!playlists) {
-    userDoc2 = await db.collection("users").doc(user.uid).get()
-    window.cacheuser = userDoc2.data();
-    playlists = userDoc2.data().playlistsPreview
-  }
 
   if (!playlists.length) {
     $('#nothingInPlaylists').removeClass('hidden')

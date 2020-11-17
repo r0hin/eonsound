@@ -7,6 +7,7 @@ body {
   background-position: center center;
   background-attachment: fixed;
   backdrop-filter: blur(4px);
+  color: white !important;
 }
 
 .logo_welcome {

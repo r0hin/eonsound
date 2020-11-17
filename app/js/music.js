@@ -278,7 +278,10 @@ function albumSong(id, data, objectID, destinationID, index, album, art) {
       </div>
     </div>
     `
-    $(`#${destinationID}`).get(0).appendChild(h)
+
+    try {
+      $(`#${destinationID}`).get(0).appendChild(h)
+    } catch(err) {}
     resolve('Success')
   })
 }
@@ -589,7 +592,7 @@ function visualQ_build() {
     document.getElementById('queueNow').innerHTML = `
     <div class="Song animated fadeInUp song" track_details="${musicActive.id}">
       <img src="${musicActive.art}"></img>
-      <div class="track_details">
+      <div class="track_data">
         <b>${musicActive.name}</b>
         <p>${musicActive.artists}</p>
       </div>

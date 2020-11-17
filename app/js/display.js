@@ -149,39 +149,39 @@ function refreshTheme() {
 
   switch (color) {
     case 'blue':
-      parttwo = '--eon-primary: rgb(51, 147, 226); --eon-secondary: #4548fc; '
+      parttwo = '--eon-primary: rgb(51, 147, 226); --eon-secondary: #3495eb; '
       partfour = '--ripple-primary: rgba(51, 147, 226, 0.3); --ripple-secondary: rgba(51, 147, 226, 0.1); --button-primary: rgb(76, 110, 204); '
       break;
     case 'red':
-      parttwo = '--eon-primary: rgb(226, 51, 51); --eon-secondary: #fc7045; '
+      parttwo = '--eon-primary: rgb(226, 51, 51); --eon-secondary: #eb5334; '
       partfour = '--ripple-primary: rgba(226, 51, 51, 0.3); --ripple-secondary: rgba(226, 51, 51, 0.1); --button-primary: rgb(212, 57, 57); '
       break;
     case 'orange':
-      parttwo = '--eon-primary: rgb(226, 86, 51); --eon-secondary: #fcbc45; '
+      parttwo = '--eon-primary: rgb(226, 86, 51); --eon-secondary: #ebb42a; '
       partfour = '--ripple-primary: rgba(226, 86, 51, 0.3); --ripple-secondary: rgba(226, 86, 51, 0.1); --button-primary: rgb(212, 100, 35); '
       break;
     case 'lime':
-      parttwo = '--eon-primary: rgb(185, 226, 51); --eon-secondary: #45fc91; '
+      parttwo = '--eon-primary: rgb(185, 226, 51); --eon-secondary: #2ee882; '
       partfour = '--ripple-primary: rgba(185, 226, 51, 0.3); --ripple-secondary: rgba(185, 226, 51, 0.1); --button-primary: rgb(91, 212, 35);'
       break;
     case 'aqua':
-      parttwo = '--eon-primary: rgb(51, 226, 211); --eon-secondary: #4557fc; '
+      parttwo = '--eon-primary: rgb(51, 226, 211); --eon-secondary: #2ee5e8; '
       partfour = '--ripple-primary: rgba(51, 226, 211, 0.3); --ripple-secondary: rgba(51, 226, 211, 0.1); --button-primary: rgb(19, 124, 194); '
       break;
     case 'purple':
-      parttwo = '--eon-primary: rgb(98, 51, 226); --eon-secondary: #d745fc; '
+      parttwo = '--eon-primary: rgb(98, 51, 226); --eon-secondary: #7a3de3; '
       partfour = '--ripple-primary: rgba(98, 51, 226, 0.3);  --ripple-secondary: rgba(98, 51, 226, 0.1); --button-primary: rgb(109, 19, 194); '
       break;
     case 'pink':
-      parttwo = '--eon-primary: rgb(206, 51, 226); --eon-secondary: rgb(252, 69, 145); '
+      parttwo = '--eon-primary: rgb(206, 51, 226); --eon-secondary: #f88fff '
       partfour = '--ripple-primary: rgba(240, 108, 245, 0.3); --ripple-secondary: rgba(240, 108, 245, 0.1); --button-primary: rgb(206, 51, 226);'
       break;
     case 'hotpink':
-      parttwo = '--eon-primary: rgb(226, 51, 124); --eon-secondary: #ff006a; '
+      parttwo = '--eon-primary: rgb(226, 51, 124); --eon-secondary: #c9208e; '
       partfour = '--ripple-primary: rgba(226, 51, 159, 0.3); --ripple-secondary: rgba(226, 51, 159, 0.1); --button-primary: rgb(216, 48, 138); '
       break;
     default:
-      parttwo = '--eon-primary: rgb(51, 147, 226); --eon-secondary: #4548fc; '
+      parttwo = '--eon-primary: rgb(51, 147, 226); --eon-secondary: #3495eb; '
       partfour = '--ripple-primary: rgba(51, 147, 226, 0.3); --ripple-secondary: rgba(51, 147, 226, 0.1); --button-primary: rgb(76, 110, 204); '
       break;
   }

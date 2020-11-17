@@ -378,25 +378,24 @@ async function addTrackToLibrary(trackID, showFeedback, showAlbumToo) {
       await addAlbumToLibrary(trackLibraryData.album.id, true, true)
     }
 
-    window.setTimeout(async () => {
-      await track(trackID, trackLibraryData, 'libraryItem' + trackID, 'collectionTracks', 'tracks')
-      await albumSong(trackID, trackLibraryData, trackLibraryData.album.id + trackID + 'lib',trackLibraryData.album.id + 'AlbumSongslib', 0, trackLibraryData.album.id + 'lib', trackLibraryData.album.images[0].url)
-      reOrderAlbumLibrary(trackLibraryData.album.id)
+    console.log(trackLibraryData);
 
-      $('#songs').imagesLoaded(() => {
-        $('#libraryItem' + trackID).removeClass("hidden");
-        $('#nothingInSongs').addClass('hidden')
-        $('#coltext3').removeClass('hidden')
-      })  
+    await track(trackID, trackLibraryData, 'libraryItem' + trackID, 'collectionTracks', 'tracks')
+    await albumSong(trackID, trackLibraryData, trackLibraryData.album.id + trackID + 'lib', trackLibraryData.album.id + 'AlbumSongslib', 0, trackLibraryData.album.id + 'lib', trackLibraryData.album.images[0].url)
+    reOrderAlbumLibrary(trackLibraryData.album.id)
 
-      if (showFeedback) {
-        Snackbar.show({text: data.name + ' added to your library.', pos: 'top-center'})
-      }
-    }, 250);
+    $('#songs').imagesLoaded(() => {
+      $('#libraryItem' + trackID).removeClass("hidden");
+      $('#nothingInSongs').addClass('hidden')
+      $('#coltext3').removeClass('hidden')
+    })  
 
+    if (showFeedback) {
+      Snackbar.show({text: data.name + ' added to your library.', pos: 'top-center'})
+    }
+  
     resolve('potpot')
     return;
-
   })
 }
 

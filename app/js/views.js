@@ -400,8 +400,8 @@ async function openArtist(id) {
       <p>${popularity}% EonSound Popularity</p>
     </div>
     <div class="artistHeaderRight">
-      <button class="btn-contained-primary shuffleArtistBtn"><i class='bx bx-shuffle'></i></button>
-      <button class="btn-contained-primary playArtistBtn"><i class='bx bx-play'></i></button>
+      <button onclick="shuffleSongs('${id}')" class="btn-contained-primary shuffleArtistBtn"><i class='bx bx-shuffle'></i></button>
+      <button onclick="$('#${id}artistSongs').children().first().click()" class="btn-contained-primary playArtistBtn"><i class='bx bx-play'></i></button>
     </div>
     <br><br><br><br><br>
     <h4>Featured Albums</h4>
@@ -410,6 +410,7 @@ async function openArtist(id) {
       <div class="col-sm">
         <h3>Popular</h3>
         <div class="songList ${id}artistSongs" id="${id}artistSongs"></div>
+        <br><br><br>
       </div>
       <div class="col-sm">
         <h3>Details</h3>
@@ -432,6 +433,7 @@ async function openArtist(id) {
               </div>
             </div>
           </div>
+          <br><br><br>
         </center>
       </div>
     </div>
@@ -458,10 +460,14 @@ async function openArtist(id) {
   }
 
   // Fill up artist tracks
+  compressedTrackList = []
   for (let j = 0; j < dataTracks.tracks.length; j++) {
     const openArtistSong = dataTracks.tracks[j];
+    compressedTrackList.push(openArtistSong)
     await albumSong(openArtistSong.id, openArtistSong, id + openArtistSong.id, id + 'artistSongs', j, id, openArtistSong.album.images[0].url)
   }
+
+  musicData[id] = compressedTrackList
 
   // $(`#${id}ArtistView`).imagesLoaded(() => {
   //   colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
