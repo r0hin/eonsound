@@ -199,8 +199,10 @@ Some are redudant but exist for future features. */
 }
 
 .playlistHeader img {
-  width: 90%;
-  height: 90%;
+  max-width: 320px;
+  min-width: 320px;
+  max-height: 320px;
+  min-height: 320px;
   object-fit: cover;
   border-radius: 8px;
 }

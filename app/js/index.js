@@ -49,7 +49,12 @@ function signup() {
   email = $("#emailbox").val();
   pass = $("#passbox").val();
 
-  firebase.auth().createUserWithEmailAndPassword(email, pass).catch(function (error) { 
+  firebase.auth().createUserWithEmailAndPassword(email, pass).then(() => {
+    alert(`
+      Welcome, new user!\n\n
+      EonSound requires authentication with Spotify to allow songs to be discovered.\n Ensure you have a Spotify account and sign in once you are redirected. 
+    `)
+  }).catch(function (error) { 
     alert(error.message + "\n\n" + ">: " + error.code);
   });
 }

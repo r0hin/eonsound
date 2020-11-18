@@ -70,7 +70,7 @@
   <div id="loading" class="animated fastest"></div>
 
   <!-- Preflight Modals-->  
-  <div class="modal fade" id="playlistSelect" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
+  <div class="modal fade" id="playlistSelect" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
           <div class="modal-body">
             <center>
@@ -85,7 +85,7 @@
       </div>
   </div></div>
 
-  <div class="modal fade" id="playlistInfo" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
+  <div class="modal fade" id="playlistInfo" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-body">
           <center>
@@ -124,7 +124,25 @@
     </div>
 </div></div>
 
-  <div class="modal fade" id="playlistCreate" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog" role="document">
+<div class="modal fade" id="playlistRename" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+      <div class="modal-body">
+        <center>
+          <h3>Rename Playlist</h3>
+        </center>
+        <div class="floating-label textfield-box">
+          <label for="playlistrenamebox">Updated Playlist Name</label>
+          <input class="form-control" id="playlistrenamebox" type="text">
+        </div>
+      </div>
+      <div class="modalfooter">
+          <button type="button" class="btn-text-primary" data-dismiss="modal">close</button>
+          <button id="renameplaylistbutton" type="button" class="btn-contained-primary" data-dismiss="modal">rename</button>
+      </div>
+  </div>
+</div></div>
+
+  <div class="modal fade" id="playlistCreate" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-body">
           <center>
@@ -142,9 +160,9 @@
     </div>
   </div></div>
 
-  <div class="modal fade bd-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm" role="document"><div class="modal-content"><div class="modalheader"><h3>Error</h3></div><div class="modalbody"><p id="erorrModalMsg"></p><button type="button" class="btn-contained-primary block" data-dismiss="modal">dismiss</button></div></div></div></div>
-  <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eonloaderelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><div class="progress-circular"><div class="progress-circular-wrapper"><div class="progress-circular-inner"><div class="progress-circular-left"><div class="progress-circular-spinner"></div></div><div class="progress-circular-gap"></div><div class="progress-circular-right"><div class="progress-circular-spinner"></div></div></div></div></div></center></div></div></div></div>
-  <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-sm modal-dialog-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="bx bx-check doneicon"></i></h1></center></div></div></div></div>
+  <div class="modal fade bd-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm" role="document"><div class="modal-content"><div class="modalheader"><h3>Error</h3></div><div class="modalbody"><p id="erorrModalMsg"></p><button type="button" class="btn-contained-primary block" data-dismiss="modal">dismiss</button></div></div></div></div>
+  <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eonloaderelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm modal-dialog modal-dialog-centered-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><div class="progress-circular"><div class="progress-circular-wrapper"><div class="progress-circular-inner"><div class="progress-circular-left"><div class="progress-circular-spinner"></div></div><div class="progress-circular-gap"></div><div class="progress-circular-right"><div class="progress-circular-spinner"></div></div></div></div></div></center></div></div></div></div>
+  <div style="z-index: 20000049108509173268563785623467823478623478278997819871982498714;" class="modal fade bd-example-modal-sm" id="eondoneelement" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm modal-dialog modal-dialog-centered-centered" role="document"><div style="display: inline-block; border-radius: 400px; width: 150px" class="modal-content centered"><div class="modal-body"><center><h1 id="doneleementicon" style="line-height: 0px; margin: 0px;" class="animated bounceIn"><i class="bx bx-check doneicon"></i></h1></center></div></div></div></div>
   <div class="hidden animated fadeIn fastest" id="bottom_sheet_background"></div>
 
   <div id="unverified" class="hidden animated fadeIn slow">
@@ -234,7 +252,7 @@
           <a id="goArtist0" class="dr-item">Go to Artist</a>
           <div class="dropdown-divider"></div>
           <a id="goInfo0" class="dr-item">Show Info</a>
-          <a id ="goLink0" class="dr-item">Copy Link</a>
+          <a id="goLink0" class="dr-item">Copy Link</a>
         </div>
       </div>
       <button onclick="skipForward()" class="btn-text-primary iconbtn">
@@ -295,7 +313,10 @@
     <!-- Tabs -->
     <div class="tab hidden animated fadeIn fastest" id="first">
       <center>
-        <h1>Welcome to EonSound</h1>
+        <img class="artistHero" src="assets/eonsound.png" alt="">
+        <br><br> <br><br> <br><br>
+          <br><br>  <br><br>  <br><br>
+        <h1>Welcome!</h1>
         <p>Feel free to contact us with questions, concerns or comments!</p>
         <small>This page will only be shown once.</small>
       </center>
@@ -311,16 +332,14 @@
         <h3>Keep in Mind</h3>
         <b>Getting Started</b>
         <p>You can start by exploring the tabs on the left. Right-click tracks, albums, artists and playlists for more options.</p>
-        <br><br>
         <b>Playback</b>
         <p>If you choose a song for the first time, it may take a moment to download. All subsequent playbacks should happen in under 2 seconds or slightly longer depending on cold starts. </p>
-        <br><br>
         <b>Disclaimer</b>
         <p>This app is merely a YouTube / Spotify client with added feaures.</p>
 
         <br><br>
         <center>
-          <button onclick="tabe('browse')" class="eon-contained-primary">Get Started</button>
+          <button onclick="tabe('browse')" class="btn-contained-primary">Get Started</button>
         </center>
 
     </div>

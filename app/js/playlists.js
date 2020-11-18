@@ -160,51 +160,95 @@ async function userPlaylistInfo(id) {
 }
 
 async function renameUserPlaylist(id) {
-  newName = prompt('What would you like to rename this playlist to? \n\n')
-  if (!newName) {
-    return;
+  $('#playlistRename').modal('toggle')
+  $('#renameplaylistbutton').get(0).onclick = async () => {
+
+    // Actual rename code
+
+    newName = $('#playlistrenamebox').val()
+    $('#playlistrenamebox').val('')
+
+    if (!newName) {
+      return;
+    }
+    if (newName == '' || newName == " ") {
+      Snackbar.show({text: "Please enter a valid name.", pos: 'top-center'})
+      return;
+    }
+
+    await db.collection("users").doc(user.uid).collection('library').doc(id).update({
+      name: newName,
+    })
+  
+  
+    doc = await db.collection('users').doc(user.uid).get()
+    renameMatch = undefined;
+    // Get index of item with id id
+    for (let i = 0; i < doc.data().playlistsPreview.length; i++) {
+      if (doc.data().playlistsPreview[i].id == id) {
+        renameMatch = i
+        break;
+      }    
+    }
+  
+    if (renameMatch == undefined) {
+      alert('Internal Error')
+      return;
+    }
+  
+    newData = doc.data().playlistsPreview
+    newData[renameMatch].name = newName
+  
+    await db.collection('users').doc(user.uid).update({
+      playlistsPreview: newData
+    })
+  
+    // Change the UI
+    $(`#${id}name0`).html(newName)
+    $(`#${id}name1`).html(newName)
+    $(`#playlistSelectItem${id}`).html(newName)
+  
+    Snackbar.show({text: "Playlist successfully renamed.", pos: 'top-center'}) 
+
   }
-  if (newName == '' || newName == " ") {
-    Snackbar.show({text: "Please enter a valid name.", pos: 'top-center'})
-    return;
-  }
-  // Make the requests
-
-  await db.collection("users").doc(user.uid).collection('library').doc(id).update({
-    name: newName,
-  })
-
-
-  doc = await db.collection('users').doc(user.uid).get()
-  renameMatch = undefined;
-  // Get index of item with id id
-  for (let i = 0; i < doc.data().playlistsPreview.length; i++) {
-    if (doc.data().playlistsPreview[i].id == id) {
-      renameMatch = i
-      break;
-    }    
-  }
-
-  if (renameMatch == undefined) {
-    alert('Internal Error')
-    return;
-  }
-
-  newData = doc.data().playlistsPreview
-  newData[renameMatch].name = newName
-
-  await db.collection('users').doc(user.uid).update({
-    playlistsPreview: newData
-  })
-
-  // Change the UI
-  $(`#${id}name0`).html(newName)
-  $(`#${id}name1`).html(newName)
-  $(`#playlistSelectItem${id}`).html(newName)
-
-  Snackbar.show({text: "Playlist successfully renamed.", pos: 'top-center'}) 
 }
 
 async function removeTrackFromPlaylist(songID, playlistID) {
-  console.log('remove from play', songID, playlistID);
+  // Search for data where songID matches song id
+
+  match = undefined
+  for (let i = 0; i < cacheUserPlaylistData[playlistID].songs.length; i++) {
+    const element = cacheUserPlaylistData[playlistID].songs[i];
+    if (element.id == songID) {
+      match = i
+    }
+  }
+
+  if (match == undefined) {
+    alert('Internal Error.')
+    return;
+  }
+  
+  var removeSongData = cacheUserPlaylistData[playlistID].songs[match]
+
+  // Update the database
+  await db.collection('users').doc(user.uid).collection('library').doc(playlistID).update({
+    songs: firebase.firestore.FieldValue.arrayRemove({
+      art: removeSongData.art,
+      artists: removeSongData.artists,
+      id: removeSongData.id,
+      length: removeSongData.length,
+      name: removeSongData.name,
+      url: removeSongData.url
+    })
+  })
+
+  // Update the UI
+  $(`#${playlistID}${songID}`).remove()
+
+  // Update the cache
+  cacheUserPlaylistData[playlistID].songs.splice(match, 1)
+
+  Snackbar.show({text: "Song removed from playlist.", pos: 'top-center'})
+
 }
