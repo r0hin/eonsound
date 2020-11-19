@@ -419,3 +419,8 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 .list-group-item:last-child {
   border-radius: 0px 0px 24px 24px;
 }
+
+.sortbtn {
+  z-index: 65;
+
+}

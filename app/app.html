@@ -397,11 +397,18 @@
     </div>
     <div class="tab hidden animated fadeIn fastest" id="songs">
       <p class="tab-subtitle">Songs</p>
-      <div class="hidden animated fadeIn" id="nothingInSongs"> <center> <br><br> <h3><i class="bx bx-border-none gradicon"></i></h3> <h2>Empty Song Library</h2> <p>Add songs to your library and it will show up here!</p> </center> </div>
-      <div id="feattext" class="hidden animated fadeIn">
-        <h2 class="tab-title">Featured</h2>
-        <div id="featuredTracks"></div>
+      <div class="dropdown float">
+        <button class="btn-text-primary iconbtn sortbtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class='bx bx-sort'></i></button>
+        <div class="dropdown-menu menu">
+          <a onclick="sortTracks('default')" class="dr-item">Default</a>
+          <a onclick="sortTracks('abc')" class="dr-item">Alphabetical</a>
+          <a onclick="sortTracks('random')" class="dr-item">Randomized</a>
+          <div class="dropdown-divider"></div>
+          <a onclick="sortTracks('reverse')" class="dr-item">Reverse Order</a>
+        </div>
       </div>
+  
+      <div class="hidden animated fadeIn" id="nothingInSongs"> <center> <br><br> <h3><i class="bx bx-border-none gradicon"></i></h3> <h2>Empty Song Library</h2> <p>Add songs to your library and it will show up here!</p> </center> </div>
       <div id="favtext3" class="hidden animated fadeIn">
         <h2 class="tab-title">Favorites</h2>
         <div id="favTracks"></div>

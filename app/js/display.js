@@ -286,3 +286,63 @@ function reOrderAlbumLibrary(id) {
     return +a.getAttribute('track_album_index') - +b.getAttribute('track_album_index')
   }).appendTo($wrapper);
 }
+
+(function($){
+  $.fn.shuffle = function() {
+    return this.each(function(){
+      var items = $(this).children();
+      return (items.length) 
+        ? $(this).html($.shuffle(items)) 
+        : this;
+    });
+  }
+	
+  $.shuffle = function(arr) {
+    for(
+      var j, x, i = arr.length; i; 
+      j = parseInt(Math.random() * i), 
+      x = arr[--i], arr[i] = arr[j], arr[j] = x
+    );
+    return arr;
+  }	
+})(jQuery);
+
+function sortTracks(type) {
+  switch (type) {
+    case 'default':
+      
+      console.log('Sorting tracks by default');
+      $('#favTracks').empty()
+      $('#collectionTracks').empty()
+      loadLibraryTracks()
+      break;
+    case 'abc':
+      console.log('Sorting tracks alphabetically');
+      $('#collectionTracks').html($('#collectionTracks .song').sort((a, b) => {
+        if($(a).find('b').html() < $(b).find('b').html()) { return -1; }
+        if($(a).find('b').html() > $(b).find('b').html()) { return 1; }
+        return 0;
+      }))
+      $('#favTracks').html($('#favTracks .song').sort((a, b) => {
+        if($(a).find('b').html() < $(b).find('b').html()) { return -1; }
+        if($(a).find('b').html() > $(b).find('b').html()) { return 1; }
+        return 0;
+      }))
+      break;
+    case 'random':
+      console.log('Randomizing track order');
+      $('#collectionTracks').shuffle();
+      $('#favTracks').shuffle();
+      break;
+    case 'reverse':
+      console.log('Reversing tracks');
+      container = $('#collectionTracks')
+      container.children().each(function(i,li){container.prepend(li)})
+
+      container = $('#favTracks')
+      container.children().each(function(i,li){container.prepend(li)})
+      break;
+    default:
+      break;
+  }
+}

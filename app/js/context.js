@@ -223,10 +223,20 @@ async function trackContext(e, el) {
     $('#playlistSelect').modal('toggle')
   };
 
-  // ADD LIBRARY
-  document.getElementById('1addbtn').onclick = async () => {
-    // Call ONLY with ID
-    addTrackToLibrary(id, true, true)
+  // ADD or remove LIBRARY
+  if (cacheUserTracks.includes(id)) {
+    document.getElementById('1addbtn').innerHTML = 'remove from library'
+    document.getElementById('1addbtn').onclick = async () => {
+      // Call ONLY with ID
+      removeTrackFromLibrary(id)
+    }
+  }
+  else {
+    document.getElementById('1addbtn').innerHTML = 'add to library'
+    document.getElementById('1addbtn').onclick = async () => {
+      // Call ONLY with ID
+      addTrackToLibrary(id, true, true)
+    }
   }
 
   // ADD LIKED
@@ -323,11 +333,21 @@ async function albumContext(e, el) {
     openAlbum(id);
   };
 
-  // ADD LIBRARY
-  document.getElementById("0addbtn2").onclick = async () => {
-    // Call function directly
-    await addAlbumToLibrary(id)
-  };
+  // Add or remove LIBRARY
+  if (cacheUserAlbums.includes(id)) {
+    document.getElementById("0addbtn2").innerHTML = 'remove from library'
+    document.getElementById("0addbtn2").onclick = async () => {
+      // Call function directly
+      await removeAlbumFromLibrary(id)
+    };
+  }
+  else {
+    document.getElementById("0addbtn2").innerHTML = 'add to library'
+    document.getElementById("0addbtn2").onclick = async () => {
+      // Call function directly
+      await addAlbumToLibrary(id)
+    };
+  }
 
   // ADD LIKED
   if (cacheLikedAlbums.includes(id)) {
@@ -371,12 +391,24 @@ async function artistContext(e, el) {
     openArtist(id);
   };
 
-  // ADD LIBRARY
-  document.getElementById("0addbtnartist").onclick = async () => {
-    // CAll function directly
-    addArtistToLibrary(id)
-  };
+  // Add / remove library
 
+  if (cacheUserArtists.includes(id)) {
+    // Remove LIBRARY
+    document.getElementById("0addbtnartist").innerHTML = 'remove from library'
+    document.getElementById("0addbtnartist").onclick = async () => {
+      // CAll function directly
+      removeArtistFromLibrary(id)
+    };
+  }
+  else {
+    // ADD LIBRARY
+    document.getElementById("0addbtnartist").innerHTML = 'add to library'
+    document.getElementById("0addbtnartist").onclick = async () => {
+      // CAll function directly
+      addArtistToLibrary(id, true)
+    };
+  }
   // ADD LIKED
   if (cacheLikedArtists.includes(id)) {
     // Already liked
@@ -434,4 +466,18 @@ async function playlistContext(e, el) {
   document.getElementById('copybtnplaylist').onclick = async () => {
     await copyText(`https://r0hin.github.io/eonsound/preview?type=playlist&id=${id}`)
   }
+}
+
+function rightClickSelf(element) {
+  window.setTimeout(() => {
+    var e = element.ownerDocument.createEvent('MouseEvents');
+    e.initMouseEvent('contextmenu', true, true,
+       element.ownerDocument.defaultView, 0, 0, 0, element.getBoundingClientRect().x, element.getBoundingClientRect().y, false,
+       false, false, false,2, null);
+  
+  
+    !element.dispatchEvent(e);
+  }, 150)
+
+  // Source: stackoverflow questions:7914684
 }

@@ -298,6 +298,23 @@ Some are redudant but exist for future features. */
   transition: all 1s !important;
 }
 
+.detailsButton {
+  position: absolute; z-index: 900000020;
+
+  top: 72px; left: 82px;
+  height: 48px; width: 48px;
+  min-width: 0px; padding: 12px 8px 12px 8px;
+  margin-right: 6px; margin-left: 6px; border-radius: 34px;
+
+  background-color: var(--bg-tertiary) !important;
+  color: var(--content-primary) !important;
+}
+
+.detailsButton:hover {
+  color: var(--eon-primary) !important;
+  background-color: var(--bg-primary) !important;
+}
+
 .closePlaylistButton {
   position: absolute; z-index: 900000020;
   top: 86px; left: 24px; height: 48px; width: 48px;
@@ -480,7 +497,8 @@ Some are redudant but exist for future features. */
 
 .artistHeaderLeft {
   position: absolute;
-  left: 140px;
+  left: 170px;
+  max-width: calc(100% - 250px);
 }
 
 .artistHeaderLeft h1 {
@@ -531,5 +549,7 @@ Some are redudant but exist for future features. */
 
 .artist_details img {
   width: 180px;
+  height: 180px;
+  object-fit: cover;
   border-radius: 50%;
 }

@@ -498,7 +498,7 @@ async function loadSong(data) {
     }
 
     // Copy link
-    $('goLink0').get(0).onclick = async() => {
+    $('#goLink0').get(0).onclick = async() => {
       await copyText(`https://r0hin.github.io/eonsound/preview?type=track&id=${id}`)
     }
 

@@ -394,6 +394,7 @@ async function openArtist(id) {
   }
   g.innerHTML = `
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}ArtistView')"><i class='bx bx-x'></i></button>
+    <button class="detailsButton btn-contained-primary artist" artist_details="${id}" onclick="rightClickSelf(this)"><i class='bx bx-dots-vertical-rounded'></i></button>
     <img class="artistHero" src="${data.images[0].url}"></img>
     <div class="artistHeaderLeft">
       <h1>${data.name}</h1>
@@ -406,6 +407,15 @@ async function openArtist(id) {
     <br><br><br><br><br>
     <h4>Featured Albums</h4>
     <div class="artist_albums" id="artist_albums_${data.id}"></div>
+    <br>
+    <center class="playlistActions">
+      <button data-toggle="tooltip" data-placement="top" title="Artist Info" onclick="artistInfo('${id}')" class="animated fadeInUp btn-text-primary">
+        <i class='bx bx-info-circle'></i>
+      </button>
+      <button data-toggle="tooltip" data-placement="top" title="Add to Library" id="addLibraryCol${id}" onclick="addArtistToLibrary('${id}', true)" class="hidden animated fadeInUp btn-text-primary">
+        <i class='bx bx-add-to-queue'></i>
+      </button>
+    </center>
     <div class="row artist_content">
       <div class="col-sm">
         <h3>Popular</h3>
@@ -469,11 +479,18 @@ async function openArtist(id) {
 
   musicData[id] = compressedTrackList
 
-  // $(`#${id}ArtistView`).imagesLoaded(() => {
-  //   colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
-  // })
+  if (cacheUserArtists.includes(id)) {
+    // Added, don't show add button
+    $(`#addLibraryCol${id}`).addClass('hidden')
+  }
+  else {
+    // Not added, show add button
+    $(`#addLibraryCol${id}`).removeClass('hidden')
+  }
 
   initButtonsContained()
+  initButtonsText()
+  $('[data-toggle="tooltip"]').tooltip();
 
   activeLoading = false
 }

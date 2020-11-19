@@ -233,14 +233,7 @@ async function removeTrackFromPlaylist(songID, playlistID) {
 
   // Update the database
   await db.collection('users').doc(user.uid).collection('library').doc(playlistID).update({
-    songs: firebase.firestore.FieldValue.arrayRemove({
-      art: removeSongData.art,
-      artists: removeSongData.artists,
-      id: removeSongData.id,
-      length: removeSongData.length,
-      name: removeSongData.name,
-      url: removeSongData.url
-    })
+    songs: firebase.firestore.FieldValue.arrayRemove(removeSongData)
   })
 
   // Update the UI

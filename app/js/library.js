@@ -223,8 +223,9 @@ async function addTrackToPlaylist(playlistID) {
   Snackbar.show({pos: 'top-center',text: "Added '" + prepareForLibraryTrack.name + "' to a playlist."})
 }
 
-async function addArtistToLibrary(id) {
+async function addArtistToLibrary(id, verbose) {
   return new Promise(async (resolve, reject) => {
+    $(`#addLibraryCol${id}`).addClass('hidden')
     if (cacheUserArtists.includes(id)) {
       resolve('Exists')
       return;
@@ -232,13 +233,15 @@ async function addArtistToLibrary(id) {
 
     // Gather data
     data = await goFetch(`artists/${id}`)
+
+    dataToPush = {
+      id: id,
+      pfp: data.images[0].url,
+      name: data.name
+    }
     
     await db.collection('users').doc(user.uid).collection('spotify').doc('artists').set({
-      artists: firebase.firestore.FieldValue.arrayUnion({
-        id: id,
-        pfp: data.images[0].url,
-        name: data.name
-      }),
+      artists: firebase.firestore.FieldValue.arrayUnion(dataToPush),
       map: firebase.firestore.FieldValue.arrayUnion(id)
     }, {merge: true})
 
@@ -253,6 +256,14 @@ async function addArtistToLibrary(id) {
       $('#nothingInArtists').addClass('hidden')
       $('#coltext2').removeClass('hidden')
     }) 
+
+    cacheUserArtistsData.push(dataToPush)
+    cacheUserArtists.push(id)
+
+    if (verbose) {
+      Snackbar.show({text: "Artist added to your library", pos: 'top-center'})
+    }
+
     resolve('successo expresso')
     return;
   })
@@ -674,4 +685,108 @@ function updateTrackViews() {
     // Collection items dont exist
     $('#coltext3').addClass('hidden')
   }
+}
+
+async function removeArtistFromLibrary(artistID) {
+  // Search artist in cache for index...
+
+  match = undefined
+  for (let i = 0; i < cacheUserArtists.length; i++) {
+    if (cacheUserArtists[i] == artistID) {
+      match = i
+    }
+  }
+
+  if (match == undefined) {
+    alert('Internal Error.')
+    return;
+  }
+
+  // Data is cacheUserArtistsData[match]
+
+  // Update db
+  db.collection('users').doc(user.uid).collection('spotify').doc('artists').update({
+    artists: firebase.firestore.FieldValue.arrayRemove(cacheUserArtistsData[match]),
+    liked: firebase.firestore.FieldValue.arrayRemove(artistID),
+    map: firebase.firestore.FieldValue.arrayRemove(artistID),
+  })
+
+  // Update UI
+  $(`#libraryItem${artistID}`).remove()
+
+  // Update Cache
+  cacheUserArtistsData.splice(match, 1)
+  cacheUserArtists.splice(match, 1)
+  cacheLikedArtists.splice(cacheLikedArtists.indexOf(artistID), 1)
+
+  Snackbar.show({text: "Artist removed from your library.", pos: 'top-center'})
+  updateArtistViews()
+}
+
+async function removeAlbumFromLibrary(albumID) {
+  // Search album in cache for index...
+
+  match = undefined
+  for (let i = 0; i < cacheUserAlbums.length; i++) {
+    if (albumID == cacheUserAlbums[i]) {
+      match = i
+    }
+  }
+
+  if (match == undefined) {
+    alert('Internal Error.')
+    return;
+  }
+
+  // Update db
+  db.collection('users').doc(user.uid).collection('spotify').doc('albums').update({
+    albums: firebase.firestore.FieldValue.arrayRemove(cacheUserAlbumsData[match]),
+    liked: firebase.firestore.FieldValue.arrayRemove(albumID),
+    map: firebase.firestore.FieldValue.arrayRemove(albumID),
+  })
+
+  // Update UI
+  $(`#libraryItem${albumID}`).remove()
+
+  // Update Cache
+  cacheUserAlbumsData.splice(match, 1)
+  cacheUserAlbums.splice(match, 1)
+  cacheLikedAlbums.splice(cacheLikedAlbums.indexOf(albumID), 1)
+
+  Snackbar.show({text: "Album removed from your library.", pos: 'top-center'})
+  updateAlbumViews()
+}
+
+async function removeTrackFromLibrary(trackID) {
+// Search track in cache for index...
+
+  match = undefined
+  for (let i = 0; i < cacheUserTracks.length; i++) {
+    if (trackID == cacheUserTracks[i]) {
+      match = i
+    }
+  }
+
+  if (match == undefined) {
+    alert('Internal Error.')
+    return;
+  }
+
+  // Update db
+  db.collection('users').doc(user.uid).collection('spotify').doc('tracks').update({
+    tracks: firebase.firestore.FieldValue.arrayRemove(cacheUserTracksData[match]),
+    liked: firebase.firestore.FieldValue.arrayRemove(trackID),
+    map: firebase.firestore.FieldValue.arrayRemove(trackID),
+  })
+
+  // Update UI
+  $(`#libraryItem${trackID}`).remove()
+
+  // Update Cache
+  cacheUserTracksData.splice(match, 1)
+  cacheUserTracks.splice(match, 1)
+  cacheLikedTracks.splice(cacheLikedTracks.indexOf(trackID), 1)
+
+  Snackbar.show({text: "Track removed from your library.", pos: 'top-center'})
+  updateTrackViews()
 }
