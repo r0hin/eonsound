@@ -112,7 +112,7 @@ async function openAlbum(id, library) {
   activeMediaIndex++
   g.innerHTML = `
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}${openAlbumLibraryStatus}AlbumView')"><i class='bx bx-x'></i></button>
-
+    <button class="detailsButton btn-contained-primary album" album_details="${id}" onclick="rightClickSelf(this)"><i class='bx bx-dots-vertical-rounded'></i></button>
     <center class="albumSide0">
       <div class="content">
         <img crossOrigin="Anonymous" id="${id}cover" class="albumImg ${id}cover" src="${openAlbumData.art}"></img>
@@ -283,6 +283,7 @@ async function openUserPlaylist(id) {
 
   f.innerHTML = `
     <div class="playViewGradient" id="${playlistId}userplaylistgradientelement"></div>
+    <button class="detailsButton btn-contained-primary userPlaylist" playlist_details="${id}" onclick="rightClickSelf(this)"><i class='bx bx-dots-vertical-rounded'></i></button>
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${playlistId}UserPlaylistView')"><i class='bx bx-x'></i></button>
     <div class="playlistHeader row">
       <div class="col-sm">
@@ -298,7 +299,7 @@ async function openUserPlaylist(id) {
 
     <center class="playlistHeader2">
       <h1 id="${playlistId}name0">${nopenPlaylist.name}</h1>
-      <p class="playlistDescription" oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML}); Snackbar.show({pos: 'top-center',text: 'Description updated.'})}, 3000)" contentEditable='true'>${description}</p>
+      <p class="playlistDescription" oninput="try {window.clearTimeout(descTimer)} catch(error) {}; descTimer = window.setTimeout(async () => {await db.collection('users').doc(user.uid).collection('library').doc('${playlistId}').update({description: this.innerHTML, last_updated: firebase.firestore.FieldValue.serverTimestamp() }); cacheUserPlaylistData['${playlistId}'].last_updated = new Date().toDateString(); Snackbar.show({pos: 'top-center',text: 'Description updated.'})}, 3000)" contentEditable='true'>${description}</p>
     </center>
 
     <center class="playlistActions">
@@ -371,7 +372,15 @@ async function openArtist(id) {
   }
 
   // Artist info
-  data = await goFetch(`artists/${id}`)
+  if (musicData[id]) {
+    data = musicData[id]
+  }
+  else {
+    data = await goFetch(`artists/${id}`)
+    musicData[id] = data
+  }
+
+
   dataTracks = await goFetch(`artists/${id}/top-tracks?country=us`)
   dataAlbums = await goFetch(`artists/${id}/albums?include_groups=album,single`)
 
@@ -537,6 +546,7 @@ async function openPlaylist(id) {
 
   p.innerHTML = `
     <div class="playViewGradient" id="${id}playlistgradientelement"></div>
+    <button class="detailsButton btn-contained-primary spotifyPlaylist" playlist_details="${id}" onclick="rightClickSelf(this)"><i class='bx bx-dots-vertical-rounded'></i></button>
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}PlaylistView')"><i class='bx bx-x'></i></button>
     <div class="playlistHeader row">
       <div class="col-sm">

@@ -236,6 +236,11 @@ function artistToString(artists) {
 }
 
 function genresToString(genres) {
+
+  if (!genres || !genres.length) {
+    return "No Genres."
+  }
+
   if (genres.length == 1) {
     return artists[0]
   }
@@ -319,13 +324,13 @@ function sortTracks(type) {
     case 'abc':
       console.log('Sorting tracks alphabetically');
       $('#collectionTracks').html($('#collectionTracks .song').sort((a, b) => {
-        if($(a).find('b').html() < $(b).find('b').html()) { return -1; }
-        if($(a).find('b').html() > $(b).find('b').html()) { return 1; }
+        if($(a).find('b').html().toLowerCase() < $(b).find('b').html().toLowerCase()) { return -1; }
+        if($(a).find('b').html().toLowerCase() > $(b).find('b').html().toLowerCase()) { return 1; }
         return 0;
       }))
       $('#favTracks').html($('#favTracks .song').sort((a, b) => {
-        if($(a).find('b').html() < $(b).find('b').html()) { return -1; }
-        if($(a).find('b').html() > $(b).find('b').html()) { return 1; }
+        if($(a).find('b').html().toLowerCase() < $(b).find('b').html().toLowerCase()) { return -1; }
+        if($(a).find('b').html().toLowerCase() > $(b).find('b').html().toLowerCase()) { return 1; }
         return 0;
       }))
       break;
@@ -345,4 +350,11 @@ function sortTracks(type) {
     default:
       break;
   }
+}
+
+function newMediaInfo(key, val) {
+  u = document.createElement('li')
+  u.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center')
+  u.innerHTML =  `${key} <span>${val}</span>`
+  $('#mediainfolist').get(0).appendChild(u)
 }

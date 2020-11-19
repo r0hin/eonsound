@@ -85,37 +85,13 @@
       </div>
   </div></div>
 
-  <div class="modal fade" id="playlistInfo" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal fade" id="mediaInfo" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-body">
           <center>
-            <h3>Playlist Info</h3>
+            <h3>Info</h3>
           </center>
-          <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Name
-              <span id="plinfo0">...</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Songs
-              <span id="plinfo1">...</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Last Updated
-              <span id="plinfo2">...</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Date Created
-              <span id="plinfo3">...</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Publicity
-              <span id="plinfo4">...</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              ID
-              <span id="plinfo5">...</span>
-            </li>
+          <ul class="list-group" id="mediainfolist">
           </ul>
         </div>
         <div class="modalfooter">
@@ -311,6 +287,13 @@
     <div id="song_view" class="song_view"> </div>
 
     <!-- Tabs -->
+    <div class="tab hidden animated fadeIn fastest" id="dev">
+      <center>
+        <br><br><br>
+        <h1>Developer Mode</h1>
+        <p>Happy Coding?????????</p>
+      </center>
+    </div>
     <div class="tab hidden animated fadeIn fastest" id="first">
       <center>
         <img class="artistHero" src="assets/eonsound.png" alt="">

@@ -403,12 +403,12 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 }
 
 .list-group-item {
-  background-color: var(--bg-secondary);
+  background-color: var(--c-1);
   color: var(--content-primary);
 }
 
 .list-group-item:hover {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-c-2);
   color: var(--content-primary);
 }
 

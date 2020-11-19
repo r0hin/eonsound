@@ -52,10 +52,7 @@ async function appContent() {
     }
   }
   else {
-    if (!localStorage.getItem('firstTimeOpen')) {
-      localStorage.setItem('firstTimeOpen', '.')
-      tabe('first')
-    }
+    tabe('dev')
   }
 
   initSpotifyCode();

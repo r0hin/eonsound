@@ -207,8 +207,10 @@ async function addTrackToPlaylist(playlistID) {
   
   // ADD TRACK TO PLAYLIST
   await db.collection('users').doc(user.uid).collection('library').doc(playlistID).update({
-    songs: firebase.firestore.FieldValue.arrayUnion(prepareForLibraryTrack)
+    songs: firebase.firestore.FieldValue.arrayUnion(prepareForLibraryTrack),
+    last_updated: firebase.firestore.FieldValue.serverTimestamp()
   })
+  cacheUserPlaylistData[playlistID].last_updated = new Date().toDateString();
 
   // ADD TRACK TO LIBRARY
   addTrackToLibrary(prepareTrackPlaylistTrack.id, true, true)
@@ -789,4 +791,81 @@ async function removeTrackFromLibrary(trackID) {
 
   Snackbar.show({text: "Track removed from your library.", pos: 'top-center'})
   updateTrackViews()
+}
+
+async function artistInfo(id) {
+  if (musicData[id]) {
+    data = musicData[id]
+  }
+  else {
+    data = await goFetch(`artists/${id}`)
+    musicData[id] = data
+  }
+
+  $('#mediaInfo').modal('toggle')
+  $('#mediainfolist').empty()
+  newMediaInfo('Name', data.name)
+  newMediaInfo('Type', 'Artist')
+  newMediaInfo('ID', id)
+}
+
+async function albumInfo(id) {
+  if (musicData[id]) {
+    data = musicData[id]
+  }
+  else {
+    data = await goFetch(`albums/${id}`)
+    musicData[id] = data
+  }
+
+  $('#mediaInfo').modal('toggle')
+  $('#mediainfolist').empty()
+  newMediaInfo('Name', data.name)
+  newMediaInfo('Type', 'Album')
+  newMediaInfo('Artist', data.artists[0].name)
+  newMediaInfo('Release Date', data.release_date)
+  newMediaInfo('Songs', data.tracks.items.length)
+  newMediaInfo('Spotify Popularity', data.popularity)
+  newMediaInfo('Artist ID', data.artists[0].id)
+  newMediaInfo('ID', id)
+}
+
+async function playlistInfo(id) {
+  if (musicData[id]) {
+    data = musicData[id]
+  }
+  else {
+    data = await goFetch(`playlists/${id}`)
+    musicData[id] = data
+  }
+
+  $('#mediaInfo').modal('toggle')
+  $('#mediainfolist').empty()
+  newMediaInfo('Name', data.name)
+  newMediaInfo('Type', 'Playlist')
+  newMediaInfo('Owner', data.owner.id)
+  newMediaInfo('Release Date', data.release_date)
+  newMediaInfo('Songs', data.tracks.items.length)
+  newMediaInfo('ID', id)
+}
+
+async function trackInfo(id) {
+  if (musicData[id]) {
+    data = musicData[id]
+  }
+  else {
+    data = await goFetch(`tracks/${id}`)
+    musicData[id] = data
+  }
+
+  $('#mediaInfo').modal('toggle')
+  $('#mediainfolist').empty()
+  newMediaInfo('Name', data.name)
+  newMediaInfo('Type', 'Track')
+  newMediaInfo('Artist', data.artists[0].name)
+  newMediaInfo('Explicit', data.explicit)
+  newMediaInfo('Duration', data.duration_ms)
+  newMediaInfo('Album', data.album.name)
+  newMediaInfo('Spotify Popularity', data.popularity)
+  newMediaInfo('ID', id)
 }

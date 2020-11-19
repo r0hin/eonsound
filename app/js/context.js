@@ -147,7 +147,7 @@ async function categoryContext(e, el) {
   // } ""Should I add this??""
 
   document.getElementById('infobtncategory').onclick = async () => {
-    console.log('info of' + id);
+    categoryInfo(id)
   }
 }
 
@@ -256,7 +256,7 @@ async function trackContext(e, el) {
 
   // SONG INFO
   document.getElementById('infobtn').onclick = async () => {
-    console.log(' Song info');
+    trackInfo(id)
   }
 
   // Copy link
@@ -367,7 +367,7 @@ async function albumContext(e, el) {
 
   // SONG INFO
   document.getElementById('infobtn2').onclick = async () => {
-    console.log(' Album info');
+    albumInfo(id)
   }
 
   // Copy link
@@ -427,7 +427,7 @@ async function artistContext(e, el) {
 
   // SONG INFO
   document.getElementById('infobtnartist').onclick = async () => {
-    console.log(' Artist info');
+    artistInfo(id)
   }
 
   // Copy link
@@ -459,7 +459,7 @@ async function playlistContext(e, el) {
 
   // PLAY INFO
   document.getElementById('infobtnplaylist').onclick = async () => {
-    console.log(' Playlist info');
+    playlistInfo(id)
   }
 
   // Copy link

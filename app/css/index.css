@@ -6,12 +6,12 @@ body {
   background-repeat:no-repeat;
   background-position: center center;
   background-attachment: fixed;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(2px);
   color: white !important;
 }
 
 .logo_welcome {
-  max-width: 140px;
+  max-width: 340px;
 }
 
 .eform {

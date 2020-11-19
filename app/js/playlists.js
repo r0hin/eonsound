@@ -150,13 +150,19 @@ async function userPlaylistInfo(id) {
     cacheUserPlaylistData[id] = doc.data()
   }
 
-  $('#playlistInfo').modal('toggle')
-  $('#plinfo0').html(cacheUserPlaylistData[id].name)
-  $('#plinfo1').html(cacheUserPlaylistData[id].songs.length)
-  $('#plinfo2').html(cacheUserPlaylistData[id].last_updated.toDate().toString().split('GM').shift())
-  $('#plinfo3').html(cacheUserPlaylistData[id].created_at.toDate().toString().split('GM').shift())
-  $('#plinfo4').html(cacheUserPlaylistData[id].publicity)
-  $('#plinfo5').html(id)
+  $('#mediaInfo').modal('toggle')
+  $('#mediainfolist').empty()
+  newMediaInfo('Name', cacheUserPlaylistData[id].name)
+  newMediaInfo('Type', 'User Playlist')
+  newMediaInfo('Songs', cacheUserPlaylistData[id].songs.length)
+  try {
+    newMediaInfo('Last Updated',cacheUserPlaylistData[id].last_updated.toDate().toString().split('GM').shift())
+  } catch (error) {
+    newMediaInfo('Last Updated',cacheUserPlaylistData[id].last_updated)
+  }
+  newMediaInfo('Date Created', cacheUserPlaylistData[id].created_at.toDate().toString().split('GM').shift())
+  newMediaInfo('Publicity', cacheUserPlaylistData[id].publicity)
+  newMediaInfo('ID', id)
 }
 
 async function renameUserPlaylist(id) {
@@ -178,7 +184,9 @@ async function renameUserPlaylist(id) {
 
     await db.collection("users").doc(user.uid).collection('library').doc(id).update({
       name: newName,
+      last_updated: firebase.firestore.FieldValue.serverTimestamp(),
     })
+    cacheUserPlaylistData[id].last_updated = new Date().toDateString();
   
   
     doc = await db.collection('users').doc(user.uid).get()
@@ -233,8 +241,10 @@ async function removeTrackFromPlaylist(songID, playlistID) {
 
   // Update the database
   await db.collection('users').doc(user.uid).collection('library').doc(playlistID).update({
-    songs: firebase.firestore.FieldValue.arrayRemove(removeSongData)
+    songs: firebase.firestore.FieldValue.arrayRemove(removeSongData),
+    last_updated: firebase.firestore.FieldValue.serverTimestamp()
   })
+  cacheUserPlaylistData[playlistID].last_updated = new Date().toDateString();
 
   // Update the UI
   $(`#${playlistID}${songID}`).remove()
