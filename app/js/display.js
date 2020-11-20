@@ -283,6 +283,19 @@ function nFormatter(num, digits) {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
 
+function reBuildAlbumQueue(id) {
+  // Rebuild potential queue!
+  dataToBuild = []
+  $(`#${id}AlbumSongslib`).children().each( (index, element) => {
+    // Push music data of track_details id attirbute of element
+    
+    // FIND THE DATA
+    ind = cacheUserTracks.indexOf(element.getAttribute('track_details'))
+    dataToBuild.push(cacheUserTracksData[ind])
+  });
+  queueData[id + 'lib'] = dataToBuild
+}
+
 function reOrderAlbumLibrary(id) {
   console.log('Sorting album based off track indexes.');
 
@@ -290,6 +303,8 @@ function reOrderAlbumLibrary(id) {
   $wrapper.find('.song').sort(function(a, b) {
     return +a.getAttribute('track_album_index') - +b.getAttribute('track_album_index')
   }).appendTo($wrapper);
+
+  reBuildAlbumQueue(id)
 }
 
 (function($){

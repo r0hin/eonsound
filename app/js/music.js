@@ -5,6 +5,7 @@
 window.musicQueue = [];
 window.musicActive = {none: 'none'};
 window.musicHistory = [];
+window.queueData = {};
 window.player = new Plyr("audio", {})
 
 $("#main_player").bind("ended", function () {
@@ -162,7 +163,7 @@ function track(id, data, objectID, destinationID, playlist) {
     if (playlist == 'tracks') {
       desintationSpecific = ' trackLibraryItem'
     }
-    o.setAttribute('class', 'hidden animated fadeIn faster Song song' + desintationSpecific)
+    o.setAttribute('class', 'hidden animated fadeIn faster Song song' + desintationSpecific + ' '  + id)
     o.setAttribute('track_details', id)
     o.id = objectID
     
@@ -256,7 +257,7 @@ function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
 function albumSong(id, data, objectID, destinationID, index, album, art) {
   return new Promise((resolve, reject) => {
     h = document.createElement('div')
-    h.setAttribute('class', 'Song animated flipInX song')
+    h.setAttribute('class', 'Song animated flipInX song '  + id)
     h.setAttribute('id', objectID)
     h.setAttribute('track_details', id)
     num = undefined; if (data.track_number) { num = data.track_number } else { num = data.item_num }
@@ -287,7 +288,7 @@ function albumSong(id, data, objectID, destinationID, index, album, art) {
 }
 
 function playSongsAtIndex(index, content) {
-  songSelection = [...musicData[content]]
+  songSelection = [...queueData[content]]
   for (let i = 0; i < index; i++) {
     songSelection.shift()
   }  
@@ -304,7 +305,7 @@ async function playSongs(Id, externalData) {
   }
   else {
     // Use data from ID
-    musicDataPlay = musicData[Id]
+    musicDataPlay = queueData[Id]
   }
   
   for (let n = 0; n < musicDataPlay.length; n++) {
@@ -340,7 +341,7 @@ async function playSongs(Id, externalData) {
 }
 
 function shuffleSongs(Id) {
-  shuffleSongsData = shuffled(musicData[Id])
+  shuffleSongsData = shuffled(queueData[Id])
   playSongs(Id, shuffleSongsData)
 }
 
@@ -492,14 +493,18 @@ async function loadSong(data) {
       window.prepare_library_changes = data
     }
 
+    $('#goInfo0').get(0).onclick = async() => {
+      trackInfo(data.id)
+    }
+
     // Track to library
     $('#addLibrary0').get(0).onclick = async() => {
-      addTrackToLibrary(id)
+      addTrackToLibrary(data.id)
     }
 
     // Copy link
     $('#goLink0').get(0).onclick = async() => {
-      await copyText(`https://r0hin.github.io/eonsound/preview?type=track&id=${id}`)
+      await copyText(`https://r0hin.github.io/eonsound/preview?type=track&id=${data.id}`)
     }
 
     // Track to album/artist

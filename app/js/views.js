@@ -145,8 +145,8 @@ async function openAlbum(id, library) {
         </center>
         <br>
         <div class="row">
-          <div class="col-sm"><center><button onclick="playSongs('${id}')" class="btn-contained-primary playPlaylistBtn">Play</button><br><br></center></div>
-          <div class="col-sm"><center><button onclick="shuffleSongs('${id}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button><br><br></center></div>
+          <div class="col-sm"><center><button onclick="playSongs('${id}${openAlbumLibraryStatus}')" class="btn-contained-primary playPlaylistBtn">Play</button><br><br></center></div>
+          <div class="col-sm"><center><button onclick="shuffleSongs('${id}${openAlbumLibraryStatus}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button><br><br></center></div>
         </div>
         <div class="songList ${id}AlbumSongs${openAlbumLibraryStatus}" id="${id}AlbumSongs${openAlbumLibraryStatus}"></div>
       </div>
@@ -164,7 +164,7 @@ async function openAlbum(id, library) {
       const openAlbumSong = data.tracks.items[j];
       await albumSong(openAlbumSong.id, openAlbumSong, id + openAlbumSong.id, id + 'AlbumSongs' + openAlbumLibraryStatus, j, id, data.images[0].url)
     }
-    musicData[id] = data.tracks.items
+    queueData[id] = data.tracks.items
   }
   else {
     // Get from list of library tracks
@@ -188,13 +188,12 @@ async function openAlbum(id, library) {
       }      
     }
 
-    // Reorganize the dataToBuild depending on item_num
-
     // Build it sequentially
     dataToBuild.forEach(async dataToBuildItem => {
       await albumSong(dataToBuildItem.id, dataToBuildItem, id + dataToBuildItem.id + openAlbumLibraryStatus, id + 'AlbumSongs' + openAlbumLibraryStatus, 0, id + openAlbumLibraryStatus, dataToBuildItem.album.images[0].url)
     });
 
+    // Reorder also redefines potential queue
     reOrderAlbumLibrary(id)
 
   }
@@ -331,7 +330,7 @@ async function openUserPlaylist(id) {
     const openPlaylistSong = nopenPlaylist.songs[j];
     await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
   }
-  musicData[playlistId] = nopenPlaylist.songs
+  queueData[playlistId] = nopenPlaylist.songs
   $(`#${playlistId}UserPlaylistView`).imagesLoaded(() => {
     colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
   })
@@ -486,7 +485,7 @@ async function openArtist(id) {
     await albumSong(openArtistSong.id, openArtistSong, id + openArtistSong.id, id + 'artistSongs', j, id, openArtistSong.album.images[0].url)
   }
 
-  musicData[id] = compressedTrackList
+  queueData[id] = compressedTrackList
 
   if (cacheUserArtists.includes(id)) {
     // Added, don't show add button
@@ -584,7 +583,7 @@ async function openPlaylist(id) {
   for (let y = 0; y < data.tracks.items.length; y++) {
     compressedTrackList.push(data.tracks.items[y].track)
   }
-  musicData[id] = compressedTrackList
+  queueData[id] = compressedTrackList
 
   $(`#${id}PlaylistView`).imagesLoaded(() => {
     colorThiefify('userPlaylistView', id + 'cover', id + 'playlistgradientelement')

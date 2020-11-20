@@ -774,6 +774,8 @@ async function removeTrackFromLibrary(trackID) {
     return;
   }
 
+   // Rebuild existing queue
+
   // Update db
   db.collection('users').doc(user.uid).collection('spotify').doc('tracks').update({
     tracks: firebase.firestore.FieldValue.arrayRemove(cacheUserTracksData[match]),
@@ -783,6 +785,10 @@ async function removeTrackFromLibrary(trackID) {
 
   // Update UI
   $(`#libraryItem${trackID}`).remove()
+  $(`.${trackID}`).remove()
+
+  // Rebuild album queue
+  reBuildAlbumQueue(cacheUserTracksData[match].album)
 
   // Update Cache
   cacheUserTracksData.splice(match, 1)
