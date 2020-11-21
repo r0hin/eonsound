@@ -98,9 +98,24 @@
             <button type="button" class="btn-outlined-primary" data-dismiss="modal">close</button>
         </div>
     </div>
-</div></div>
+  </div></div>
 
-<div class="modal fade" id="playlistRename" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal fade" id="lyricsModal" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-body">
+          <center>
+            <h3>Lyrics</h3>
+          </center>
+          <div class="list-group" id="lyricsspot">
+          </div>
+        </div>
+        <div class="modalfooter">
+            <button type="button" class="btn-outlined-primary" data-dismiss="modal">close</button>
+        </div>
+    </div>
+  </div></div>
+
+  <div class="modal fade" id="playlistRename" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
   <div class="modal-content">
       <div class="modal-body">
         <center>
@@ -116,7 +131,7 @@
           <button id="renameplaylistbutton" type="button" class="btn-contained-primary" data-dismiss="modal">rename</button>
       </div>
   </div>
-</div></div>
+  </div></div>
 
   <div class="modal fade" id="playlistCreate" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -190,6 +205,10 @@
 
   <div class="fadeInDown" id="nav">
     <img class="animated fadeInUp slower" src="assets/eonsound.png" alt="">
+
+    <button onclick="showLyrics()" id="showLyrics" data-toggle="tooltip" data-placement="bottom" title="Show Lyrics" class="animated fadeInUp slow btn-text-primary animated hidden">
+      <i class='bx bx-message-detail'></i>
+    </button>
 
     <button onclick="tabe('queue')" id="showQueue" data-toggle="tooltip" data-placement="bottom" title="Show Queue" class="animated fadeInUp slow btn-text-primary animated hidden">
       <i class='bx bx-list-check' ></i>
@@ -653,10 +672,11 @@
   <!-- Tabs --> <script src="js/tabs.js"></script>
   <!-- Music --> <script src="js/music.js"></script>
   <!-- Views --> <script src="js/views.js"></script>
+  <!-- Fetch --> <script src="js/fetch.js"></script>
   <!-- Search --> <script src="js/search.js"></script>
   <!-- Social --> <script src="js/social.js"></script>
-  <!-- Fetch --> <script src="js/fetch.js"></script>
   <!-- Browse --> <script src="js/browse.js"></script>
+  <!-- Lyrics --> <script src="js/lyrics.js"></script>
   <!-- Display --> <script src="js/display.js"></script>
   <!-- Library --> <script src="js/library.js"></script>
   <!-- Playlists --> <script src="js/playlists.js"></script>

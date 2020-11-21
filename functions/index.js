@@ -9,6 +9,7 @@ const os = require("os");
 const mkdirp = require("mkdirp");
 const tmpdir = os.tmpdir();
 const fetch = require("node-fetch");
+const cheerio = require('cheerio');
 const scrapeYt = require("scrape-yt");
 
 const JPEG_EXTENSION = ".png";
@@ -218,3 +219,18 @@ if (filePath.includes("logos/") || filePath.includes("covers/")) {
   functions.logger.log("Converted Image");
 }
 });
+
+
+exports.getLyrics = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).https.onCall(async (data, context) => {
+  res = await fetch(data.lyricsURL, {
+    method: 'GET',
+  })
+  response = await res.text()
+
+  const $ = cheerio.load(response)
+
+  const lyrics = $('.lyrics').text()
+
+  return { lyrics: lyrics };
+
+})

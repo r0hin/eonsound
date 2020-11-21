@@ -15,6 +15,7 @@
   "main": "index.js",
   "dependencies": {
     "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
     "child-process-promise": "^2.2.1",
     "ffmetadata": "^1.5.0",
     "firebase-admin": "^8.13.0",

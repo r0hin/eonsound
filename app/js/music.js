@@ -333,7 +333,7 @@ async function playSongs(Id, externalData) {
   }
   
   if (musicQueue.length > 0) {
-    $('#showQueue').removeClass('hidden')
+    $('#showQueue').removeClass('hidden') 
   }
   
   visualQ_build()
@@ -423,6 +423,7 @@ async function endedQueue() {
   $('#InjectedWidth').get(0).innerHTML = ``
   hidePlayer()
   visualQ_build()
+  $('#showLyrics').addClass('hidden') 
   $('#showQueue').addClass('hidden')
 }
 
@@ -466,6 +467,7 @@ async function loadSong(data) {
   return new Promise(async (resolve, reject) => {
     url = data.url
     showPlayer()
+    $('#showLyrics').removeClass('hidden') 
     $('#queueProgress').removeClass('zoomOut')
     $('#queueProgress').removeClass('hidden')
     $('#queueProgress').addClass('zoomIn')

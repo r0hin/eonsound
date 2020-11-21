@@ -422,5 +422,12 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 
 .sortbtn {
   z-index: 65;
+}
 
+.lyricsFrame {
+  text-align: center;
+  max-height: 300px;
+  overflow-y: scroll;
+  border: 1px solid var(--content-tertiary);
+  border-radius: 12px;
 }

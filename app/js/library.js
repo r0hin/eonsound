@@ -790,6 +790,8 @@ async function removeTrackFromLibrary(trackID) {
   // Rebuild album queue
   reBuildAlbumQueue(cacheUserTracksData[match].album)
 
+  var tempoalbumyo = cacheUserTracksData[match].album
+
   // Update Cache
   cacheUserTracksData.splice(match, 1)
   cacheUserTracks.splice(match, 1)
@@ -797,6 +799,19 @@ async function removeTrackFromLibrary(trackID) {
 
   Snackbar.show({text: "Track removed from your library.", pos: 'top-center'})
   updateTrackViews()
+
+  // Do a final check in case theres still a track in the album
+  match = false
+  for (let i = 0; i < cacheUserTracksData.length; i++) {
+    if (cacheUserTracksData[i].album == tempoalbumyo) {
+      match = true
+    }
+  }
+  if (!match) {
+    // No songs in library part of the album so just delete it:
+    hideCurrentView()
+    removeAlbumFromLibrary(tempoalbumyo)
+  }
 }
 
 async function artistInfo(id) {
