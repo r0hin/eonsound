@@ -100,21 +100,6 @@
     </div>
   </div></div>
 
-  <div class="modal fade" id="lyricsModal" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-        <div class="modal-body">
-          <center>
-            <h3>Lyrics</h3>
-          </center>
-          <div class="list-group" id="lyricsspot">
-          </div>
-        </div>
-        <div class="modalfooter">
-            <button type="button" class="btn-outlined-primary" data-dismiss="modal">close</button>
-        </div>
-    </div>
-  </div></div>
-
   <div class="modal fade" id="playlistRename" tabindex="-1" role="dialog" aria-hidden="true"> <div class="modal-dialog modal-dialog-centered" role="document">
   <div class="modal-content">
       <div class="modal-body">
@@ -206,7 +191,7 @@
   <div class="fadeInDown" id="nav">
     <img class="animated fadeInUp slower" src="assets/eonsound.png" alt="">
 
-    <button onclick="showLyrics()" id="showLyrics" data-toggle="tooltip" data-placement="bottom" title="Show Lyrics" class="animated fadeInUp slow btn-text-primary animated hidden">
+    <button onclick="showDisplayLyrics()" id="showLyrics" data-toggle="tooltip" data-placement="bottom" title="Toggle Lyrics" class="animated fadeInUp slow btn-text-primary animated hidden">
       <i class='bx bx-message-detail'></i>
     </button>
 
@@ -256,6 +241,13 @@
     </div>
     <div class="progress-circular hidden animated fadeIn" id="queueProgress"> <div class="progress-circular-wrapper"> <div class="progress-circular-inner"> <div class="progress-circular-left"> <div class="progress-circular-spinner"></div> </div> <div class="progress-circular-gap"></div> <div class="progress-circular-right"> <div class="progress-circular-spinner"></div> </div> </div> </div> </div>
     <audio id="main_player" controls />
+  </div>
+
+  <div id="lyrics">
+    <center>
+      <h2>Lyrics</h2>
+      <div id="lyricsspot"></div>
+    </center>
   </div>
 
   <div id="sidebar">

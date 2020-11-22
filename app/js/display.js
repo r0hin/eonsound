@@ -114,7 +114,7 @@ function colorThiefify(TYPE, imageID, containerID) {
   
 }
 
-$('[data-toggle="tooltip"]').tooltip();
+$('[data-toggle="tooltip"]').tooltip({ trigger : 'hover' });
 
 function refreshTheme() {
   color = localStorage.getItem('es_theme_color') // Blue, etc
@@ -288,7 +288,12 @@ function reBuildAlbumQueue(id) {
   dataToBuild = []
   $(`#${id}AlbumSongslib`).children().each( (index, element) => {
     // Push music data of track_details id attirbute of element
-    
+
+    // Sync track_album_index with onclick event
+    element.onclick = () => {
+      playSongsAtIndex(index, id + 'lib')
+    }
+
     // FIND THE DATA
     ind = cacheUserTracks.indexOf(element.getAttribute('track_details'))
     dataToBuild.push(cacheUserTracksData[ind])
@@ -372,4 +377,17 @@ function newMediaInfo(key, val) {
   u.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center')
   u.innerHTML =  `${key} <span>${val}</span>`
   $('#mediainfolist').get(0).appendChild(u)
+}
+
+function showDisplayLyrics() {
+  $('#lyrics').addClass('lyricsActive')
+  $('#showLyrics').html(`<i class='bx bx-chevron-right'></i>`)
+  $('#showLyrics').get(0).setAttribute('onclick', 'hideDisplayLyrics()')
+  showLyrics()
+}
+
+function hideDisplayLyrics() {
+  $('#lyrics').removeClass('lyricsActive')
+  $('#showLyrics').html(`<i class='bx bx-message-detail'></i>`)
+  $('#showLyrics').get(0).setAttribute('onclick', 'showDisplayLyrics()')
 }

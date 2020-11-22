@@ -553,3 +553,19 @@ Some are redudant but exist for future features. */
   object-fit: cover;
   border-radius: 50%;
 }
+
+#lyrics {
+  position: fixed;
+  z-index: 5612789;
+  right: -320px; top: 50px;
+  overflow-y: scroll;
+  padding: 12px;
+  height: calc(100% - 50px - 88px); width: 320px;
+  border-radius: 12px 0px 0px 12px;
+  backdrop-filter: blur(5px); background-color: var(--glow);
+  transition: all 0.5s;
+}
+
+.lyricsActive {
+  right: 0px !important;
+}

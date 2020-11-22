@@ -16,12 +16,11 @@ async function showLyrics() {
   }, 3500)
 
   if (activeLyricsSong == musicActive.name) {
-    $('#lyricsModal').modal('toggle')    
+    showDisplayLyrics()
     loadingLyrics = false
     return;
   }
-
-  Snackbar.show({text: "Gathering lyrics for " + musicActive.name + '.', pos: 'top-center'})
+  $('#lyricsspot').html(`<center>Gathering lyrics...</center>`)
 
   lyricsFetch = await fetch(`https://genius.p.rapidapi.com/search?q=${musicActive.artists} ${musicActive.name}`, {
 	  "method": "GET",
@@ -54,7 +53,6 @@ async function showLyrics() {
   activeLyricsSong = musicActive.name
 
   $('#lyricsspot').html(`<div class="lyricsFrame">${downloadedLyics.data.lyrics.replaceAll('\n', '<br>')}</div>`)
-  $('#lyricsModal').modal('toggle')
   loadingLyrics = false
 }
 

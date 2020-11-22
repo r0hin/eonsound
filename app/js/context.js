@@ -188,9 +188,7 @@ async function trackContext(e, el) {
       window.musicData[id] = data
       openAlbum(data.album.id)
     }
-  
   }
-
 
   // PLAY BUTTON
   document.getElementById("playbtn").onclick = () => {

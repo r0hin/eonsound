@@ -244,7 +244,10 @@ async function removeTrackFromPlaylist(songID, playlistID) {
     songs: firebase.firestore.FieldValue.arrayRemove(removeSongData),
     last_updated: firebase.firestore.FieldValue.serverTimestamp()
   })
-  cacheUserPlaylistData[playlistID].last_updated = new Date().toDateString();
+  
+  if (cacheUserPlaylistData[playlistID]) {
+    cacheUserPlaylistData[playlistID].last_updated = new Date().toDateString();
+  }
 
   // Update the UI
   $(`#${playlistID}${songID}`).remove()

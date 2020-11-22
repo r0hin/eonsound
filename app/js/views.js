@@ -222,7 +222,7 @@ async function openAlbum(id, library) {
   
   initButtonsContained()
   initButtonsText()
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="tooltip"]').tooltip({ trigger : 'hover' });
   return;
 
 }
@@ -498,7 +498,7 @@ async function openArtist(id) {
 
   initButtonsContained()
   initButtonsText()
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="tooltip"]').tooltip({ trigger : 'hover' });
 
   activeLoading = false
 }

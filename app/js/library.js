@@ -190,39 +190,44 @@ async function loadLibraryAlbums() {
 
 async function addTrackToPlaylist(playlistID) {
   // GET TRACK INFO
-  const prepareTrackPlaylistTrack = prepare_library_changes
+  var prepareTrackPlaylistTrack = prepare_library_changes
 
-  const prepareForLibraryTrack = {
-    name: prepareTrackPlaylistTrack.name,
-    id: prepareTrackPlaylistTrack.id,
-    art: prepareTrackPlaylistTrack.album.images[0].url,
-    artists: artistToString(prepareTrackPlaylistTrack.artists),
-    length: prepareTrackPlaylistTrack.duration_ms
+  if (!prepare_library_changes.art) {
+    var prepareTrackPlaylistTrack = {
+      name: prepareTrackPlaylistTrack.name,
+      id: prepareTrackPlaylistTrack.id,
+      art: prepareTrackPlaylistTrack.album.images[0].url,
+      artists: artistToString(prepareTrackPlaylistTrack.artists),
+      length: prepareTrackPlaylistTrack.duration_ms
+    }
   }
 
   // GET TRACK DOWNLOAD URL
   if (!prepareTrackPlaylistTrack.url) {
-    prepareForLibraryTrack.url = await downloadSong(prepareTrackPlaylistTrack.id, prepareTrackPlaylistTrack.spotifyURL, prepareTrackPlaylistTrack.name)
+    prepareTrackPlaylistTrack.url = await downloadSong(prepareTrackPlaylistTrack.id, prepareTrackPlaylistTrack.spotifyURL, prepareTrackPlaylistTrack.name)
   }
   
   // ADD TRACK TO PLAYLIST
   await db.collection('users').doc(user.uid).collection('library').doc(playlistID).update({
-    songs: firebase.firestore.FieldValue.arrayUnion(prepareForLibraryTrack),
+    songs: firebase.firestore.FieldValue.arrayUnion(prepareTrackPlaylistTrack),
     last_updated: firebase.firestore.FieldValue.serverTimestamp()
   })
-  cacheUserPlaylistData[playlistID].last_updated = new Date().toDateString();
+
+  if (cacheUserPlaylistData[playlistID]) {
+    cacheUserPlaylistData[playlistID].last_updated = new Date().toDateString();
+  }
 
   // ADD TRACK TO LIBRARY
-  addTrackToLibrary(prepareTrackPlaylistTrack.id, true, true)
+  addTrackToLibrary(prepareTrackPlaylistTrack.id, true, false)
 
   // REFLECT IN UI
   if (cacheUserPlaylistData[playlistID]) {
     // If its loaded, you update the UI and use the cache data as the queue idnex.
-    await userPlaylistSong(prepareForLibraryTrack.id, prepareForLibraryTrack, playlistID + prepareForLibraryTrack.id, playlistID + 'playlistSongs', cacheUserPlaylistData[playlistID].songs.length, playlistId )
+    await userPlaylistSong(prepareTrackPlaylistTrack.id, prepareTrackPlaylistTrack, playlistID + prepareTrackPlaylistTrack.id, playlistID + 'playlistSongs', cacheUserPlaylistData[playlistID].songs.length, playlistId )
     // If it's not loaded, theres no problem since it will get loaded next time you view it.
   }
 
-  Snackbar.show({pos: 'top-center',text: "Added '" + prepareForLibraryTrack.name + "' to a playlist."})
+  Snackbar.show({pos: 'top-center',text: "Added '" + prepareTrackPlaylistTrack.name + "' to a playlist."})
 }
 
 async function addArtistToLibrary(id, verbose) {

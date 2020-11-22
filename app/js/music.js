@@ -509,6 +509,12 @@ async function loadSong(data) {
       await copyText(`https://r0hin.github.io/eonsound/preview?type=track&id=${data.id}`)
     }
 
+    $('#playingaddplaylistbtn').get(0).onclick = async() => {
+      // Get track details
+      window.prepare_library_changes = musicActive
+      $('#playlistSelect').modal('toggle')
+    }
+
     // Track to album/artist
     $('#goAlbum0').get(0).onclick = async () => {
       if (musicData[data.id]) { 
@@ -553,6 +559,8 @@ async function endedSong() {
   
   // Move active song to history
   musicHistory.push(musicActive);
+
+  hideDisplayLyrics()
   
   musicActive = {none: 'none'}
   if (musicQueue.length > 0) {
