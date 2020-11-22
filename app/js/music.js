@@ -1,6 +1,9 @@
 // music.js
 // Code for the music side of EonSound.
 // Includes things such as building music components, playing songs, managing song details, etc.
+try {
+  window.ipc = require('electron').ipcRenderer;
+} catch(error) {console.log('Unable to initalize Electron IPC Renderer.');}
 
 window.musicQueue = [];
 window.musicActive = {none: 'none'};
@@ -425,6 +428,9 @@ async function endedQueue() {
   visualQ_build()
   $('#showLyrics').addClass('hidden') 
   $('#showQueue').addClass('hidden')
+  try {
+    ipc.send('invokeAction', `queueDidEnd`); 
+  } catch (error) { console.log('Unable to push invokeAction to Electron process. Browser?'); }
 }
 
 async function queueSong(data, skipMsg) {
@@ -548,6 +554,11 @@ async function loadSong(data) {
     calculatePlayerWidths()
     player.play()
     visualQ_build()
+
+    // ELCTRON / DISCORD RPC
+    try {
+      ipc.send('invokeAction', `${musicActive.name};;${data.artists}`); 
+    } catch (error) { console.log('Unable to push invokeAction to Electron process. Browser?'); }
     
     resolve('successo expresso')
   })

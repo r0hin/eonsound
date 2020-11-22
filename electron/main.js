@@ -1,20 +1,54 @@
 const { app, BrowserWindow } = require('electron')
+const path = require('path');
+const url = require('url');
+const DiscordRPC = require('discord-rpc')
+ipc = require('electron').ipcMain;
+
+ipc.on('invokeAction', function(event, data){
+  // DISCORD RICH PRESENCE
+
+  if (data == 'queueDidEnd') {
+    rpc.setActivity({
+      details: `Idling`,
+      state: `Waiting`,
+      startTimestamp,
+      largeImageKey: 'snek_large',
+      largeImageText: 'EonSound',
+      instance: false,
+      startTimestamp: Math.round(Date.now() / 1000),
+    });
+  }
+  else {
+    rpc.setActivity({
+      details: `Listening to ${data.split(';;').shift()}`,
+      state: `by ${data.split(';;').pop()}`,
+      startTimestamp,
+      largeImageKey: 'snek_large',
+      largeImageText: 'EonSound',
+      instance: false,
+      startTimestamp: Math.round(Date.now() / 1000),
+    });
+  }
+
+
+
+});
 
 function createWindow () {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 1100,
     height: 750,
     minWidth: 950,
     minHeight: 600,
     webPreferences: {
-      nodeIntegration: false
+      nodeIntegration: true
     },
     titleBarStyle: "hiddenInset",
   })
 
   // and load the index.html of the app.
-  win.loadURL('https://eonsound.firebaseapp.com/')
+  win.loadURL('http://localhost:6968/')
 
 }
 
@@ -40,3 +74,35 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// Set this to your Client ID.
+const clientId = '780204397807403059';
+
+// Only needed if you want to use spectate, join, or ask to join
+DiscordRPC.register(clientId);
+
+const rpc = new DiscordRPC.Client({ transport: 'ipc' });
+const startTimestamp = new Date();
+
+async function setActivity() {
+  if (!rpc || !win) {
+    return;
+  }
+
+  rpc.setActivity({
+    details: `Idling`,
+    state: `Waiting`,
+    startTimestamp,
+    largeImageKey: 'snek_large',
+    largeImageText: 'EonSound',
+    instance: false,
+    startTimestamp: Math.round(Date.now() / 1000),
+  });
+}
+
+rpc.on('ready', () => {
+  console.log('READYY');
+  setActivity();
+});
+
+rpc.login({ clientId }).catch(console.error);
