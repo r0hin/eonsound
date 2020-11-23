@@ -48,16 +48,10 @@ function tabe(tab) {
         }}, 200)
         break;
       case 'activity':
-        interval = window.setInterval(() => { if (typeof(cacheUser) !== "undefined") {
-          loadActivity()
-          window.clearInterval(interval)
-        }}, 200)
+        loadActivity()
         break;
       case 'friends':
-        interval = window.setInterval(() => { if (typeof(cacheUser) !== "undefined") {
-          loadFriends()
-          window.clearInterval()
-        }}, 200)
+        loadFriends()
         break;
       default:
         break;

@@ -220,7 +220,6 @@ if (filePath.includes("logos/") || filePath.includes("covers/")) {
 }
 });
 
-
 exports.getLyrics = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).https.onCall(async (data, context) => {
   res = await fetch(data.lyricsURL, {
     method: 'GET',
@@ -232,5 +231,50 @@ exports.getLyrics = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).https
   const lyrics = $('.lyrics').text()
 
   return { lyrics: lyrics };
+
+})
+
+exports.acceptFriend = functions.https.onCall(async (data, context) => {
+  const useruid = context.auth.uid;
+  const targetuid = data.uid;
+  const myurl = data.myurl;
+  const myusername = data.myusername;
+  const db = admin.firestore();
+
+  // Approved, create account.
+
+  await db.collection("users").doc(targetuid).update({
+    requested: admin.firestore.FieldValue.arrayRemove({
+      id: useruid,
+      p: myurl,
+      u: myusername
+    }),
+    friends: admin.firestore.FieldValue.arrayUnion({
+      id: useruid,
+      p: myurl,
+      u: myusername
+    })
+  });
+
+  return {data: 'Successo Expresso'}
+
+})
+
+exports.denyFriend = functions.https.onCall(async (data, context) => {
+  const useruid = context.auth.uid;
+  const targetuid = data.uid;
+  const url = data.url;
+  const username = data.username;
+  const db = admin.firestore();
+
+  await db.collection("users").doc(targetuid).update({
+    requested: admin.firestore.FieldValue.arrayRemove({
+      id: useruid,
+      p: url,
+      u: username
+    }),
+  });
+
+  return {data: 'Successo Expresso'}
 
 })

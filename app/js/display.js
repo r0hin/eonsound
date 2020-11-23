@@ -398,3 +398,8 @@ function hideDisplayLyrics() {
 function toggleAddFriend() {
   $('#newFriendDiv').toggleClass('hidden')
 }
+
+function toggleFriendTabe(tab) {
+  $('.frtab').addClass('hidden')
+  $(`#friend-${tab}`).removeClass('hidden')
+}

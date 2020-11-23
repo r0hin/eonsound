@@ -55,7 +55,7 @@ Some are redudant but exist for future features. */
   transition: all 0.3s;
 }
 
-.album:hover, .artist img:hover, .playlist:hover, .category:hover, .userPlaylist:hover {
+.album:hover, .friendItem img:hover, .artist img:hover, .playlist:hover, .category:hover, .userPlaylist:hover {
   transform: translate(0, -12px);
 }
 

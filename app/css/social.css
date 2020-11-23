@@ -1,3 +1,84 @@
 /* social.css
 Styling for the social section of EonSound.
 Some may be used outside the social sections to reference social elements. */
+
+.previewLargeCard {
+  margin-top: 12px;
+  padding: 12px 12px 12px 92px;
+  position: relative;
+  width: 100%;
+}
+
+.previewLargeCard img {
+  position: absolute;
+  left: 12px; object-fit: cover;
+  width: 72px; height: 72px;
+  border-radius: 50%;
+}
+
+.previewLargeCard .content {
+  float: left;
+}
+
+.previewLargeCard .actions {
+  position: absolute;
+  top: 50%; right: 12px;
+  transform: translate(0, -50%);
+}
+
+.userRequestCard {
+  padding: 12px;
+  margin: 16px;
+  text-align: center;
+  display: inline-block;
+}
+
+.userRequestCard button {
+  width: calc(50% - 16px)
+}
+
+.userRequestCard .btn-success:hover {
+  background-color: var(--success) !important;
+}
+
+.userRequestCard .btn-danger:hover {
+  color: var(--danger) !important;
+}
+
+.userRequestCard img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 6px;
+}
+
+#horizontal_friends_list {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+.friendItem {
+  margin: 16px;
+  display: inline-block;
+  text-align: center;
+}
+
+.friendItem img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.friendItem h4 {
+  text-overflow:ellipsis; max-width: 90px;overflow: hidden; white-space: nowrap;
+}
+
+.friendItem img:hover {
+  border-radius: 45%;
+  opacity: 0.6;
+}

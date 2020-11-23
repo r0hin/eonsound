@@ -520,15 +520,30 @@
       <p>Coming Soon!</p>
     </div>
     <div class="tab hidden animated fadeIn fastest" id="friends">
-      <button onclick="toggleAddFriend()" class="float btn-text-primary friendBtn"> Add Friend </button>
-      <h2 class="tab-title">Friends</h2>
-      <div id="newFriendDiv" class="hidden">
-        <div class="floating-label textfield-box">
+      <button onclick="toggleFriendTabe('new')" class="float btn-text-primary friendBtn"> <i class='bx bx-book-add'></i></button>
+      <button onclick="toggleFriendTabe('incoming')" class="float btn-text-primary friendBtn"> <i class='bx bx-phone-incoming'></i> <span id="incNum"></span> </button>
+      <button onclick="toggleFriendTabe('outgoing')" class="float btn-text-primary friendBtn"> <i class='bx bx-phone-outgoing'></i> <span id="outNum"></span> </button>
+      <h2 class="tab-title inline">Friends</h2>
+      <button onclick="toggleFriendTabe('home')" class="btn-text-primary inline"> <i class='bx bx-home'></i> </button>
+      <div id="friend-home" class="frtab animated fadeIn">
+        <div id="horizontal_friends_list"></div>
+        <div id="user_content"></div>
+      </div>
+      <div id="friend-incoming" class="frtab animated fadeIn hidden">
+        <h2>Incoming Requests</h2>
+        <div id="requests"></div>
+      </div>
+      <div id="friend-outgoing" class="frtab animated fadeIn hidden">
+        <h2>Outgoing Requests</h2>
+        <div id="requested"></div>
+      </div>
+      <div id="friend-new" class="frtab animated fadeIn hidden">
+        <div class="floating-label textfield-box animated zoomIn faster">
           <label for="addFriendBox">Username</label>
           <input class="form-control" id="addFriendBox" type="text">
         </div>
+        <div id="friendPreview"></div>
       </div>
-      <div id="horizontal_friends_list"></div>
     </div>
   </div>
 

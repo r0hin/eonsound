@@ -94,3 +94,7 @@ audio {
   -webkit-animation-duration: calc(var(--animate-duration)/4);
   animation-duration: calc(var(--animate-duration)/4);
 }
+
+.inline {
+  display: inline-block
+}
