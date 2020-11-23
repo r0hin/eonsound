@@ -40,7 +40,6 @@ async function sendVerification(el) {
 }
 
 async function appContent() {
-
   if (window.location.href.includes('firebaseapp')) {
     // Production version: show browse
     if (!localStorage.getItem('firstTimeOpen')) {
@@ -88,7 +87,7 @@ async function createUser() {
     return;
   }
 
-  if (cachedetails.usernames.includes($("#usernamebox").val())) {
+  if (cachedetails.usernames.includes($("#usernamebox").val().toLowerCase())) {
     $("#createAccFeedback").removeClass("hidden");
     $("#createAccFeedback").html("That username is taken!");
     return;

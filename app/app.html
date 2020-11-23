@@ -277,7 +277,17 @@
       <i class='bx bx-search-alt' ></i>
       <span>Search</span>
     </button>
+    <h4>Social</h4>
+    <button class="tab-btn btn-text-primary" id="activity-tab" onclick="tabe('activity')">
+      <i class='bx bxs-hot'></i>
+      <span>Activity</span>
+    </button>
+    <button class="tab-btn btn-text-primary" id="friends-tab" onclick="tabe('friends')">
+      <i class='bx bxs-contact'></i>
+      <span>Friends</span>
+    </button>
 
+    <div id="fakeplayer" class="hidden"></div>
     <div id="fakeusercard"></div>
     <div id="usercard" class="usercard hidden animated fadeInUp es-how">
       <img id="userpfp1" alt="Loading...">
@@ -504,6 +514,21 @@
         </div>
       </div>
       <br><br>
+    </div>
+    <div class="tab hidden animated fadeIn fastest" id="activity">
+      <h2 class="tab-title">Activity</h2>
+      <p>Coming Soon!</p>
+    </div>
+    <div class="tab hidden animated fadeIn fastest" id="friends">
+      <button onclick="toggleAddFriend()" class="float btn-text-primary friendBtn"> Add Friend </button>
+      <h2 class="tab-title">Friends</h2>
+      <div id="newFriendDiv" class="hidden">
+        <div class="floating-label textfield-box">
+          <label for="addFriendBox">Username</label>
+          <input class="form-control" id="addFriendBox" type="text">
+        </div>
+      </div>
+      <div id="horizontal_friends_list"></div>
     </div>
   </div>
 

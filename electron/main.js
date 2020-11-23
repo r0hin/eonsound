@@ -48,7 +48,7 @@ function createWindow () {
   })
 
   // and load the index.html of the app.
-  win.loadURL('http://localhost:6968/')
+  win.loadURL('https://eonsound.firebaseapp.com')
 
 }
 

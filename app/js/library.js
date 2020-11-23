@@ -418,14 +418,14 @@ async function addTrackToLibrary(trackID, showFeedback, showAlbumToo) {
 }
 
 async function addSpotifyPlaylistToLibrary(id) {
-  yc = confirm(`-= Convert Spotify Playlist of ID ${id} to EonSound Playlist =-\n\nThis will create an EonSound playlist and sequentially add each song to the playlist. It may take a while so you can click behind the loading icon to have it run in the background. \n\nClick to confirm:`)
+  yc = confirm(`-= Convert Spotify Playlist of ID ${id} to EonSound Playlist =-\n\nThis will create an EonSound playlist and sequentially add each song to the playlist. This will run in the background. \n\nClick to confirm:`)
   if (!yc) {
     return;
   }
   // Spotify playlists to library:
   // Get playlist data, convert it, add the playlist. For each song, add the song, artist and album.
   return new Promise(async (resolve, reject) => {
-    toggleloader(); Snackbar.show({pos: 'top-center',text: "Converting Spotify playlist to EonSound..."})
+    Snackbar.show({pos: 'top-center',text: "Converting Spotify playlist to EonSound..."})
 
     // Grab playlist data
     sptoldata = await goFetch(`playlists/${id}`)
@@ -468,11 +468,9 @@ async function addSpotifyPlaylistToLibrary(id) {
       console.log(temporaryTrackItem);
 
       url = await downloadSong(temporaryTrackItem.id, temporaryTrackItem.external_urls.spotify, temporaryTrackItem.name)
+      if (url === 'no') { continue; }
 
-      if (url === 'no') {
-        continue;
-      }
-
+      // Added to playlist
       await db.collection('users').doc(user.uid).collection('library').doc(id).set({
         songs: firebase.firestore.FieldValue.arrayUnion({
           art: temporaryTrackItem.album.images[0].url,
@@ -483,18 +481,19 @@ async function addSpotifyPlaylistToLibrary(id) {
         })
       }, {merge: true})
 
-      // Add each album and that should be it. Adding album adds artist as well
+      // Add album to library
 
-      await addAlbumToLibrary(temporaryTrackItem.album.id, true)
+      await addAlbumToLibrary(temporaryTrackItem.album.id, true, true)
 
       Snackbar.show({pos: 'top-center',text: `Added ${i}/${sptoldata.tracks.items.length} tracks.`})
 
     }
 
     window.setTimeout(() => {
-      toggleloader()
       showcomplete()
-      Snackbar.show({pos: 'top-center',text: "Saved playlist to library."})
+      Snackbar.show({pos: 'top-center',text: "Saved playlist to library. Refreshing..."})
+      $('#user_library_playlists').empty()
+      loadUserPlaylists()
     }, 500)
     resolve('ayo')
   }) 

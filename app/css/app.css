@@ -124,6 +124,10 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   height: 92px; width: 232px; padding: 12px;
 }
 
+#fakeplayer {
+  height: 72px; width: 232px; padding: 12px;
+}
+
 #usercard img {
   width: 50px;
   height: 50px;

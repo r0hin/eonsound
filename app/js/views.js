@@ -545,7 +545,6 @@ async function openPlaylist(id) {
 
   p.innerHTML = `
     <div class="playViewGradient" id="${id}playlistgradientelement"></div>
-    <button class="detailsButton btn-contained-primary spotifyPlaylist" playlist_details="${id}" onclick="rightClickSelf(this)"><i class='bx bx-dots-vertical-rounded'></i></button>
     <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${id}PlaylistView')"><i class='bx bx-x'></i></button>
     <div class="playlistHeader row">
       <div class="col-sm">

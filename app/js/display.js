@@ -76,12 +76,14 @@ function showPlayer() {
   $('#player').removeClass('fadeOutDown')
   $('#player').addClass('fadeInUp')
   $('#player').removeClass('hidden')
+  $('#fakeplayer').removeClass('hidden')
 }
 
 function hidePlayer() {
   $('#InjectedPlayer').get(0).innerHTML = ``
   $('#player').addClass('fadeOutDown')
   $('#player').removeClass('fadeInUp')
+  $('#fakeplayer').addClass('hidden')
 }
 
 function showLoader() {
@@ -101,14 +103,15 @@ function colorThiefify(TYPE, imageID, containerID) {
   
   switch (TYPE) {
     case 'userPlaylistPreview':
-    document.getElementById(containerID).setAttribute('style', 'background-color: rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.6)')
-    break;
+      document.getElementById(containerID).setAttribute('style', 'background-color: rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.6)')
+      document.getElementById(containerID).setAttribute('style', 'background-image: linear-gradient(180deg, rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.6), rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.2)')
+      break;
     case 'userPlaylistView':
-    document.getElementById(containerID).setAttribute('style', 'background-image: linear-gradient(180deg, rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 1) -30%, var(--bg-primary) 100%)')  
-    break;
+      document.getElementById(containerID).setAttribute('style', 'background-image: linear-gradient(180deg, rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 1) -30%, var(--bg-primary) 100%)')  
+      break;
     case 'albumPreview':
-    document.getElementById(containerID).setAttribute('style', 'background-color: rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.9)')
-    default:
+      document.getElementById(containerID).setAttribute('style', 'background-color: rgba(' + colors[0] + ',' + colors[1] + ',' + colors[2] + ', 0.9)')
+      default:
     break;
   }
   
@@ -390,4 +393,8 @@ function hideDisplayLyrics() {
   $('#lyrics').removeClass('lyricsActive')
   $('#showLyrics').html(`<i class='bx bx-message-detail'></i>`)
   $('#showLyrics').get(0).setAttribute('onclick', 'showDisplayLyrics()')
+}
+
+function toggleAddFriend() {
+  $('#newFriendDiv').toggleClass('hidden')
 }

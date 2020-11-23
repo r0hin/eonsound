@@ -7,6 +7,8 @@ sessionStorage.setItem('first-time-albums', 'true')
 sessionStorage.setItem('first-time-songs', 'true')
 sessionStorage.setItem('first-time-browse', 'true')
 sessionStorage.setItem('first-time-search', 'true')
+sessionStorage.setItem('first-time-activity', 'true')
+sessionStorage.setItem('first-time-friends', 'true')
 
 // interval = window.setInterval(() => {
 //   if (typeof(user) !== "undefined") {
@@ -43,6 +45,18 @@ function tabe(tab) {
         interval = window.setInterval(() => { if (typeof(spotifyCode) !== "undefined") {
           loadBrowse()
           window.clearInterval(interval)
+        }}, 200)
+        break;
+      case 'activity':
+        interval = window.setInterval(() => { if (typeof(cacheUser) !== "undefined") {
+          loadActivity()
+          window.clearInterval(interval)
+        }}, 200)
+        break;
+      case 'friends':
+        interval = window.setInterval(() => { if (typeof(cacheUser) !== "undefined") {
+          loadFriends()
+          window.clearInterval()
         }}, 200)
         break;
       default:

@@ -139,6 +139,7 @@ async function deleteUserPlaylist(id) {
   
   $(`#${id}userlibraryplaylistelement`).remove()
   $(`#playlistSelectItem${id}`).remove()
+  $(`#${id}UserPlaylistView`).remove()
 
   Snackbar.show({pos: 'top-center',text: "Playlist successfully deleted."})
 }
