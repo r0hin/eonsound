@@ -5,7 +5,6 @@
 window.cacheUserFriends = []
 window.db = firebase.firestore();
 document.getElementById("addFriendBox").addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); addFriend($('#addFriendBox').val());$('#addFriendBox').val('') }});
-
 async function loadFriends() {
   if (typeof(cacheuser) == 'undefined') {
     window.setTimeout(() => {
@@ -255,7 +254,27 @@ async function openSocial(id) {
   h.setAttribute('class', 'animated fadeIn fastest friendView')
   h.setAttribute('id', id + 'UserView')
   h.innerHTML = `
-  ${id}
+  <div class="row">
+    <div class="col-sm">
+      ${id}
+    </div>
+    <div class="col-sm">
+      <div id="messagecontent${id}">  
+      </div>
+      <br>
+      <div class="relative2">
+        <div class="floating-label textfield-box newmsgbox">
+          <label for="newdmmsg${id}">New Message</label>
+          <input class="form-control" id="newdmmsg${id}" placeholder="" type="text">
+        </div>
+      </div>
+      </div>
+      <!-- Out of the viewport. User can scroll down whilst image loads.  -->
+      <div id="dimensions_calculations_box"></div>
+    </div>
+  </div>
   `
   $('#user_content').get(0).appendChild(h)
+
+  document.getElementById("newdmmsg" + id).addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); ADD_MESSAGE(id, event.target.value) }});
 }

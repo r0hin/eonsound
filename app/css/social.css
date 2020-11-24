@@ -82,3 +82,24 @@ Some may be used outside the social sections to reference social elements. */
   border-radius: 45%;
   opacity: 0.6;
 }
+
+#friends {
+  height: 100%;
+}
+
+#friend-home {
+  height: calc(100% - 20px);
+}
+
+#user_content, .friendView .row {
+  height: calc(100% - 166px)
+}
+
+.friendView, .friendView .row, .friendView .row .col-sm {
+  height: 100%;
+}
+
+.friendView .col-sm #messagecontent{
+  height: calc(100% - 88px);
+  background-color: red;
+}

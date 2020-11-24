@@ -403,3 +403,15 @@ function toggleFriendTabe(tab) {
   $('.frtab').addClass('hidden')
   $(`#friend-${tab}`).removeClass('hidden')
 }
+
+function dmstringify(u1, u2) {
+  alphabeticalized = [];
+  alphabeticalized.push(u1);
+  alphabeticalized.push(u2);
+  alphabeticalized.sort(function (a, b) {
+    var textA = a.toUpperCase();
+    var textB = b.toUpperCase();
+    return textA < textB ? -1 : textA > textB ? 1 : 0;
+  });
+  return alphabeticalized[0].toString() + alphabeticalized[1].toString();
+}

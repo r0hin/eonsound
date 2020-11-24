@@ -1,5 +1,6 @@
 // Tabs.js
 // Manages the general layout of the app and properly loading sections as the user requires it.
+sessionStorage.setItem('CURRENTAB', '')
 
 sessionStorage.setItem('first-time-playlists', 'true')
 sessionStorage.setItem('first-time-artists', 'true')
@@ -18,6 +19,7 @@ sessionStorage.setItem('first-time-friends', 'true')
 // }, 200)
 
 function tabe(tab) {
+  sessionStorage.setItem('CURRENTAB', tab)
   $('.tab-btn').removeClass('tab-btn-active')
   $(`#${tab}-tab`).addClass('tab-btn-active')
 

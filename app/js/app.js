@@ -55,6 +55,7 @@ async function appContent() {
   }
 
   initSpotifyCode();
+  msgListener()
 
   doc = await db.collection("app").doc("details").get();
   window.cachedetails = doc.data();
