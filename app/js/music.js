@@ -237,7 +237,7 @@ function searchTrack(id, data, objectID, destinationID) {
 function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
   return new Promise((resolve, reject) => {
     f = document.createElement('div')
-    f.setAttribute('class', 'Song animated flipInX song')
+    f.setAttribute('class', 'Song song ')
     f.setAttribute('id', objectID)
     f.setAttribute('track_details', id)
     f.setAttribute('track_playlist', playlist)
@@ -616,6 +616,20 @@ function skipForward() {
   endedSong();
 }
 
+const sortable = new Sortable.default(document.querySelectorAll('#queueItems'), {
+  draggable: '.Song'
+});
+
+Array.prototype.move = function (from, to) {
+  this.splice(to, 0, this.splice(from, 1)[0]);
+};
+
+sortable.on('sortable:sorted', (sortData) => {
+  // Rebuild queue from visualqbuild items
+  musicQueue.move(sortData.data.oldIndex, sortData.data.newIndex)
+  console.log('rebulid queue');
+});
+
 function visualQ_build() {
   $('#queueItems').empty()
   
@@ -637,7 +651,7 @@ function visualQ_build() {
   for (let i = 0; i < musicQueue.length; i++) {
     const data = musicQueue[i]
     p = document.createElement('div')
-    p.setAttribute('class', 'Song animated flipInX song')
+    p.setAttribute('class', 'Song song')
     p.setAttribute('track_details', data.id)
     p.onclick = () => {
       playSongsAtQueueIndex(i)

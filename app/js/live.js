@@ -15,30 +15,8 @@ $("#main_player").bind("ended", function () {
   endedSong();
 });
 
-document.getElementById("searchbox1").addEventListener("keyup", function (event) {
-  if (event.keyCode === 13) {
-    event.preventDefault();
-    document.getElementById('sbuton').click()
-  }
-});
-
-document.getElementById("partyfield1").addEventListener("keyup", function (event) {
-  if (event.keyCode === 13) {
-    event.preventDefault();
-    document.getElementById('gobtnjoin').click()
-  }
-});
-
-document.getElementById("newmsgbox").addEventListener("keyup", function (event) {
-  if (event.keyCode === 13) {
-    event.preventDefault();
-    sendMessage(document.getElementById("newmsgbox").value)
-    $("#newmsgbox").val('')
-  }
-});
-
-// live.js
-// Listening parties scripts.
+// Input enter key listeners
+document.getElementById("searchbox1").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),document.getElementById("sbuton").click())}),document.getElementById("partyfield1").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),document.getElementById("gobtnjoin").click())}),document.getElementById("newmsgbox").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),sendMessage(document.getElementById("newmsgbox").value),$("#newmsgbox").val(""))});
 
 function artistToString(artists) {
   if (artists.length == 1) {
@@ -71,6 +49,7 @@ var firebaseConfig = {
   messagingSenderId: "824179683788",
   appId: "1:824179683788:web:81830e10e40b4b887ded69",
 };
+
 firebase.initializeApp(firebaseConfig);
 window.db = firebase.firestore();
 
@@ -250,8 +229,6 @@ async function search(term) {
     $('#musicSearch').get(0).appendChild(a)
   }
   
-  console.log(term);
-
 }
 
 async function downloadSong(trackID, spotifyURL, trackName) {
@@ -298,8 +275,6 @@ async function endedQueue() {
   $('#queueProgress').addClass('zoomOut')
   $('#playing_album_cover').removeClass('zoomIn')
   $('#playing_album_cover').addClass('zoomOut')
-  $('#nowplayingbutton').get(0).setAttribute('disabled', 'true')
-  $('#nowplayingbutton').addClass('btn-disabled')
   $('#InjectedWidth').get(0).innerHTML = ``
   hidePlayer()
   visualQ_build()
@@ -329,14 +304,12 @@ async function queueSong(data, skipMsg) {
 async function loadSong(data) {
   return new Promise(async (resolve, reject) => {
     url = data.url
-    showPlayer()
+    showPlayerLive()
     $('#queueProgress').removeClass('zoomOut')
     $('#queueProgress').removeClass('hidden')
     $('#queueProgress').addClass('zoomIn')
     $('#playing_album_cover').removeClass('zoomIn')
     $('#playing_album_cover').addClass('zoomOut')
-    $('#nowplayingbutton').get(0).setAttribute('disabled', 'true')
-    $('#nowplayingbutton').addClass('btn-disabled')
     if (!data.url) {
       loadertimer = window.setTimeout(() => {
         showLoader()
@@ -349,25 +322,18 @@ async function loadSong(data) {
     musicActive = data
     musicActive.url = url
   
-    console.log(data);
     $('#main_player').get(0).setAttribute('src', url)
     $('#playing_album_cover').get(0).setAttribute('src', data.art)
     $('#playing_track_details').get(0).innerHTML = `<b>${data.name}</b>${data.artists}`
-    $('#nowplayingbutton').get(0).onclick = () => {
-      // More options button to set library changes to song
-      window.prepare_library_changes = data
-    }
   
     $('#queueProgress').removeClass('zoomIn')
     $('#queueProgress').addClass('zoomOut')
     $('#playing_album_cover').removeClass('zoomOut')
     $('#playing_album_cover').removeClass('hidden')
     $('#playing_album_cover').addClass('zoomIn')
-    $('#nowplayingbutton').get(0).removeAttribute('disabled')
-    $('#nowplayingbutton').removeClass('btn-disabled')
     calculatePlayerWidths()
 
-// TE STATUS PLAYING SOOOOOOOOOOOOOOONG
+    // TE STATUS PLAYING SOOOOOOOOOOOOOOONG
     if (owner) {
       await db.collection('parties').doc(activeParty).update({
         messages: firebase.firestore.FieldValue.arrayUnion({
@@ -541,7 +507,7 @@ function visualQ_build2(queue) {
 
 }
 
-function showPlayer() {
+function showPlayerLive() {
   $('#InjectedPlayer').get(0).innerHTML = `
     #usercard {
       bottom: 86px !important;
@@ -580,7 +546,7 @@ function calculatePlayerWidths() {
   songActionWidth = textWidth + 32 + 50
   // + 185 - song action width
   // + 24 - padding
-  contentWidth = songActionWidth + 185 + 24
+  contentWidth = songActionWidth + 110 + 24
   playerWidth = 'calc(100% - ' + contentWidth + 'px)'
 
   $('#InjectedWidth').get(0).innerHTML = `
@@ -623,12 +589,10 @@ async function sendMessage(val) {
       skiddyo: Math.random(100000),
     }) 
   })
-  console.log('sending message of ', val);
 }
 
 function buildMessages(data) {
   $('#messages').empty()
-  console.log('building messages of ', data);
   for (let i = 0; i < data.length; i++) {
     msg = data[i]
     b = document.createElement('div')

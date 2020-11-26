@@ -320,7 +320,7 @@ async function openUserPlaylist(id) {
       <div class="col-sm"><center><button onclick="shuffleSongs('${playlistId}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>
     </div>
     <br><br>
-    <div class="songList ${playlistId}playlistSongs" id="${playlistId}playlistSongs"></div>
+    <div class="songList ${playlistId}playlistSongs animated fadeIn" id="${playlistId}playlistSongs"></div>
     <br><br><br>
   `
   document.getElementById('userplaylist_view').appendChild(f)
@@ -330,6 +330,28 @@ async function openUserPlaylist(id) {
     const openPlaylistSong = nopenPlaylist.songs[j];
     await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
   }
+  const sortablePlaylist = new Sortable.default(document.getElementById(`${playlistId}playlistSongs`), {
+    draggable: '.Song'
+  });
+  
+  sortablePlaylist.on('sortable:sorted', (sortData) => {
+    if (sortData.data.oldIndex == sortData.data.newIndex) {
+      return;
+    }
+    cacheUserPlaylistData[playlistId].songs.move(sortData.data.oldIndex, sortData.data.newIndex)
+    try {
+      window.clearTimeout(sortTimer)
+    } catch(error) {}; 
+    sortTimer = window.setTimeout(async () => {
+      await db.collection('users').doc(user.uid).collection('library').doc(playlistId).update({
+        last_updated: firebase.firestore.FieldValue.serverTimestamp(),
+        songs: cacheUserPlaylistData[playlistId].songs
+      }); 
+      cacheUserPlaylistData[playlistId].last_updated = new Date().toDateString(); 
+      Snackbar.show({pos: 'top-center',text: 'Playlist order updated.'})
+    }, 3000)
+  });
+
   queueData[playlistId] = nopenPlaylist.songs
   $(`#${playlistId}UserPlaylistView`).imagesLoaded(() => {
     colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')

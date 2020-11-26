@@ -415,7 +415,7 @@ Some are redudant but exist for future features. */
 .Song {
   border-radius: 12px; width: 100%;
   padding: 8px; cursor: pointer;
-  background: transparent;
+  background-color: var(--bg-primary);
   display: block;
 }
 
