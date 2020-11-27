@@ -2,7 +2,7 @@
 // Code for the music side of EonSound.
 // Includes things such as building music components, playing songs, managing song details, etc.
 try {
-  window.ipc = require('electron').ipcRenderer;
+  eval(`window.ipc = require('electron').ipcRenderer`)
 } catch(error) {console.log('Unable to initalize Electron IPC Renderer.');}
 
 window.musicQueue = [];
@@ -652,6 +652,7 @@ function visualQ_build() {
     const data = musicQueue[i]
     p = document.createElement('div')
     p.setAttribute('class', 'Song song')
+    p.setAttribute('active_queue', i)
     p.setAttribute('track_details', data.id)
     p.onclick = () => {
       playSongsAtQueueIndex(i)
@@ -674,3 +675,9 @@ async function playSongsAtQueueIndex(index) {
   musicQueue.splice('0', index)
   skipForward() 
 }
+
+function removeFromQueueByIndex(index) {
+  musicQueue.splice(index, 1)
+  visualQ_build()
+}
+

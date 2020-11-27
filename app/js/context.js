@@ -162,6 +162,7 @@ async function trackContext(e, el) {
 
   id = el.getAttribute("track_details")
   contextPlaylist = el.getAttribute("track_playlist")
+  activeQueue = el.getAttribute("active_queue")
 
   // TRACK TO ALBUM/ARTIST
 
@@ -272,6 +273,18 @@ async function trackContext(e, el) {
   }
   else {
     $('#trackdeletecontent').html(``)
+  }
+
+  if (activeQueue) {
+    // Show queue button 
+    $('#queueactioncontent').html(`
+      <div class="context_divider"></div>
+      <button onclick="removeFromQueueByIndex('${activeQueue}')" class="btn-text-danger contextbtn contextbtndanger">Remove from Queue</button>
+    `)
+    initButtonsText()
+  }
+  else {
+    $('#queueactioncontent').html(``)
   }
 
 }
@@ -479,3 +492,4 @@ function rightClickSelf(element) {
 
   // Source: stackoverflow questions:7914684
 }
+

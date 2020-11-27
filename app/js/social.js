@@ -9,7 +9,7 @@ async function loadFriends() {
   if (typeof(cacheuser) == 'undefined') {
     window.setTimeout(() => {
       loadFriends()
-    }, 15000)
+    }, 2000)
     return;
   }
   loadRequests()
@@ -275,6 +275,6 @@ async function openSocial(id) {
   </div>
   `
   $('#user_content').get(0).appendChild(h)
-
+  loadMessages(id)
   document.getElementById("newdmmsg" + id).addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); ADD_MESSAGE(id, event.target.value) }});
 }
