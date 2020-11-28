@@ -415,3 +415,15 @@ function dmstringify(u1, u2) {
   });
   return alphabeticalized[0].toString() + alphabeticalized[1].toString();
 }
+
+function showOutdated() {
+  $('#updateNotify').removeClass('hidden')
+}
+
+function hideUpdate() {
+  $("#updateNotify").removeClass("fadeIn");
+  $("#updateNotify").addClass("fadeOut");
+  window.setTimeout(() => {
+    $("#updateNotify").addClass("hidden");
+  }, 800);
+}

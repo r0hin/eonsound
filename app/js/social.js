@@ -3,6 +3,7 @@
 // Things like accounts, following, timelines, etc will be managed here.
 
 window.cacheUserFriends = []
+
 window.db = firebase.firestore();
 document.getElementById("addFriendBox").addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); addFriend($('#addFriendBox').val());$('#addFriendBox').val('') }});
 async function loadFriends() {
@@ -219,24 +220,35 @@ async function buildFriends(friends) {
   console.log(friends);
   for (let i = 0; i < friends.length; i++) {
     const friend = friends[i];
+    cacheUserFriendsMap[friend.id] = friend.p
     o = document.createElement('div')
-    o.setAttribute('class', 'hidden animated fadeIn friendItem')
+    o.setAttribute('class', 'hidden animated zoomIn friendItem friend')
     o.setAttribute('id', friend.id + 'iconElement')
+    o.setAttribute('user_details', friend.id)
     o.onclick = () => {
-      openSocial(friend.id)
+      openSocial(friend.id, i)
     }
     o.innerHTML = `
     <img src="${friend.p}" />
     <h4>${friend.u}</h4>
+    <span class="pingSpan" id="${friend.id}unread"></span>
     `
     $('#horizontal_friends_list').get(0).appendChild(o)
     $(`#${friend.id}iconElement`).imagesLoaded(() => {
       $(`#${friend.id}iconElement`).removeClass('hidden');
+      var animationDelay = i * 1000
+      var animationDelay = animationDelay / 8
+      $(`#${friend.id}iconElement`).get(0).setAttribute('style', 'animation-delay: ' + animationDelay + 'ms')
     })
   }
+
+  $('#horizontal_friends_list').imagesLoaded(() => {
+    updatePings()
+  })
+
 }
 
-async function openSocial(id) {
+async function openSocial(id, index) {
   // Remove all the others
   $('.friendView').removeClass('fadeIn')
   $('.friendView').addClass('fadeOut')
@@ -256,9 +268,21 @@ async function openSocial(id) {
   h.innerHTML = `
   <div class="row">
     <div class="col-sm">
-      ${id}
+      <center>
+
+        <div class="card frcard centered">
+          <div class="card-body">
+            <br>
+            <img src="${cacheUserFriends[parseInt(index)].p}"/>
+            <br>
+            <h2>${cacheUserFriends[parseInt(index)].u}</h2>
+            <small>${id}</small>
+          </div>
+        </div>
+
+      </center>
     </div>
-    <div class="col-sm">
+    <div class="col-sm animated fadeIn hidden" id="messagecontainers${id}">
       <div id="messagecontent${id}">  
       </div>
       <br>
@@ -267,14 +291,24 @@ async function openSocial(id) {
           <label for="newdmmsg${id}">New Message</label>
           <input class="form-control" id="newdmmsg${id}" placeholder="" type="text">
         </div>
+        <div id="dimensions_calculations_box"></div>
       </div>
       </div>
       <!-- Out of the viewport. User can scroll down whilst image loads.  -->
-      <div id="dimensions_calculations_box"></div>
     </div>
   </div>
   `
   $('#user_content').get(0).appendChild(h)
   loadMessages(id)
+
+  db.collection("directlisteners").doc(user.uid).update({
+    unreadTOTAL: firebase.firestore.FieldValue.arrayRemove(id)
+  })
+
   document.getElementById("newdmmsg" + id).addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); ADD_MESSAGE(id, event.target.value) }});
+}
+
+async function friendInfo(uid) {
+  // Soon
+  alert('Not available yet.')
 }

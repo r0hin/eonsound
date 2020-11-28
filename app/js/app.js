@@ -67,6 +67,7 @@ async function appContent() {
   }
 
   window.cacheuser = doc.data();
+  window.cacheUserFriendsMap = {[user.uid]: cacheuser.url}
   loadUserPlaylists(cacheuser.playlistsPreview);
   loadLibrary()
 

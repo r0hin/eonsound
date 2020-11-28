@@ -1,13 +1,15 @@
 const { app, BrowserWindow } = require('electron')
-const path = require('path');
-const url = require('url');
 const DiscordRPC = require('discord-rpc')
+const open = require("open");
 ipc = require('electron').ipcMain;
 
 ipc.on('invokeAction', function(event, data){
   // DISCORD RICH PRESENCE
-
-  if (data == 'queueDidEnd') {
+  if (data == 'close') {
+    open("https://github.com/r0hin/eonsound/releases/latest");
+    win.close()
+  }
+  else if (data == 'queueDidEnd') {
     rpc.setActivity({
       details: `Idling`,
       state: `Waiting`,
@@ -29,9 +31,10 @@ ipc.on('invokeAction', function(event, data){
       startTimestamp: Math.round(Date.now() / 1000),
     });
   }
+});
 
-
-
+ipc.on('app_version', (event) => {
+  event.sender.send('app_version', { version: app.getVersion() });
 });
 
 function createWindow () {
@@ -46,9 +49,11 @@ function createWindow () {
     },
     titleBarStyle: "hiddenInset",
   })
-
+  // Remove stinky windows menu
+  win.removeMenu()
   // and load the index.html of the app.
-  win.loadURL('https://eonsound.firebaseapp.com')
+  // win.loadURL('https://eonsound.firebaseapp.com')
+  win.loadURL('http://localhost:6969/app.html')
 
 }
 
@@ -70,6 +75,7 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
+
 })
 
 // In this file you can include the rest of your app's specific main process

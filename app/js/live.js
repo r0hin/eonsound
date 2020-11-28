@@ -1,6 +1,10 @@
 // live.js
 // Includes all scripts for EonSound listening parties and live listening. 
 
+try {
+  eval(`window.ipc = require('electron').ipcRenderer`)
+} catch(error) {console.log('Unable to initalize Electron IPC Renderer.');}
+
 window.musicQueue = [];
 window.musicActive = {none: 'none'};
 window.musicHistory = [];
@@ -279,6 +283,9 @@ async function endedQueue() {
   hidePlayer()
   visualQ_build()
   $('#showQueue').addClass('hidden')
+  try {
+    ipc.send('invokeAction', `queueDidEnd`); 
+  } catch (error) { console.log('Unable to push invokeAction to Electron process. Browser?'); }
 }
 
 async function queueSong(data, skipMsg) {
@@ -350,6 +357,10 @@ async function loadSong(data) {
     window.setTimeout(() => {
       visualQ_build(true)
     }, 800)
+
+    try {
+      ipc.send('invokeAction', `${musicActive.name};;${data.artists}`); 
+    } catch (error) { console.log('Unable to push invokeAction to Electron process. Browser?'); }
 
     resolve('successo expresso')
   })

@@ -74,6 +74,13 @@ function checkElements(e) {
                 userPlaylistContext(e, el)
                 toggleMenuOff('userPlaylist')
               }
+              else {
+                el = clickInsideElement(e, 'friend')
+                if (el) {
+                  friendContext(e, el)
+                  toggleMenuOff('friend')
+                }
+              }
             }
           }
         }
@@ -89,6 +96,7 @@ function toggleMenuOff(ignore) {
   document.getElementById("artist_context").classList.remove("context_active");
   document.getElementById("spotifyPlaylist_context").classList.remove("context_active");
   document.getElementById("userPlaylist_context").classList.remove("context_active");
+  document.getElementById("friend_context").classList.remove("context_active");
 
   if (ignore) {
     // Toggle off everything except for ignore
@@ -288,6 +296,33 @@ async function trackContext(e, el) {
   }
 
 }
+
+async function friendContext(e, el) {
+  e.preventDefault();
+  sessionStorage.setItem("menuOpen", "true");
+  
+  menu = document.getElementById("friend_context");
+  menu.classList.add("context_active");
+  positionMenu(e, menu)
+
+  id = el.getAttribute("user_details")
+  // TRACK TO ALBUM/ARTIST
+
+  document.getElementById('openfriend').onclick = async () => {
+    $(`#${id}iconElement`).click()
+  }
+
+  // FRIEND INFO
+  document.getElementById('infofriend').onclick = async () => {
+    friendInfo(id)
+  }
+
+  // Remove Friend
+  document.getElementById('deletefriend').onclick = async () => {
+    removeFriend(id)
+  }
+}
+
 
 async function userPlaylistContext(e, el) {
   e.preventDefault();

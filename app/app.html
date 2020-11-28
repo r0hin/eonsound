@@ -188,9 +188,24 @@
 
   <!-- Header Navigation-->
 
+  <div id="updateNotify" class="hidden animated fadeIn">
+    <div class="centered">
+      <div class="card">
+        <div class="card-body">
+          <center>
+            <h1>🎉 New Update 🎉</h1>
+            <p>We <b>strongly</b> recommend updating as not doing so may corrupt your data. But if you know what you're doing and you must skip, <a href="#" onclick="hideUpdate()">you can</a>.</p>
+            <br><br>
+            <button onclick="openUpdate()" class="btn-contained-primary close-btn">View Latest Release</button>  
+          </center>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="fadeInDown" id="nav">
     <img class="animated fadeInUp slower" src="assets/eonsound.png" alt="">
-
+    <p id="version"></p>
     <button onclick="showDisplayLyrics()" id="showLyrics" data-toggle="tooltip" data-placement="bottom" title="Toggle Lyrics" class="animated fadeInUp slow btn-text-primary animated hidden">
       <i class='bx bx-message-detail'></i>
     </button>
@@ -520,12 +535,13 @@
       <p>Coming Soon!</p>
     </div>
     <div class="tab hidden animated fadeIn fastest" id="friends">
-      <button onclick="toggleFriendTabe('new')" class="float btn-text-primary friendBtn"> <i class='bx bx-book-add'></i></button>
-      <button onclick="toggleFriendTabe('incoming')" class="float btn-text-primary friendBtn"> <i class='bx bx-phone-incoming'></i> <span id="incNum"></span> </button>
-      <button onclick="toggleFriendTabe('outgoing')" class="float btn-text-primary friendBtn"> <i class='bx bx-phone-outgoing'></i> <span id="outNum"></span> </button>
+      <button onclick="toggleFriendTabe('new')" class="float btn-text-primary friendBtn"> <i class='bx bx-message-square-add'></i></button>
+      <button onclick="toggleFriendTabe('incoming')" class="float btn-text-primary friendBtn"> <i class='bx bx-mail-send'></i> <span id="incNum"></span> </button>
+      <button onclick="toggleFriendTabe('outgoing')" class="float btn-text-primary friendBtn"> <i class='bx bx-send'></i> <span id="outNum"></span> </button>
       <h2 class="tab-title inline">Friends</h2>
-      <button onclick="toggleFriendTabe('home')" class="btn-text-primary inline"> <i class='bx bx-home'></i> </button>
+      <button onclick="toggleFriendTabe('home')" class="btn-contained-primary inline frtb"> <i class='bx bx-group'></i> </button>
       <div id="friend-home" class="frtab animated fadeIn">
+        <div id="dimensions_calculations_box"></div>
         <div id="horizontal_friends_list"></div>
         <div id="user_content"></div>
       </div>
@@ -673,6 +689,21 @@
       </li>
       <div class="context_divider"></div>
       <button id="deletebtnuplay" class="btn-text-danger contextbtn contextbtndanger">Delete Playlist</button>
+
+    </ul>
+  </nav>
+
+  <nav id="friend_context" class="context-menu contextAnim">
+    <ul class="context-menu__items">
+      <li class="context-menu__item">
+        <button id="openfriend" class="btn-text-primary contextbtn">Open</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="infofriend" class="btn-text-primary contextbtn">Info</button>
+      </li>
+      <div class="context_divider"></div>
+      <button id="deletefriend" class="btn-text-danger contextbtn contextbtndanger">Remove Friend</button>
 
     </ul>
   </nav>
