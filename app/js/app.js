@@ -226,3 +226,27 @@ async function copyText(text) {
     });
   })
 }
+
+function saveDefaultVolume() {
+  localStorage.setItem('defaultVolume', $('#defaultVolume').html().split('%').shift())
+  Snackbar.show({text: "Saved default volume and current volume set.", pos: 'top-center'})
+  setDefaultVolume()
+}
+
+function setDefaultVolume() {
+  var vol = localStorage.getItem('defaultVolume')
+  if (!vol || vol == '100') {
+    player.decreaseVolume(1)
+    player.increaseVolume(1)
+    $('#defaultvolumetext').html('Default Volume: 100%')
+    return;
+  }
+
+  $('#defaultvolumetext').html('Default Volume: ' + vol + '%')
+
+  var vol = parseFloat(`0.${vol}`)
+
+  player.decreaseVolume(1)
+  player.increaseVolume(vol)
+
+}

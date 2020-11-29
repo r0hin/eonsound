@@ -256,6 +256,10 @@ async function removeTrackFromPlaylist(songID, playlistID) {
   // Update the cache
   cacheUserPlaylistData[playlistID].songs.splice(match, 1)
 
+  if (queueData[playlistID]) {
+    queueData[playlistID].splice(match, 1)
+  }
+
   Snackbar.show({text: "Song removed from playlist.", pos: 'top-center'})
 
 }

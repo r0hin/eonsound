@@ -52,8 +52,8 @@ function createWindow () {
   // Remove stinky windows menu
   win.removeMenu()
   // and load the index.html of the app.
-  // win.loadURL('https://eonsound.firebaseapp.com')
-  win.loadURL('http://localhost:6969/app.html')
+  win.loadURL('https://eonsound.firebaseapp.com')
+  // win.loadURL('http://localhost:6969/app.html')
 
 }
 

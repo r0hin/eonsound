@@ -335,21 +335,33 @@ async function openUserPlaylist(id) {
   });
   
   sortablePlaylist.on('sortable:sorted', (sortData) => {
+
+
+    // redo queue buttons
+    
     if (sortData.data.oldIndex == sortData.data.newIndex) {
       return;
     }
     cacheUserPlaylistData[playlistId].songs.move(sortData.data.oldIndex, sortData.data.newIndex)
+    if (queueData[playlistId]) {
+      queueData[playlistId].move(sortData.data.oldIndex, sortData.data.newIndex)
+    }
     try {
       window.clearTimeout(sortTimer)
     } catch(error) {}; 
     sortTimer = window.setTimeout(async () => {
+      $(`#${playlistId}playlistSongs`).children().each((index, item) => {
+        item.onclick = () => {
+          playSongsAtIndex(index, playlistId)
+        }
+      })
       await db.collection('users').doc(user.uid).collection('library').doc(playlistId).update({
         last_updated: firebase.firestore.FieldValue.serverTimestamp(),
         songs: cacheUserPlaylistData[playlistId].songs
       }); 
       cacheUserPlaylistData[playlistId].last_updated = new Date().toDateString(); 
       Snackbar.show({pos: 'top-center',text: 'Playlist order updated.'})
-    }, 3000)
+    }, 1200)
   });
 
   queueData[playlistId] = nopenPlaylist.songs

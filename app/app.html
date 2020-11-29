@@ -517,6 +517,34 @@
               <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Hot Pink</a>
             </div>
           </div>
+
+          <br><br>
+          <h2 class="tab-title">App</h2>
+          <p id="defaultvolumetext"></p>
+          <div class="east-select">
+            <span class="east-select-ico"></span> 
+            <div class="east-select-value" id="defaultVolume"></div>
+            <div class="east-select-options">
+              <div class="east-select-list">
+                <div class="east-sel-item">0%</div>
+                <div class="east-sel-item">10%</div>
+                <div class="east-sel-item">20%</div>
+                <div class="east-sel-item">30%</div>
+                <div class="east-sel-item">40%</div>
+                <div class="east-sel-item">50%</div>
+                <div class="east-sel-item">60%</div>
+                <div class="east-sel-item">70%</div>
+                <div class="east-sel-item">80%</div>
+                <div class="east-sel-item">90%</div>
+                <div class="east-sel-item east-select-selected">100%</div>
+              </div>
+            </div>
+            <div class="east-select-overflow"></div>
+          </div>
+          <br>
+          <center>
+            <button onclick="saveDefaultVolume()" class="btn-text-primary">Save</button>
+          </center>
         </div>
         <div class="col-sm">
 
@@ -528,7 +556,6 @@
 
         </div>
       </div>
-      <br><br>
     </div>
     <div class="tab hidden animated fadeIn fastest" id="activity">
       <h2 class="tab-title">Activity</h2>

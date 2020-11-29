@@ -8,8 +8,9 @@ try {
   eval(`window.ipc = require('electron').ipcRenderer`)
 } catch(error) {console.log('Unable to initalize Electron IPC Renderer.');}
 
-try {
-  window.setTimeout(() => {
+
+window.setTimeout(() => {
+  try {
     ipc.send('app_version');
     ipc.on('app_version', (event, arg) => {
       ipc.removeAllListeners('app_version');
@@ -22,8 +23,8 @@ try {
       }
   
     });
-  }, 2000)
-} catch (error) { }
+  } catch (error) { }
+}, 2000)
 
 function openUpdate() {
   ipc.send('invokeAction', `close`);
@@ -34,6 +35,7 @@ window.musicActive = {none: 'none'};
 window.musicHistory = [];
 window.queueData = {};
 window.player = new Plyr("audio", {})
+setDefaultVolume()
 
 $("#main_player").bind("ended", function () {
   endedSong();

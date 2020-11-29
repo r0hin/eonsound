@@ -225,6 +225,10 @@ async function addTrackToPlaylist(playlistID) {
     // If its loaded, you update the UI and use the cache data as the queue idnex.
     await userPlaylistSong(prepareTrackPlaylistTrack.id, prepareTrackPlaylistTrack, playlistID + prepareTrackPlaylistTrack.id, playlistID + 'playlistSongs', cacheUserPlaylistData[playlistID].songs.length, playlistId )
     // If it's not loaded, theres no problem since it will get loaded next time you view it.
+    // Now update potentail queue
+    if (queueData[playlistID]) {
+      queueData[playlistID].push(prepareTrackPlaylistTrack)
+    }
   }
 
   Snackbar.show({pos: 'top-center',text: "Added '" + prepareTrackPlaylistTrack.name + "' to a playlist."})
