@@ -22,11 +22,11 @@ function tabe(tab) {
   sessionStorage.setItem('CURRENTAB', tab)
   $('.tab-btn').removeClass('tab-btn-active')
   $(`#${tab}-tab`).addClass('tab-btn-active')
-
   $('.tab').addClass("hidden")
   $(`#${tab}`).removeClass("hidden")
 
   hideCurrentView()
+  $('.friendView').addClass('hidden')
 
   if (sessionStorage.getItem('first-time-' + tab) == 'true') {
     sessionStorage.setItem('first-time-' + tab, 'false')

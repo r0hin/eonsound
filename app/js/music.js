@@ -3,6 +3,7 @@
 // Includes things such as building music components, playing songs, managing song details, etc.
 
 window.targetAppVersion = '133'
+window.activeWebVersion = '1.4.2'
 
 try {
   eval(`window.ipc = require('electron').ipcRenderer`)
@@ -14,7 +15,7 @@ window.setTimeout(() => {
     ipc.send('app_version');
     ipc.on('app_version', (event, arg) => {
       ipc.removeAllListeners('app_version');
-      $('#version').html(arg.version)
+      $('#version').html(activeWebVersion)
       var ver = arg.version.replace('.', "");
       ver = ver.replace('.', '');ver = ver.replace('.', '');ver = ver.replace('.', '');localAppVersion = ver.replace('.', '')
       if (targetAppVersion > localAppVersion) {

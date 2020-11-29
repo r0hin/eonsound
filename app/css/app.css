@@ -448,3 +448,11 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 .frtb {
   margin-left: 36px;
 }
+
+#version {
+  position: absolute;
+  text-decoration: underline;
+  left: 50%; transform: translate(-50%, 0);
+  color: var(--content-secondary);
+  margin-top: 12px;
+}

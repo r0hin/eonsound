@@ -62,6 +62,7 @@ Some may be used outside the social sections to reference social elements. */
   margin: 16px;
   display: inline-block;
   text-align: center;
+  position: relative;
 }
 
 .friendItem img {
@@ -97,12 +98,17 @@ Some may be used outside the social sections to reference social elements. */
 
 .friendView, .friendView .row, .friendView .row .col-sm {
   height: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
 .friendView .col-sm #messagecontent{
   height: calc(100% - 88px);
   background-color: red;
+}
+
+.relative2 {
+  padding-bottom: 34px;
 }
 
 .messagecontainer {
@@ -128,5 +134,70 @@ Some may be used outside the social sections to reference social elements. */
 }
 
 .frcard {
-  
+  width: calc(100% - 52px);
+  text-overflow: clip;
+  min-height: 160px;
+}
+
+.frcard img {
+  position: absolute;
+  top: 12px; left: 12px;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+}
+
+.frcard h2 {
+  position: absolute;
+  top: 27px; left: 78px;
+  font-size: 18px;
+  width: calc(100% - 90px);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.frcard button {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.frcard .danger {
+  color: var(--danger) !important;
+}
+
+.readNotice {
+  position: absolute;
+}
+
+.deliveredNotice {
+  position: absolute;
+  right: 24px;
+  margin-top: -22px;
+}
+
+.deliveredNotice i {
+  position: absolute;
+  color: var(--eon-secondary);
+  margin-top: -4px;
+  margin-left: -26px;
+}
+
+.readNotice {
+  position: absolute;
+  left: 48px;
+  margin-top: -22px;
+}
+
+.readNotice i {
+  color: var(--eon-primary);
+  position: absolute;
+  margin-top: -4px;
+  margin-left: -26px;
+}
+
+.pingSpan {
+  position: absolute;
+  margin-top: -12px;
+  left: 50%; transform: translate(-50%, 0);
 }

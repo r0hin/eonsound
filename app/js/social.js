@@ -250,14 +250,23 @@ async function buildFriends(friends) {
 
 async function openSocial(id, index) {
   // Remove all the others
-  $('.friendView').removeClass('fadeIn')
-  $('.friendView').addClass('fadeOut')
+  $('.friendView').addClass('hidden')
 
   // Check if view exists
   if ($(`#${id}UserView`).length) {
-    // Show if it does
-    $('.friendView').removeClass('fadeOut')
-    $('.friendView').addClass('fadeIn')
+    // Show and ensure unread if it does
+    $(`#${id}UserView`).removeClass('hidden')
+
+    await db.collection('directlisteners').doc(id).set({
+      most_recent_sender: 'none',
+      iHaveRead: firebase.firestore.FieldValue.arrayUnion(user.uid)
+    }, {merge: true})
+    await db.collection('directlisteners').doc(user.uid).set({
+      most_recent_sender: 'none',
+      unreadTOTAL: firebase.firestore.FieldValue.arrayUnion(id)
+    }, {merge: true})
+
+    updateUnread(cacheMsgListen.iHaveRead)
     return;
   }
 
@@ -272,11 +281,20 @@ async function openSocial(id, index) {
 
         <div class="card frcard centered">
           <div class="card-body">
-            <br>
             <img src="${cacheUserFriends[parseInt(index)].p}"/>
-            <br>
             <h2>${cacheUserFriends[parseInt(index)].u}</h2>
-            <small>${id}</small>
+            <br><br><br>
+            <button class="btn-outlined-primary">Show Playlists</button>
+            <div class="dropdown">
+              <button aria-haspopup="false" class="btn-text-primary froptions" data-toggle="dropdown">
+                <i class='bx bx-dots-vertical-rounded' ></i>
+              </button>
+              <div class="dropdown-menu menu">
+                <a class="dr-item">View Playlists</a>
+                <div class="dropdown-divider"></div>
+                <a class="dr-item danger">Remove Friend</a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -287,6 +305,12 @@ async function openSocial(id, index) {
       </div>
       <br>
       <div class="relative2">
+        <div id="unread${id}" class="invisible animated fadeIn fastest readNotice">
+          <i class="bx bx-check-double"></i> Read
+        </div>
+        <div id="delivered${id}" class="animated fadeIn fastest deliveredNotice">
+          <i class="bx bx-check"></i> Delivered
+        </div>
         <div class="floating-label textfield-box newmsgbox">
           <label for="newdmmsg${id}">New Message</label>
           <input class="form-control" id="newdmmsg${id}" placeholder="" type="text">
@@ -299,12 +323,10 @@ async function openSocial(id, index) {
   </div>
   `
   $('#user_content').get(0).appendChild(h)
+  initButtonsOutlined()
+  initButtonsText()
+  initButtonsDropdown()
   loadMessages(id)
-
-  db.collection("directlisteners").doc(user.uid).update({
-    unreadTOTAL: firebase.firestore.FieldValue.arrayRemove(id)
-  })
-
   document.getElementById("newdmmsg" + id).addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); ADD_MESSAGE(id, event.target.value) }});
 }
 

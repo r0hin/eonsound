@@ -20,10 +20,26 @@ async function msgListener() {
 }
 function msgListenerConfirm() {
   db.collection("directlisteners").doc(user.uid).onSnapshot((doc) => {
+    updateUnread(doc.data().iHaveRead)
     $(`.pingSpan`).html('')
     cacheMsgListen = doc.data()
     updatePings(doc.data())
   });
+}
+
+function updateUnread(readList) {
+  console.log(readList);
+  if (typeof(readList) == 'undefined') {
+    readList = []
+  }
+  $(`.readNotice`).addClass('invisible')
+  $(`.readNotice`).removeClass('fadeIn')
+  window.setTimeout(() => {
+    for (let i = 0; i < readList.length; i++) {
+      $(`#unread${readList[i]}`).removeClass('invisible')
+      $(`.readNotice`).addClass('fadeIn')
+    }
+  }, 240)
 }
 
 function updatePings(data) {
@@ -44,7 +60,7 @@ function updatePings(data) {
     $('#friendsText').html('Friends (!)')
   }
 
-  if (pingData.most_recent_sender !== "none" && sessionStorage.getItem('firstTimeDirect') !== 'true') {
+  if (pingData.most_recent_sender !== "none" && pingData.most_recent_sender !== "read" && sessionStorage.getItem('firstTimeDirect') !== 'true') {
     // On listener change, enact recent changes if a DM was changed and it was not the client
     ENACT_CHANGES(pingData);
   }
@@ -65,15 +81,23 @@ async function ENACT_CHANGES(data) {
     scrollBottom(data.most_recent_sender)
     
     // If its actively in view
-    if (!$(`#${data.most_recent_sender}UserView`).hasClass('fadeOut') && sessionStorage.getItem('CURRENTAB') == 'friends') {
+    if (!$(`#${data.most_recent_sender}UserView`).hasClass('hidden') && sessionStorage.getItem('CURRENTAB') == 'friends') {
       db.collection("directlisteners").doc(user.uid).update({
+        most_recent_sender: "none",
         unreadTOTAL: firebase.firestore.FieldValue.arrayRemove(data.most_recent_sender)
+      })
+      // Tell other user that you have read it.
+      db.collection("directlisteners").doc(data.most_recent_sender).update({
+        iHaveRead: firebase.firestore.FieldValue.arrayUnion(user.uid),
+        most_recent_sender: "read",
       })
     }
   }
 }
 
 async function ADD_MESSAGE(uid, msg) {
+  $(`delivered${uid}`).addClass('invisible')
+  $(`delivered${uid}`).removeClass('fadeIn')
   if (msg == ' ' || !msg) {
     return
   }
@@ -99,9 +123,19 @@ async function ADD_MESSAGE(uid, msg) {
     username: cacheuser.username,
     msg: msg,
     unique: Math.random(0, 100000000000),
-    unreadTOTAL: firebase.firestore.FieldValue.arrayUnion(user.uid)
+    unreadTOTAL: firebase.firestore.FieldValue.arrayUnion(user.uid),
   }, {merge: true})
+
+  await db.collection('directlisteners').doc(user.uid).update({
+    most_recent_sender: 'none',
+    iHaveRead: firebase.firestore.FieldValue.arrayRemove(uid)
+  })
   
+  window.setTimeout(() => {
+    $(`delivered${uid}`).removeClass('invisible')
+    $(`delivered${uid}`).addClass('fadeIn')
+  }, 380)
+
   // scrollBottom(uid)
 }
 
@@ -133,16 +167,40 @@ function BUILD_MESSAGE(name, msg, sender, uid, anim) {
 }
 
 async function loadMessages(id) {
+  previousUID = 'ski'
   var doc = await db.collection('direct').doc(dmstringify(user.uid, id)).get()
   if (!doc.exists || !doc.data().messages || !doc.data().messages.length) {
     $(`#messagecontainers${id}`).removeClass('hidden')
     return;
   }
+
+  console.log(doc.data().messages.length);
+
+  if (doc.data().messages.length > 120) {
+    // Clear up to 50
+    newMessages = doc.data().messages.splice(doc.data().messages.length - 50, doc.data().messages.length)
+    await db.collection('direct').doc(dmstringify(user.uid, id)).update({
+      messages: newMessages
+    })
+  }
+
   for (let i = 0; i < doc.data().messages.length; i++) {
     const element = doc.data().messages[i];
     BUILD_MESSAGE(element.username, element.msg, element.user, id, false)
   }
   $(`#messagecontainers${id}`).removeClass('hidden')
+  await db.collection('directlisteners').doc(id).set({
+    most_recent_sender: 'none',
+    iHaveRead: firebase.firestore.FieldValue.arrayUnion(user.uid)
+  }, {merge: true})
+  await db.collection('directlisteners').doc(user.uid).set({
+    most_recent_sender: 'none',
+    unreadTOTAL: firebase.firestore.FieldValue.arrayRemove(id)
+  }, {merge: true})
+  
+  updatePings(cacheMsgListen)
+  updateUnread(cacheMsgListen.iHaveRead)
+
   scrollBottom(id)
 }
 
