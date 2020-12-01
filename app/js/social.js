@@ -263,7 +263,7 @@ async function openSocial(id, index) {
     }, {merge: true})
     await db.collection('directlisteners').doc(user.uid).set({
       most_recent_sender: 'none',
-      unreadTOTAL: firebase.firestore.FieldValue.arrayUnion(id)
+      unreadTOTAL: firebase.firestore.FieldValue.arrayRemove(id)
     }, {merge: true})
 
     updateUnread(cacheMsgListen.iHaveRead)
