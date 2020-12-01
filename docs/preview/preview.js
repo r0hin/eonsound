@@ -67,7 +67,8 @@ async function loadAlbum(id) {
     <h4>${artistToString(data.artists)}</h4>
     <p>${data.release_date}, ${data.total_tracks} tracks.</p>
     <br><br>
-    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download EonSound</a>
+    <a href="eons://b=0190i2uwsoildjuakha=${id}" target="_blank" class="btn-contained-primary">Open</a>
+    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download</a>
   </center>
   `
 
@@ -88,7 +89,8 @@ async function loadTrack(id) {
     <h2>${data.name}</h2>
     <h4>${artistToString(data.artists)}</h4>
     <br><br>
-    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download EonSound</a>
+    <a href="eons://b=092ei0192jiwosdncs=${id}" target="_blank" class="btn-contained-primary">Open</a>
+    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download</a>
   </center>
   `
 
@@ -108,7 +110,8 @@ async function loadArtist(id) {
     <img src="${data.images[0].url}"></img>
     <h2>${data.name}</h2>
     <br><br>
-    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download EonSound</a>
+    <a href="eons://b=0s29ieu08jidsoja2s=${id}" target="_blank" class="btn-contained-primary">Open</a>
+    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download</a>
   </center>
   `
 
@@ -128,7 +131,8 @@ async function loadPlaylist(id) {
     <img src="${data.images[0].url}"></img>
     <h2>${data.name}</h2>
     <br><br>
-    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download EonSound</a>
+    <a href="eons://b=0912897812edhxkjba=${id}" target="_blank" class="btn-contained-primary">Open</a>
+    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download</a>
   </center>
   `
 
@@ -139,5 +143,5 @@ async function loadPlaylist(id) {
 }
 
 async function loadUserPlaylist(id) {
-
+  // Maybe in a future update
 }

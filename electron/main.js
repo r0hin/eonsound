@@ -81,9 +81,16 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+// This will catch clicks on links such as <a href="foobar://abc=1">open in foobar</a>
+app.on('open-url', function (event, data) {
+  win.webContents.send('open-link', data);
+  event.preventDefault();
+});
+
+app.setAsDefaultProtocolClient('eons');
+
 // Set this to your Client ID.
 const clientId = '780204397807403059';
-
 // Only needed if you want to use spectate, join, or ask to join
 DiscordRPC.register(clientId);
 

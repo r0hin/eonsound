@@ -1,36 +1,6 @@
 // music.js
 // Code for the music side of EonSound.
 // Includes things such as building music components, playing songs, managing song details, etc.
-
-window.targetAppVersion = '133'
-window.activeWebVersion = '1.4.6'
-
-try {
-  eval(`window.ipc = require('electron').ipcRenderer`)
-} catch(error) {console.log('Unable to initalize Electron IPC Renderer.');}
-
-
-window.setTimeout(() => {
-  try {
-    ipc.send('app_version');
-    ipc.on('app_version', (event, arg) => {
-      ipc.removeAllListeners('app_version');
-      $('#version').html(activeWebVersion)
-      var ver = arg.version.replace('.', "");
-      ver = ver.replace('.', '');ver = ver.replace('.', '');ver = ver.replace('.', '');localAppVersion = ver.replace('.', '')
-      if (targetAppVersion > localAppVersion) {
-        // Outdated
-        showOutdated()
-      }
-  
-    });
-  } catch (error) { }
-}, 2000)
-
-function openUpdate() {
-  ipc.send('invokeAction', `close`);
-}
-
 window.musicQueue = [];
 window.musicActive = {none: 'none'};
 window.musicHistory = [];
