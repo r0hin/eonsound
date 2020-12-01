@@ -3,7 +3,7 @@
 // Includes things such as building music components, playing songs, managing song details, etc.
 
 window.targetAppVersion = '133'
-window.activeWebVersion = '1.4.6'
+window.activeWebVersion = '1.4.51'
 
 try {
   eval(`window.ipc = require('electron').ipcRenderer`)
