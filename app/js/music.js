@@ -3,7 +3,7 @@
 // Includes things such as building music components, playing songs, managing song details, etc.
 
 window.targetAppVersion = '133'
-window.activeWebVersion = '1.4.51'
+window.activeWebVersion = '1.4.6'
 
 try {
   eval(`window.ipc = require('electron').ipcRenderer`)
@@ -190,7 +190,7 @@ function userPlaylist(id, data, objectID, destinationID) {
 function otherUserBPlaylist(id, data, objectID, destinationID, owner) {
   return new Promise((resolve, reject) => {
     p = document.createElement('div')
-    p.setAttribute('class', 'hidden animated fadeIn faster shadow otherUserBPlaylist')
+    p.setAttribute('class', 'hidden animated fadeIn faster shadow otherUserBPlaylist otherUserBPlaylistItem') 
     p.setAttribute('playlist_details', id)
     p.setAttribute('owner_details', owner)
     p.setAttribute('onclick', "openotherUserBPlaylist('" + id + "', '" + owner + "')")
