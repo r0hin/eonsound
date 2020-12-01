@@ -55,7 +55,7 @@ Some are redudant but exist for future features. */
   transition: all 0.3s;
 }
 
-.album:hover, .friendItem img:hover, .artist img:hover, .playlist:hover, .category:hover, .userPlaylist:hover {
+.album:hover, .friendItem img:hover, .artist img:hover, .playlist:hover, .category:hover, .otherUserBPlaylist:hover, .userPlaylist:hover {
   transform: translate(0, -12px);
 }
 
@@ -176,7 +176,7 @@ Some are redudant but exist for future features. */
   text-align: center;
 }
 
-.userPlaylist {
+.userPlaylist, .otherUserBPlaylist {
   text-align: center;
   display: inline-block;
   margin: 12px;
@@ -186,11 +186,11 @@ Some are redudant but exist for future features. */
   transition: all 0.3s;
 }
 
-.userPlaylist:hover {
+.userPlaylist:hover, .otherUserBPlaylist:hover {
   background-color: var(--content-primary);
 }
 
-.userPlaylist h4 {
+.userPlaylist h4, .otherUserBPlaylist h4 {
   display: inline-block;
   vertical-align: middle;
   margin-left: 12px;
@@ -201,11 +201,11 @@ Some are redudant but exist for future features. */
   overflow: hidden;
 }
 
-.userPlaylist p {color: white !important;
+.userPlaylist p, .otherUserBPlaylist p {color: white !important;
   text-overflow:ellipsis; max-width: 150px;overflow: hidden; white-space: nowrap;
 }
 
-.userPlaylist img {
+.userPlaylist img, .otherUserBPlaylist img {
   margin-bottom: 12px;
   display: inline-block;
   width: 150px; height: 150px;
@@ -330,7 +330,6 @@ Some are redudant but exist for future features. */
 
 .detailsButton {
   position: absolute; z-index: 900000020;
-
   top: 72px; left: 82px;
   height: 48px; width: 48px;
   min-width: 0px; padding: 12px 8px 12px 8px;
@@ -338,6 +337,14 @@ Some are redudant but exist for future features. */
 
   background-color: var(--bg-tertiary) !important;
   color: var(--content-primary) !important;
+}
+
+.detailsShifted {
+  top: 86px !important;
+}
+
+.detailsButton:hover {
+  transform: none;
 }
 
 .detailsButton:hover {

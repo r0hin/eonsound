@@ -134,9 +134,12 @@ Some may be used outside the social sections to reference social elements. */
 }
 
 .frcard {
+  max-height: calc(100% - 24px);
+  overflow-y: auto;
+  overflow-x: hidden;
   width: calc(100% - 52px);
   text-overflow: clip;
-  min-height: 160px;
+  min-height: 360px;
 }
 
 .frcard img {
@@ -200,4 +203,20 @@ Some may be used outside the social sections to reference social elements. */
   position: absolute;
   margin-top: -12px;
   left: 50%; transform: translate(-50%, 0);
+}
+
+.socialUserPlaylistView {
+  position: relative;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.userviewcol {
+  padding: 8px 0px 24px 0px;
+}
+
+.otherUserBPlaylist {
+  position: relative;
+  width: 100% !important;
+  margin: 8px 0px 8px 0px;
 }

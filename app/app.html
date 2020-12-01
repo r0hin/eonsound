@@ -506,15 +506,14 @@
           <div class="dropdown">
             <button aria-haspopup="true" class="btn-text-primary" data-toggle="dropdown">Select Color</button>
             <div class="dropdown-menu menu">
-              <a onclick="localStorage.setItem('es_theme_color', 'blue');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Default</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Default</a>
               <a onclick="localStorage.setItem('es_theme_color', 'blue');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Blue</a>
               <a onclick="localStorage.setItem('es_theme_color', 'red');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Red</a>
               <a onclick="localStorage.setItem('es_theme_color', 'orange');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Orange</a>
               <a onclick="localStorage.setItem('es_theme_color', 'lime');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Lime</a>
               <a onclick="localStorage.setItem('es_theme_color', 'aqua');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Aqua</a>
               <a onclick="localStorage.setItem('es_theme_color', 'purple');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Purple</a>
-              <a onclick="localStorage.setItem('es_theme_color', 'pink');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Pink</a>
-              <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Hot Pink</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Pink</a>
             </div>
           </div>
 
@@ -716,7 +715,18 @@
       </li>
       <div class="context_divider"></div>
       <button id="deletebtnuplay" class="btn-text-danger contextbtn contextbtndanger">Delete Playlist</button>
+    </ul>
+  </nav>
 
+  <nav id="otherUserBPlaylist_context" class="context-menu contextAnim">
+    <ul class="context-menu__items">
+      <li class="context-menu__item">
+        <button id="openotherbtn" class="btn-text-primary contextbtn">Open</button>
+      </li>
+      <div class="context_divider"></div>
+      <li class="context-menu__item">
+        <button id="infootherbtn" class="btn-text-primary contextbtn">Info</button>
+      </li>
     </ul>
   </nav>
 

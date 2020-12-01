@@ -85,7 +85,7 @@ async function loadUserPlaylists(playlists) {
       window.setTimeout(() => {
         // Some browsers will take a while to finish.
         colorThiefify('userPlaylistPreview', playlists[i].id + 'userlibraryplaylistelementimage', playlists[i].id + 'userlibraryplaylistelement')
-      }, 500)
+      }, 100)
     })
   }
 

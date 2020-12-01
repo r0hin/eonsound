@@ -80,6 +80,13 @@ function checkElements(e) {
                   friendContext(e, el)
                   toggleMenuOff('friend')
                 }
+                else {
+                  el = clickInsideElement(e, 'otherUserBPlaylist')
+                  if (el) {
+                    otherUserBPlaylistContext(e, el)
+                    toggleMenuOff('otherUserBPlaylist')
+                  }
+                }
               }
             }
           }
@@ -97,6 +104,7 @@ function toggleMenuOff(ignore) {
   document.getElementById("spotifyPlaylist_context").classList.remove("context_active");
   document.getElementById("userPlaylist_context").classList.remove("context_active");
   document.getElementById("friend_context").classList.remove("context_active");
+  document.getElementById("otherUserBPlaylist_context").classList.remove("context_active");
 
   if (ignore) {
     // Toggle off everything except for ignore
@@ -362,6 +370,31 @@ async function userPlaylistContext(e, el) {
     deleteUserPlaylist(id)
   }
 
+}
+
+async function otherUserBPlaylistContext(e, el) {
+  e.preventDefault();
+  sessionStorage.setItem("menuOpen", "true");
+  
+  menu = document.getElementById("otherUserBPlaylist_context");
+  menu.classList.add("context_active");
+  positionMenu(e, menu)
+
+  id = el.getAttribute("playlist_details")
+  owner = el.getAttribute("owner_details")
+
+  // CTX BTNS
+  document.getElementById('openotherbtn').onclick = async () => {
+    // Get artist from track
+    openotherUserBPlaylist(id, owner)
+  }
+
+  // PLAYLIST INFO
+  document.getElementById('infootherbtn').onclick = async () => {
+    otherUserBPlaylistInfo(id)
+  }
+
+  // Playlist rename
 }
 
 async function albumContext(e, el) {

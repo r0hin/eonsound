@@ -187,6 +187,25 @@ function userPlaylist(id, data, objectID, destinationID) {
   })
 }
 
+function otherUserBPlaylist(id, data, objectID, destinationID, owner) {
+  return new Promise((resolve, reject) => {
+    p = document.createElement('div')
+    p.setAttribute('class', 'hidden animated fadeIn faster shadow otherUserBPlaylist')
+    p.setAttribute('playlist_details', id)
+    p.setAttribute('owner_details', owner)
+    p.setAttribute('onclick', "openotherUserBPlaylist('" + id + "', '" + owner + "')")
+    p.id = objectID
+    
+    p.innerHTML = `
+    <img id="${objectID}image" class="${id}cover" crossOrigin="Anonymous" src="${data.cover}&${new Date().getTime()}">
+    <h4 id="${id}name1">${data.name}</h4>
+    `;
+
+    $(`#${destinationID}`).get(0).appendChild(p)
+    resolve('Success')
+  })
+}
+
 function track(id, data, objectID, destinationID, playlist) {
   return new Promise((resolve, reject) => {
     o = document.createElement('div')

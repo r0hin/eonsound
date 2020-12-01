@@ -276,28 +276,29 @@ async function openSocial(id, index) {
   h.setAttribute('id', id + 'UserView')
   h.innerHTML = `
   <div class="row">
-    <div class="col-sm">
+    <div class="col-sm userviewcol">
       <center>
-
-        <div class="card frcard centered">
+        <div class="card frcard centeredx">
           <div class="card-body">
             <img src="${cacheUserFriends[parseInt(index)].p}"/>
             <h2>${cacheUserFriends[parseInt(index)].u}</h2>
-            <br><br><br>
-            <button class="btn-outlined-primary">Show Playlists</button>
+            <br><br><br><br>
+            <button onclick="showUserPlaylists('${id}')" class="btn-outlined-primary">Show Playlists</button>
             <div class="dropdown">
               <button aria-haspopup="false" class="btn-text-primary froptions" data-toggle="dropdown">
                 <i class='bx bx-dots-vertical-rounded' ></i>
               </button>
               <div class="dropdown-menu menu">
-                <a class="dr-item">View Playlists</a>
+                <a onclick="showUserPlaylists('${id}')" class="dr-item">View Playlists</a>
                 <div class="dropdown-divider"></div>
-                <a class="dr-item danger">Remove Friend</a>
+                <a onclick="friendInfo('${id}')" class="dr-item">Info</a>
+                <a onclick="removeFriend('${id}')" class="dr-item danger">Remove Friend</a>
               </div>
             </div>
+            <br><br>
+            <div id="user_playlists_${id}" class="socialUserPlaylistView hidden"></div>
           </div>
         </div>
-
       </center>
     </div>
     <div class="col-sm animated fadeIn hidden" id="messagecontainers${id}">
@@ -333,4 +334,38 @@ async function openSocial(id, index) {
 async function friendInfo(uid) {
   // Soon
   alert('Not available yet.')
+}
+
+async function removeFriend(uid) {
+  // Soon
+  alert('Not available yet.')
+}
+
+async function showUserPlaylists(uid) {
+  $('#user_playlists_' + uid).toggleClass('hidden')
+  if (!$('#user_playlists_' + uid).children().length) {
+    console.log('Empty');
+
+    // Get user playlists
+    var playlistUserdDoc = await db.collection('users').doc(uid).get()
+    var userPlaylists8 = playlistUserdDoc.data().playlistsPreview
+
+    if (typeof(userPlaylists8) == 'undefined') {
+      $('#user_playlists_' + uid).html('No playlists.')
+      return;
+    }
+
+    for (let i = 0; i < userPlaylists8.length; i++) {
+      await otherUserBPlaylist(userPlaylists8[i].id, userPlaylists8[i], userPlaylists8[i].id + 'otheruserlibraryplaylistelement', 'user_playlists_' + uid, uid)
+      $(`#${userPlaylists8[i].id}otheruserlibraryplaylistelement`).imagesLoaded(() => {
+        $(`#${userPlaylists8[i].id}otheruserlibraryplaylistelement`).removeClass('hidden')
+        window.setTimeout(() => {
+        // Some browsers will take a while to finish.
+        colorThiefify('userPlaylistPreview', userPlaylists8[i].id + 'otheruserlibraryplaylistelementimage', userPlaylists8[i].id + 'otheruserlibraryplaylistelement')
+      }, 100)
+    })
+      
+    }
+
+  }
 }

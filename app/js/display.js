@@ -175,17 +175,13 @@ function refreshTheme() {
       parttwo = '--eon-primary: rgb(98, 51, 226); --eon-secondary: #7a3de3; '
       partfour = '--ripple-primary: rgba(98, 51, 226, 0.3);  --ripple-secondary: rgba(98, 51, 226, 0.1); --button-primary: rgb(109, 19, 194); '
       break;
-    case 'pink':
-      parttwo = '--eon-primary: rgb(206, 51, 226); --eon-secondary: #f88fff '
-      partfour = '--ripple-primary: rgba(240, 108, 245, 0.3); --ripple-secondary: rgba(240, 108, 245, 0.1); --button-primary: rgb(206, 51, 226);'
-      break;
     case 'hotpink':
       parttwo = '--eon-primary: rgb(226, 51, 124); --eon-secondary: #c9208e; '
       partfour = '--ripple-primary: rgba(226, 51, 159, 0.3); --ripple-secondary: rgba(226, 51, 159, 0.1); --button-primary: rgb(216, 48, 138); '
       break;
     default:
-      parttwo = '--eon-primary: rgb(51, 147, 226); --eon-secondary: #3495eb; '
-      partfour = '--ripple-primary: rgba(51, 147, 226, 0.3); --ripple-secondary: rgba(51, 147, 226, 0.1); --button-primary: rgb(76, 110, 204); '
+      parttwo = '--eon-primary: rgb(226, 51, 124); --eon-secondary: #c9208e; '
+      partfour = '--ripple-primary: rgba(226, 51, 159, 0.3); --ripple-secondary: rgba(226, 51, 159, 0.1); --button-primary: rgb(216, 48, 138); '
       break;
   }
   

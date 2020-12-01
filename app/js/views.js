@@ -5,6 +5,7 @@
 window.musicData = {}
 window.activeMediaIndex = 3
 window.cacheUserPlaylistData = {}
+window.cacheotherUserBPlaylistData = {}
 window.activeLoading = false
 sessionStorage.removeItem('activeView')
 
@@ -225,6 +226,102 @@ async function openAlbum(id, library) {
   $('[data-toggle="tooltip"]').tooltip({ trigger : 'hover' });
   return;
 
+}
+
+async function openotherUserBPlaylist(id, owner) {
+  playlistId = id
+  if (activeLoading) {
+    console.error('Trying to load too fast. Stopped an action.')
+    return
+  }
+  else {
+    activeLoading = true
+    window.setTimeout(() => {
+      activeLoading = false
+    }, 1500)
+  }
+
+  sessionStorage.setItem('activeView', id + 'otherUserBPlaylistView')
+
+  if ($(`#${id}otherUserBPlaylistView`).length) {
+    $(`#${id}otherUserBPlaylistView`).addClass('hidden')
+    $(`#${id}otherUserBPlaylistView`).removeClass('fadeIn')
+    $(`#${id}otherUserBPlaylistView`).removeClass('fadeOut')
+    window.setTimeout(() => {
+      $(`#${id}otherUserBPlaylistView`).addClass('fadeIn')
+      $(`#${id}otherUserBPlaylistView`).removeClass('hidden')
+    }, 80)
+    $(`#${id}otherUserBPlaylistView`).get(0).setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+    activeMediaIndex++
+    activeLoading = false
+    return;
+  }
+
+  if (cacheotherUserBPlaylistData[playlistId]) {
+    // Cache exists
+    nopenPlaylist = cacheotherUserBPlaylistData[playlistId]
+  }
+  else {
+    // Cache doesnt exist
+    doc = await db.collection('users').doc(owner).collection('library').doc(playlistId).get()
+    cacheUserPlaylistData[playlistId] = doc.data()
+    nopenPlaylist = doc.data()
+  }
+
+  // Build the playlist
+  f = document.createElement('div')
+  f.setAttribute('class', 'animated hidden fadeIn media_view fastest ' + id + 'otherUserBPlaylistView')
+  f.setAttribute('id', playlistId + 'otherUserBPlaylistView')
+  f.setAttribute('style', `z-index: ${activeMediaIndex} !important`)
+  activeMediaIndex++
+
+  description = nopenPlaylist.description
+  if (nopenPlaylist.description == '') {
+    description = 'No description set.'
+  }
+
+  f.innerHTML = `
+    <div class="playViewGradient" id="${playlistId}userplaylistgradientelement"></div>
+    <button class="detailsButton detailsShifted btn-contained-primary otherUserBPlaylist" playlist_details="${id}" onclick="rightClickSelf(this)"><i class='bx bx-dots-vertical-rounded'></i></button>
+    <button class="closePlaylistButton btn-contained-primary" onclick="hideCurrentView('${playlistId}otherUserBPlaylistView')"><i class='bx bx-x'></i></button>
+    <div class="playlistHeader row">
+      <div class="col-sm">
+        <center>
+          <img crossOrigin="Anonymous" id="${playlistId}cover" class="myPlaylistImg ${playlistId}cover" src="${nopenPlaylist.cover}"></img>
+        </center>
+      </div>
+    </div>
+    <br>
+
+    <center class="playlistHeader2">
+      <h1 id="${playlistId}name0">${nopenPlaylist.name}</h1>
+      <p class="playlistDescription">${description}</p>
+    </center>
+    <br>
+    <div class="row">
+      <div class="col-sm"><center><button onclick="playSongs('${playlistId}')" class="btn-contained-primary playPlaylistBtn">Play</button></center></div>
+      <div class="col-sm"><center><button onclick="shuffleSongs('${playlistId}')" class="btn-text-primary shufflePlaylistBtn">Shuffle</button></center></div>
+    </div>
+    <br><br>
+    <div class="songList ${playlistId}playlistSongs animated fadeIn" id="${playlistId}playlistSongs"></div>
+    <br><br><br>
+  `
+  document.getElementById('userplaylist_view').appendChild(f)
+  $(`#${id}otherUserBPlaylistView`).removeClass('hidden')
+
+  for (let j = 0; j < nopenPlaylist.songs.length; j++) {
+    const openPlaylistSong = nopenPlaylist.songs[j];
+    await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
+  }
+  
+  queueData[playlistId] = nopenPlaylist.songs
+  $(`#${playlistId}otherUserBPlaylistView`).imagesLoaded(() => {
+    colorThiefify('userPlaylistView', playlistId + 'cover', playlistId + 'userplaylistgradientelement')
+  })
+  initButtonsContained()
+  initButtonsText()
+
+  activeLoading = false
 }
 
 async function openUserPlaylist(id) {
