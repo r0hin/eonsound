@@ -278,3 +278,33 @@ exports.denyFriend = functions.https.onCall(async (data, context) => {
   return {data: 'Successo Expresso'}
 
 })
+
+exports.removeFriend = functions.https.onCall(async (data, context) => {
+  const targetuid = data.uid;
+  const useruid = context.auth.uid;
+  const url = data.url;
+  const username = data.username;
+  const db = admin.firestore();
+
+
+  // Remove each other from unread listeners to prevent infinite unread notification
+  await db.collection('directlisteners').doc(targetuid).update({
+    unreadTOTAL: admin.firestore.FieldValue.arrayRemove(useruid)
+  })
+
+  await db.collection('directlisteners').doc(useruid).update({
+    unreadTOTAL: admin.firestore.FieldValue.arrayRemove(targetuid)
+  })
+
+  await db.collection("users").doc(targetuid).update({
+    friends: admin.firestore.FieldValue.arrayRemove({
+      id: useruid,
+      p: url,
+      u: username
+    }),
+  });
+
+  return {data: 'Successo Expresso'}
+
+})
+

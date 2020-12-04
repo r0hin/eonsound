@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require('electron')
 const DiscordRPC = require('discord-rpc')
 const open = require("open");
+openLink = undefined
 ipc = require('electron').ipcMain;
 
 ipc.on('invokeAction', function(event, data){
@@ -55,6 +56,13 @@ function createWindow () {
   win.loadURL('https://eonsound.firebaseapp.com')
   // win.loadURL('http://localhost:6969/app.html')
 
+  if (openLink) {
+    // Send it now that url is loaded
+    window.setTimeout(() => {
+      win.webContents.send('open-link', data);
+    }, 6500)
+  }
+
 }
 
 // This method will be called when Electron has finished
@@ -83,8 +91,13 @@ app.on('activate', () => {
 
 // This will catch clicks on links such as <a href="foobar://abc=1">open in foobar</a>
 app.on('open-url', function (event, data) {
-  win.webContents.send('open-link', data);
-  event.preventDefault();
+  try {
+    win.webContents.send('open-link', data);
+    event.preventDefault();
+  }
+  catch {
+    openLink = data
+  }
 });
 
 app.setAsDefaultProtocolClient('eons');

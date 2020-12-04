@@ -260,6 +260,17 @@ async function removeTrackFromPlaylist(songID, playlistID) {
     queueData[playlistID].splice(match, 1)
   }
 
-  Snackbar.show({text: "Song removed from playlist.", pos: 'top-center'})
+  // Check if playlist is empty:
+  if (cacheUserPlaylistData[playlistID].songs.length == 0) {
+    Snackbar.show({
+      pos: 'top-center',
+      text: 'This playlist is now empty.',
+      actionText: "Delete Playlist",
+      onActionClick: function(element) { $(element).css('opacity', 0); deleteUserPlaylist(playlistID) }
+    })
+  }
+  else {
+    Snackbar.show({text: "Song removed from playlist.", pos: 'top-center'})
+  }
 
 }

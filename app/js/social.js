@@ -3,6 +3,7 @@
 // Things like accounts, following, timelines, etc will be managed here.
 
 window.cacheUserFriends = []
+window.cacheFriendData = {}
 
 window.db = firebase.firestore();
 document.getElementById("addFriendBox").addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); addFriend($('#addFriendBox').val());$('#addFriendBox').val('') }});
@@ -53,6 +54,22 @@ async function loadRequests() {
   });
 
   db.collection('users').doc(user.uid).onSnapshot(function(doc) {
+
+    // No friends lolol
+    if (typeof(doc.data().friends) == 'undefined' || doc.data().friends.length == 0) {
+      $('#horizontal_friends_list').html(`<center class="animated zoomIn">You have no friends :(. Click the <i class='bx bx-message-square-add'></i> button to add some.</center>`)
+      return;
+    }
+
+    // Someone removed you
+    if (cacheUserFriends.length !== 0 && cacheUserFriends.length > doc.data().friends.length) {
+      // Empty everything and rebuild
+      Snackbar.show({text: "Friends list updated.", pos: 'top-center'})
+      cacheUserFriends = doc.data().friends
+      buildFriends(doc.data().friends)
+      $('#user_content').empty()
+    }
+
     if (doc.data().friends && cacheUserFriends.length !== doc.data().friends.length) {
       cacheUserFriends = doc.data().friends
       buildFriends(doc.data().friends)
@@ -178,17 +195,17 @@ async function approveRequest(id, url, username) {
       id: id,
       p: url,
       u: username
-    })
-  });
+    }),
+  })
 
   await db.collection("requests").doc(user.uid).update({
     requests: firebase.firestore.FieldValue.arrayRemove({
       id: id,
       p: url,
       u: username
-    }),
-  });
-
+    })
+  })
+  
   Snackbar.show({text: `Accepted friend request from ${username}.`})
 }
 
@@ -333,12 +350,49 @@ async function openSocial(id, index) {
 
 async function friendInfo(uid) {
   // Soon
-  alert('Not available yet.')
+  if (!cacheFriendData[id]) {
+    var data = await db.collection('users').doc(uid).get()
+    cacheFriendData[id] = data.data()
+    var data = data.data()
+  }
+  else {
+    var data = cacheFriendData[uid]
+  }
+
+  $('#mediaInfo').modal('toggle')
+  $('#mediainfolist').empty()
+  newMediaInfo('Name', data.name)
+  newMediaInfo('Username', data.username)
+  newMediaInfo('Type', 'User')
+  newMediaInfo('Date Created', data.created.toDate().toString().split('GMT').shift())
+  newMediaInfo('Friends', data.friends.length)
+  newMediaInfo('Publicity', data.type)
+  newMediaInfo('ID', data.uid)
 }
 
 async function removeFriend(uid) {
-  // Soon
-  alert('Not available yet.')
+  // Grab match
+  var match = undefined
+  for (let i = 0; i < cacheUserFriends.length; i++) {
+    if (cacheUserFriends[i].id == uid) { match = i }
+  }
+  if (typeof(match) == "undefined") {
+    alert('Internal error.')
+  }
+
+  await db.collection("users").doc(user.uid).update({
+    friends: firebase.firestore.FieldValue.arrayRemove({
+      id: uid,
+      p: cacheUserFriends[match].p,
+      u: cacheUserFriends[match].u
+    }),
+  })
+
+  var removeFriend = firebase.functions().httpsCallable("removeFriend");
+  removeFriend({ uid: uid, url: cacheuser.url, username: cacheuser.username })
+
+
+  Snackbar.show({text: `Successfully removed ${cacheUserFriends[match].u} from your friends list.`, pos: 'top-center'})
 }
 
 async function showUserPlaylists(uid) {
@@ -347,8 +401,14 @@ async function showUserPlaylists(uid) {
     console.log('Empty');
 
     // Get user playlists
-    var playlistUserdDoc = await db.collection('users').doc(uid).get()
-    var userPlaylists8 = playlistUserdDoc.data().playlistsPreview
+    if (!cacheFriendData[uid]) {
+      var playlistUserdDoc = await db.collection('users').doc(uid).get()
+      var playlistUserdDoc = playlistUserdDoc.data()
+    }
+    else {
+      var playlistUserdDoc = cacheFriendData[uid]
+    }
+    var userPlaylists8 = playlistUserdDoc.playlistsPreview
 
     if (typeof(userPlaylists8) == 'undefined') {
       $('#user_playlists_' + uid).html('No playlists.')
