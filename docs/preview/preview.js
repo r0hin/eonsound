@@ -29,26 +29,30 @@ async function loadPreview() {
   const type = urlParams.get('type');
   const id = urlParams.get('id')
 
-  switch (type) {
-    case 'album':
-      await obtainAuth()
-      loadAlbum(id)
-      break;
-    case 'track':
-      await obtainAuth()
-      loadTrack(id)
-      break;
-    case 'artist':
-      await obtainAuth()
-      loadArtist(id)
-      break;
-    case 'playlist':
-      await obtainAuth()
-      loadPlaylist(id)
-      break;
-    default:
-      endRun()
-      break;
+  try {
+    switch (type) {
+      case 'album':
+        await obtainAuth()
+        loadAlbum(id)
+        break;
+      case 'track':
+        await obtainAuth()
+        loadTrack(id)
+        break;
+      case 'artist':
+        await obtainAuth()
+        loadArtist(id)
+        break;
+      case 'playlist':
+        await obtainAuth()
+        loadPlaylist(id)
+        break;
+      default:
+        endRun()
+        break;
+    } 
+  } catch (error) {
+    endRun()
   }
 
   $('.page').addClass('hidden')
@@ -60,17 +64,21 @@ async function loadAlbum(id) {
 
   a = document.createElement('div')
   a.setAttribute('class', 'album')
-  a.innerHTML = `
-  <center>
-    <img src="${data.images[0].url}"></img>
-    <h2>${data.name}</h2>
-    <h4>${artistToString(data.artists)}</h4>
-    <p>${data.release_date}, ${data.total_tracks} tracks.</p>
-    <br><br>
-    <a href="eons://b=0190i2uwsoildjuakha=${id}" target="_blank" class="btn-contained-primary">Open</a>
-    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download</a>
-  </center>
-  `
+  try {
+    a.innerHTML = `
+    <center>
+      <img src="${data.images[0].url}"></img>
+      <h1>${data.name}</h1>
+      <h4>${artistToString(data.artists)}</h4>
+      <p>${data.release_date}, ${data.total_tracks} tracks.</p>
+      <br><br>
+      <a href="eons://b=0190i2uwsoildjuakha=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
+      <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary animated zoomIn slower">Download</a>
+    </center>
+    `    
+  } catch (error) {
+    endRun()
+  }
 
   $('#contentView').get(0).appendChild(a)
   window.setTimeout(() => {
@@ -83,16 +91,21 @@ async function loadTrack(id) {
 
   a = document.createElement('div')
   a.setAttribute('class', 'track')
-  a.innerHTML = `
-  <center>
-    <img src="${data.album.images[0].url}"></img>
-    <h2>${data.name}</h2>
-    <h4>${artistToString(data.artists)}</h4>
-    <br><br>
-    <a href="eons://b=092ei0192jiwosdncs=${id}" target="_blank" class="btn-contained-primary">Open</a>
-    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download</a>
-  </center>
-  `
+  try {
+    a.innerHTML = `
+    <center>
+      <img src="${data.album.images[0].url}"></img>
+      <h1>${data.name}</h1>
+      <h4>${artistToString(data.artists)}</h4>
+      <br><br>
+      <a href="eons://b=092ei0192jiwosdncs=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
+      <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary animated zoomIn slower">Download</a>
+    </center>
+    `
+  }
+  catch(error) {
+    endRun()
+  }
 
   $('#contentView').get(0).appendChild(a)
   window.setTimeout(() => {
@@ -105,15 +118,19 @@ async function loadArtist(id) {
 
   a = document.createElement('div')
   a.setAttribute('class', 'artist')
-  a.innerHTML = `
-  <center>
-    <img src="${data.images[0].url}"></img>
-    <h2>${data.name}</h2>
-    <br><br>
-    <a href="eons://b=0s29ieu08jidsoja2s=${id}" target="_blank" class="btn-contained-primary">Open</a>
-    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download</a>
-  </center>
-  `
+  try {
+    a.innerHTML = `
+    <center>
+      <img src="${data.images[0].url}"></img>
+      <h1>${data.name}</h1>
+      <br><br>
+      <a href="eons://b=0s29ieu08jidsoja2s=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
+      <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary animated zoomIn slower">Download</a>
+    </center>
+    `    
+  } catch (error) {
+    endRun()
+  }
 
   $('#contentView').get(0).appendChild(a)
   window.setTimeout(() => {
@@ -126,15 +143,19 @@ async function loadPlaylist(id) {
 
   a = document.createElement('div')
   a.setAttribute('class', 'playlist')
-  a.innerHTML = `
-  <center>
-    <img src="${data.images[0].url}"></img>
-    <h2>${data.name}</h2>
-    <br><br>
-    <a href="eons://b=0912897812edhxkjba=${id}" target="_blank" class="btn-contained-primary">Open</a>
-    <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary">Download</a>
-  </center>
-  `
+  try {
+    a.innerHTML = `
+    <center>
+      <img src="${data.images[0].url}"></img>
+      <h1>${data.name}</h1>
+      <br><br>
+      <a href="eons://b=0912897812edhxkjba=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
+      <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary animated zoomIn slower">Download</a>
+    </center>
+    ` 
+  } catch (error) {
+    endRun()
+  }
 
   $('#contentView').get(0).appendChild(a)
   window.setTimeout(() => {
