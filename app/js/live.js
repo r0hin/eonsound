@@ -263,6 +263,7 @@ async function queueSongWithoutData(id, skipMsg) {
 
     savedData = {
       art: data.album.images[0].url,
+      album_name: data.album.name,
       artists: artistToString(data.artists),
       id: data.id,
       name: data.name,
@@ -326,6 +327,27 @@ async function loadSong(data) {
       hideLoader()
     }
   
+    $('#title').html(`${data.name} by ${data.artists} on EonSound`)
+
+    if ('mediaSession' in navigator) {
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: data.name,
+        artist: data.artists,
+        album: data.album_name,
+        artwork: [
+          { src: data.art, sizes: '940x940', type: 'image/png'},
+        ]
+      });
+    
+      navigator.mediaSession.setActionHandler('play', function() {player.play()});
+      navigator.mediaSession.setActionHandler('pause', function() {player.pause()});
+      navigator.mediaSession.setActionHandler('seekbackward', function() {player.rewind(9999)});
+      navigator.mediaSession.setActionHandler('seekforward', function() {player.forward(9999)});
+      navigator.mediaSession.setActionHandler('previoustrack', function() {skipPrevious()});
+      navigator.mediaSession.setActionHandler('nexttrack', function() {skipForward()});
+    }
+
     musicActive = data
     musicActive.url = url
   
@@ -341,6 +363,13 @@ async function loadSong(data) {
     calculatePlayerWidths()
 
     // TE STATUS PLAYING SOOOOOOOOOOOOOOONG
+    console.log({
+      name: cacheuser.name,
+      art: cacheuser.url,
+      content: musicActive,
+      eonsound: 'addSong',
+      skiddyo: Math.random(100000)
+    });
     if (owner) {
       await db.collection('parties').doc(activeParty).update({
         messages: firebase.firestore.FieldValue.arrayUnion({

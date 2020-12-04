@@ -397,6 +397,7 @@ async function queueSongWithoutData(id, skipMsg) {
     
     savedData = {
       art: data.album.images[0].url,
+      album_name: data.album.name,
       artists: artistToString(data.artists),
       id: data.id,
       name: data.name,
@@ -421,6 +422,7 @@ async function playSongWithoutData(id) {
     
     savedData = {
       art: data.album.images[0].url,
+      album_name: data.album.name,
       artists: artistToString(data.artists),
       id: data.id,
       name: data.name,
@@ -434,6 +436,7 @@ async function playSongWithoutData(id) {
 }
 
 async function endedQueue() {
+  $('#title').html(`EonSound Music Player`)
   $('#queueProgress').addClass('zoomOut')
   $('#playing_album_cover').removeClass('zoomIn')
   $('#playing_album_cover').addClass('zoomOut')
@@ -509,6 +512,25 @@ async function loadSong(data) {
     musicActive = data
     musicActive.url = url
     
+    if ('mediaSession' in navigator) {
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: data.name,
+        artist: data.artists,
+        album: data.album_name,
+        artwork: [
+          { src: data.art, sizes: '940x940', type: 'image/png'},
+        ]
+      });
+    
+      navigator.mediaSession.setActionHandler('play', function() {player.play()});
+      navigator.mediaSession.setActionHandler('pause', function() {player.pause()});
+      navigator.mediaSession.setActionHandler('seekbackward', function() {player.rewind(9999)});
+      navigator.mediaSession.setActionHandler('seekforward', function() {player.forward(9999)});
+      navigator.mediaSession.setActionHandler('previoustrack', function() {skipPrevious()});
+      navigator.mediaSession.setActionHandler('nexttrack', function() {skipForward()});
+    }
+
     $('#main_player').get(0).setAttribute('src', url)
     $('#playing_album_cover').get(0).setAttribute('src', data.art)
     $('#playing_track_details').get(0).innerHTML = `<b>${data.name}</b>${data.artists}`
@@ -571,6 +593,8 @@ async function loadSong(data) {
     player.play()
     visualQ_build()
 
+    $('#title').html(`${data.name} by ${data.artists} on EonSound`)
+
     // ELCTRON / DISCORD RPC
     try {
       ipc.send('invokeAction', `${musicActive.name};;${data.artists}`); 
@@ -583,6 +607,7 @@ async function loadSong(data) {
 async function endedSong() {
   // Song did end
   player.pause()
+  $('#title').html(`Waiting...`)
   
   // Move active song to history
   musicHistory.push(musicActive);

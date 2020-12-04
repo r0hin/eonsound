@@ -241,7 +241,7 @@ function genresToString(genres) {
   }
 
   if (genres.length == 1) {
-    return artists[0]
+    return genres[0]
   }
   
   snippet = ''
