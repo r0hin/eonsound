@@ -98,7 +98,7 @@ async function loadTrack(id) {
       <h1>${data.name}</h1>
       <h4>${artistToString(data.artists)}</h4>
       <br><br>
-      <a href="eons://b=092ei0192jiwosdncs=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
+      <a href="eons://b=092ei0192jiwosdncsa=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
       <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary animated zoomIn slower">Download</a>
     </center>
     `
@@ -124,7 +124,7 @@ async function loadArtist(id) {
       <img src="${data.images[0].url}"></img>
       <h1>${data.name}</h1>
       <br><br>
-      <a href="eons://b=0s29ieu08jidsoja2s=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
+      <a href="eons://b=0s29ieu08jidsoja2sa=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
       <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary animated zoomIn slower">Download</a>
     </center>
     `    
@@ -149,7 +149,7 @@ async function loadPlaylist(id) {
       <img src="${data.images[0].url}"></img>
       <h1>${data.name}</h1>
       <br><br>
-      <a href="eons://b=0912897812edhxkjba=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
+      <a href="eons://b=0912897812edhxkjbaa=${id}" target="_blank" class="btn-contained-primary animated zoomIn slower">open eonsound</a>
       <a href="https://r0hin.github.io/eonsound/" target="_blank" class="btn-contained-primary animated zoomIn slower">Download</a>
     </center>
     ` 
