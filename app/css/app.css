@@ -343,6 +343,14 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   -webkit-app-region: drag;
 }
 
+#nav button {
+  vertical-align: middle;
+  padding: 4px 3px 0px 5px;
+  min-width: 0px;
+  border-radius: 8px;
+  margin-right: 24px;
+}
+
 #nav img {
   position: absolute;
   left: 12px;

@@ -350,9 +350,9 @@ async function openSocial(id, index) {
 
 async function friendInfo(uid) {
   // Soon
-  if (!cacheFriendData[id]) {
+  if (!cacheFriendData[uid]) {
     var data = await db.collection('users').doc(uid).get()
-    cacheFriendData[id] = data.data()
+    cacheFriendData[uid] = data.data()
     var data = data.data()
   }
   else {

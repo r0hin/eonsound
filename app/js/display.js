@@ -136,11 +136,15 @@ function refreshTheme() {
 
   if (light == 'light') {
     injectLight()
+    $('#navimg').attr('src', 'assets/text-only-dark.png')
+    $('#navimg').removeClass('hidden')
     partone = '--bg-primary: #f9f9f9;  --bg-secondary: #fff; --bg-tertiary: #ededed; --bg-quaternary: #e7e7e7;'
     partthree = '--content-primary: black; --content-secondary: #0f0f0f; --content-tertiary: #3b3b3b; --contrast-primary: white; --glow: rgba(125, 125, 125, 0.2);'
   }
   else if (light == 'dark') {
     injectDark()
+    $('#navimg').attr('src', 'assets/text-only-light.png')
+    $('#navimg').removeClass('hidden')
     partone = '--bg-primary: #181c3a; --bg-secondary: #090d28; --bg-tertiary: #1b263b; --bg-quaternary: #2F2E36;'
     partthree = '--content-primary: white; --content-secondary: #c8c8c8; --content-tertiary: #5c5c5c; --contrast-primary: black; --glow: rgba(125, 125, 125, 0.2);'
   }

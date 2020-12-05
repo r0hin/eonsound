@@ -204,7 +204,7 @@
   </div>
 
   <div class="fadeInDown" id="nav">
-    <img class="animated fadeInUp slower" src="assets/eonsound.png" alt="">
+    <img class="animated fadeInUp slower hidden" id="navimg" alt="">
     <p id="version"></p>
     <button onclick="showDisplayLyrics()" id="showLyrics" data-toggle="tooltip" data-placement="bottom" title="Toggle Lyrics" class="animated fadeInUp slow btn-text-primary animated hidden">
       <i class='bx bx-message-detail'></i>
@@ -216,6 +216,10 @@
 
     <button class="animated fadeInUp slow btn-text-primary" data-toggle="tooltip" data-placement="bottom" title="Listening Parties" id="listeningpartybtn" onclick="window.location.replace('live.html')">
       <i class='bx bx-group' ></i>
+    </button>
+
+    <button onclick="tabe('support')" data-toggle="tooltip" data-placement="bottom" title="Get Support" class="animated fadeInUp slow btn-text-primary animated">
+      <i class='bx bx-help-circle' ></i>
     </button>
   </div>
 
@@ -323,6 +327,32 @@
     <div id="song_view" class="song_view"> </div>
 
     <!-- Tabs -->
+    <div class="tab hidden animated fadeIn fastest" id="support">
+      <div class="tabtitlebox">
+        <p class="tab-subtitle">Support</p>
+        <h2 class="tab-title">Get Support</h2>
+        <br><br>
+        <div class="row">
+          <div class="col-sm">
+            <b>Feature Requests & Bug Reports</b>
+            <p>Feel free to send us feature requests and bug reports if you think something could be improved. We might send you a little badge if it's useful. Please do not include personal details here.</p><br><br>
+            <center>
+              <a target="_blank" href="https://github.com/r0hin/eonsound/issues/new" class="btn-text-primary">GitHub Issues</a>  
+              <a href="mailto:eonsound@fire.fundersclub.com" class="btn-text-primary">Email Us</a>
+            </center>
+          </div>
+          <div class="col-sm">
+            <b>Account Support & Questions</b>
+            <p>If you're having trouble with your account or just have any general questions, contact us here.</p><br><br>
+            <center>
+              <a href="mailto:eonsound@r0h.in" class="btn-text-primary">Email Us</a>
+              <a target="_blank" href="https://r0h.in/discord" class="btn-text-primary">Discord Support</a>
+            </center>
+          </div>
+        </div>
+      </div>
+      <br>
+    </div>
     <div class="tab hidden animated fadeIn fastest" id="dev">
       <center>
         <br><br><br>
