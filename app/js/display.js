@@ -1,6 +1,11 @@
 // display.js
 // Display optimization scripts.
 
+console.log("%cEonSound Dev Tools", "background: white; color: purple; font-size: x-large");
+console.log('Playing around with unofficial JavaScript could get your account permanently deleted as a fail-safe.')
+console.log('If you have any questions or need help with something, please contact us. Report errors below this line')
+console.log("%c--------------------------", "background: black; color: white;");
+
 // Masonry will happen when different sizes exist
 
 // function masonryAlbums() {
@@ -426,4 +431,11 @@ function hideUpdate() {
   window.setTimeout(() => {
     $("#updateNotify").addClass("hidden");
   }, 800);
+}
+
+function calcTime(offset) {
+  var d = new Date();
+  var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  var nd = new Date(utc + (3600000*offset));
+  return `${nd.toLocaleString()}`
 }

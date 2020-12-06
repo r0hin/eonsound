@@ -142,7 +142,7 @@ Some may be used outside the social sections to reference social elements. */
   min-height: 360px;
 }
 
-.frcard img {
+.frcard .img {
   position: absolute;
   top: 12px; left: 12px;
   width: 54px; height: 54px;
@@ -219,4 +219,20 @@ Some may be used outside the social sections to reference social elements. */
   position: relative;
   width: 100% !important;
   margin: 8px 0px 8px 0px;
+}
+
+.musicSpan {
+  position: absolute;
+  top: 74px;
+  left: 74px;
+  background: -webkit-linear-gradient(45deg, var(--eon-primary), var(--eon-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent; 
+}
+
+.listening2 {
+  margin-top: 24px;
+  position: relative;
+  text-align: left;
 }

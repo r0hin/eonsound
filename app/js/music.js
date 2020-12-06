@@ -178,9 +178,13 @@ function otherUserBPlaylist(id, data, objectID, destinationID, owner) {
 
 function track(id, data, objectID, destinationID, playlist) {
   return new Promise((resolve, reject) => {
+    console.log(data);
     o = document.createElement('div')
     if (playlist == 'tracks') {
       desintationSpecific = ' trackLibraryItem'
+    }
+    else {
+      desintationSpecific = ''
     }
     o.setAttribute('class', 'hidden animated fadeIn faster Song song' + desintationSpecific + ' '  + id)
     o.setAttribute('track_details', id)
@@ -450,6 +454,10 @@ async function endedQueue() {
   try {
     ipc.send('invokeAction', `queueDidEnd`); 
   } catch (error) { console.log('Unable to push invokeAction to Electron process. Browser?'); }
+  await db.collection('app').doc('activity').update({
+    data: firebase.firestore.FieldValue.arrayRemove(user.uid),
+    [user.uid]: {}
+  })
 }
 
 async function queueSong(data, skipMsg) {
@@ -600,6 +608,16 @@ async function loadSong(data) {
       ipc.send('invokeAction', `${musicActive.name};;${data.artists}`); 
     } catch (error) { console.log('Unable to push invokeAction to Electron process. Browser?'); }
     
+    // Finally, update database for friends to notice
+    window.setTimeout(async () => {
+      if (typeof($('#main_player').get(0).duration) !== 'undefined') {
+        await db.collection('app').doc('activity').update({
+          data: firebase.firestore.FieldValue.arrayUnion(user.uid),
+          [user.uid]: {n: data.name, a: data.artists, c: data.art, id: data.id, l: $('#main_player').get(0).duration, t: calcTime('+0')}
+        })
+      }
+    }, 800)
+
     resolve('successo expresso')
   })
 }

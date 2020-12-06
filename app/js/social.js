@@ -3,7 +3,9 @@
 // Things like accounts, following, timelines, etc will be managed here.
 
 window.cacheUserFriends = []
+window.cacheUserFriendsUIDs = []
 window.cacheFriendData = {}
+window.timers = {}
 
 window.db = firebase.firestore();
 document.getElementById("addFriendBox").addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); addFriend($('#addFriendBox').val());$('#addFriendBox').val('') }});
@@ -15,11 +17,11 @@ async function loadFriends() {
     return;
   }
   loadRequests()
+  loadActivity()
 }
 
 async function loadRequests() {
   // Setup a listener and adjust elements accordingly
-
   db.collection('requests').doc(user.uid).onSnapshot(async (doc) => {
     if (!doc.exists) {
       await db.collection('requests').doc(user.uid).set({
@@ -58,7 +60,6 @@ async function loadRequests() {
     // No friends lolol
     if (typeof(doc.data().friends) == 'undefined' || doc.data().friends.length == 0) {
       $('#horizontal_friends_list').html(`<center class="animated zoomIn">You have no friends :(. Click the <i class='bx bx-message-square-add'></i> button to add some.</center>`)
-      return;
     }
 
     // Someone removed you
@@ -102,6 +103,76 @@ async function loadRequests() {
 }
 
 async function loadActivity() {
+  window.setTimeout(() => {
+    db.collection('app').doc('activity').onSnapshot((doc) => {
+      $('.musicSpan').addClass('hidden')
+      var friendsActivity = []
+      for (let i = 0; i < doc.data().data.length; i++) {
+        if (cacheUserFriendsUIDs.includes(doc.data().data[i])) {
+          friendsActivity.push(doc.data().data[i])
+        }
+      }
+      loadFriendActivity(friendsActivity, doc.data())
+    })
+  }, 1085)
+}
+
+async function loadFriendActivity(friendsActivity, data) {
+  for (let i = 0; i < friendsActivity.length; i++) {
+    const uid = friendsActivity[i];
+    var userLength = data[uid].l
+    var userStart = dayjs(data[uid].t)
+    var currentDate = dayjs(calcTime('+0'))
+
+    var predictedEnd = userStart.add(userLength, 'seconds')
+
+    // Check if it is before predicted end.
+    if (currentDate.isBefore(predictedEnd)) {
+      window.clearTimeout(timers[uid + 'timer'])
+      var gonnaEndIn = predictedEnd.diff(currentDate, 'ms')
+      $(`#${uid}listening`).removeClass('hidden') // User is listening and it will end in gonnaEndIn
+      // Show some tooltips and stuff about the current song.
+      $(`#${uid}listening2`).removeClass('hidden')
+      $(`#${uid}listening`).tooltip({ trigger : 'hover' })
+      $(`#${uid}listening`).attr('title', `Now listening to ${data[uid].n} by ${data[uid].a}`).tooltip('_fixTitle');
+
+      $(`#${uid}listening2`).empty()
+  
+      trackQueueData = {
+        name: data[uid].n,
+        artists: data[uid].a,
+        art: data[uid].c,
+        id: data[uid].id,
+      }
+      if ($(`#${uid}listening2`).length == 0) {
+        // Thing doesnt exsist to queue it
+        timers["toBuild_" + uid] = {
+          a: data[uid].id,
+          b: trackQueueData,
+          c: uid + data[uid].id,
+          d: `${uid}listening2`,
+          e: 'none'
+        }
+      }
+      else {
+        await track(data[uid].id, trackQueueData, uid + data[uid].id, `${uid}listening2`, 'none')
+        $(`#${uid + data[uid].id}`).imagesLoaded(() => {
+          $(`#${uid + data[uid].id}`).removeClass('hidden')
+        })
+      }
+
+      timers[uid + 'timer'] = window.setTimeout(() => {
+        $(`#${uid}listening`).addClass('hidden') // User is no longer listening
+        $(`#${uid}listening2`).addClass('hidden')
+      }, gonnaEndIn + 1000)
+    }
+    else {
+      window.clearTimeout(timers[uid + 'timer'])
+      $(`#${uid}listening`).addClass('hidden') // User is not listening
+      $(`#${uid}listening2`).addClass('hidden')
+    }
+    
+  }
 }
 
 async function addFriend(username) {
@@ -237,6 +308,7 @@ async function buildFriends(friends) {
   console.log(friends);
   for (let i = 0; i < friends.length; i++) {
     const friend = friends[i];
+    cacheUserFriendsUIDs.push(friend.id)
     cacheUserFriendsMap[friend.id] = friend.p
     o = document.createElement('div')
     o.setAttribute('class', 'hidden animated zoomIn friendItem friend')
@@ -248,6 +320,7 @@ async function buildFriends(friends) {
     o.innerHTML = `
     <img src="${friend.p}" />
     <h4>${friend.u}</h4>
+    <span class="musicSpan animated zoomIn hidden" data-toggle="tooltip" data-placement="top" title="Listening to Music" id="${friend.id}listening"> <i class='bx bx-music animated'></i> </span>
     <span class="pingSpan" id="${friend.id}unread"></span>
     `
     $('#horizontal_friends_list').get(0).appendChild(o)
@@ -297,9 +370,11 @@ async function openSocial(id, index) {
       <center>
         <div class="card frcard centeredx">
           <div class="card-body">
-            <img src="${cacheUserFriends[parseInt(index)].p}"/>
+            <img class="img" src="${cacheUserFriends[parseInt(index)].p}"/>
             <h2>${cacheUserFriends[parseInt(index)].u}</h2>
-            <br><br><br><br>
+            <br><br>
+            <div id="${id}listening2" class="listening2"></div>
+            <br><br>
             <button onclick="showUserPlaylists('${id}')" class="btn-outlined-primary">Show Playlists</button>
             <div class="dropdown">
               <button aria-haspopup="false" class="btn-text-primary froptions" data-toggle="dropdown">
@@ -341,11 +416,19 @@ async function openSocial(id, index) {
   </div>
   `
   $('#user_content').get(0).appendChild(h)
+  if (timers["toBuild_" + id]) {
+    // To build not there
+    await track(timers["toBuild_" + id]['a'], timers["toBuild_" + id]['b'], timers["toBuild_" + id]['c'], timers["toBuild_" + id]['d'], timers["toBuild_" + id]['e'])
+    $(`#${timers["toBuild_" + id]['c']}`).imagesLoaded(() => {
+      $(`#${timers["toBuild_" + id]['c']}`).removeClass('hidden')
+    })
+  }
   initButtonsOutlined()
   initButtonsText()
   initButtonsDropdown()
   loadMessages(id)
   document.getElementById("newdmmsg" + id).addEventListener("keyup", function (event) { if (event.keyCode === 13) { event.preventDefault(); ADD_MESSAGE(id, event.target.value) }});
+  
 }
 
 async function friendInfo(uid) {
