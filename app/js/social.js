@@ -374,7 +374,7 @@ async function openSocial(id, index) {
             <h2>${cacheUserFriends[parseInt(index)].u}</h2>
             <br><br>
             <div id="${id}listening2" class="listening2"></div>
-            <br><br>
+            <br>
             <button onclick="showUserPlaylists('${id}')" class="btn-outlined-primary">Show Playlists</button>
             <div class="dropdown">
               <button aria-haspopup="false" class="btn-text-primary froptions" data-toggle="dropdown">
