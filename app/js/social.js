@@ -365,8 +365,7 @@ async function openSocial(id, index) {
   h.setAttribute('class', 'animated fadeIn fastest friendView')
   h.setAttribute('id', id + 'UserView')
   h.innerHTML = `
-  <div class="row">
-    <div class="col-sm userviewcol">
+    <div class="userviewcol">
       <center>
         <div class="card frcard centeredx">
           <div class="card-body">
@@ -393,7 +392,7 @@ async function openSocial(id, index) {
         </div>
       </center>
     </div>
-    <div class="col-sm animated fadeIn hidden" id="messagecontainers${id}">
+    <div class="msgcontainer msgcol animated fadeIn hidden" id="messagecontainers${id}">
       <div id="messagecontent${id}">  
       </div>
       <br>
@@ -408,12 +407,11 @@ async function openSocial(id, index) {
           <label for="newdmmsg${id}">New Message</label>
           <input class="form-control" id="newdmmsg${id}" placeholder="" type="text">
         </div>
-        <div id="dimensions_calculations_box"></div>
-      </div>
+          <div id="dimensions_calculations_box"></div>
+        </div>
       </div>
       <!-- Out of the viewport. User can scroll down whilst image loads.  -->
     </div>
-  </div>
   `
   $('#user_content').get(0).appendChild(h)
   if (timers["toBuild_" + id]) {

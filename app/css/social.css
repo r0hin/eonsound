@@ -92,23 +92,8 @@ Some may be used outside the social sections to reference social elements. */
   height: calc(100% - 20px);
 }
 
-#user_content, .friendView .row {
-  height: calc(100% - 166px);
-}
-
-.friendView, .friendView .row, .friendView .row .col-sm {
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.friendView .col-sm #messagecontent{
-  height: calc(100% - 88px);
-  background-color: red;
-}
-
 .relative2 {
-  padding-bottom: 34px;
+  padding-bottom: 12px;
 }
 
 .messagecontainer {
@@ -131,15 +116,6 @@ Some may be used outside the social sections to reference social elements. */
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis; 
-}
-
-.frcard {
-  max-height: calc(100% - 24px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: calc(100% - 52px);
-  text-overflow: clip;
-  min-height: 360px;
 }
 
 .frcard .img {
@@ -211,10 +187,6 @@ Some may be used outside the social sections to reference social elements. */
   width: 100%;
 }
 
-.userviewcol {
-  padding: 8px 0px 24px 0px;
-}
-
 .otherUserBPlaylistItem {
   position: relative;
   width: 100% !important;
@@ -235,4 +207,50 @@ Some may be used outside the social sections to reference social elements. */
   margin-top: 24px;
   position: relative;
   text-align: left;
+}
+
+.friendView {
+  margin-bottom: 36px;
+}
+
+.userviewcol {
+  position: sticky;
+  left: 0px;
+  width: 50%;
+  min-height: 400px;
+  padding: 8px 0px 24px 0px;
+}
+
+.frcard {
+  max-height: calc(100% - 48px);
+  width: calc(100% - 82px);
+  text-overflow: clip;
+  min-height: 160px;
+
+  top: 35%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.frcard .card-body .socialUserPlaylistView {
+  height: 100px;
+  overflow-y: auto;
+}
+
+.frcard .card-body .socialUserPlaylistView div img{
+  height: 50px;
+  width: 50px;
+  border-radius: 6px;
+  position: absolute;
+  left: 12px;
+  top: 50%; transform: translate(0, -50%);
+}
+
+
+.msgcol {
+  position: absolute;
+  right: 0px;
+  width: 50%;
+  top: 265px;
+  height: calc(100% - 330px);
+  overflow: auto;
 }
