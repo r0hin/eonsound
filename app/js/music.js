@@ -254,13 +254,14 @@ function searchTrack(id, data, objectID, destinationID) {
   })
 }
 
-function userPlaylistSong(id, data, objectID, destinationID, index, playlist) {
+function userPlaylistSong(id, data, objectID, destinationID, index, playlist, elses) {
   return new Promise((resolve, reject) => {
     f = document.createElement('div')
     f.setAttribute('class', 'Song song ')
     f.setAttribute('id', objectID)
     f.setAttribute('track_details', id)
     f.setAttribute('track_playlist', playlist)
+    f.setAttribute('other', elses)
     f.onclick = () => {
       playSongsAtIndex(index, playlist)
     }

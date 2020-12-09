@@ -227,8 +227,8 @@ Some may be used outside the social sections to reference social elements. */
   text-overflow: clip;
   min-height: 160px;
 
-  top: 35%; left: 50%;
-  transform: translate(-50%, -50%);
+  top: 6px; left: 50%;
+  transform: translate(-50%, 0);
 }
 
 .frcard .card-body .socialUserPlaylistView {

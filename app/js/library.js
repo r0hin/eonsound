@@ -215,7 +215,7 @@ async function addTrackToPlaylist(playlistID) {
 
   if (cacheUserPlaylistData[playlistID]) {
     cacheUserPlaylistData[playlistID].last_updated = new Date().toDateString();
-    cacheUserPlaylistData[playlistID].push(prepareTrackPlaylistTrack)
+    cacheUserPlaylistData[playlistID].songs.push(prepareTrackPlaylistTrack)
   }
 
   // ADD TRACK TO LIBRARY

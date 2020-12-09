@@ -311,7 +311,7 @@ async function openotherUserBPlaylist(id, owner) {
 
   for (let j = 0; j < nopenPlaylist.songs.length; j++) {
     const openPlaylistSong = nopenPlaylist.songs[j];
-    await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId)
+    await userPlaylistSong(openPlaylistSong.id, openPlaylistSong, playlistId + openPlaylistSong.id, playlistId + 'playlistSongs', j, playlistId, true)
   }
   
   queueData[playlistId] = nopenPlaylist.songs

@@ -179,6 +179,7 @@ async function trackContext(e, el) {
   id = el.getAttribute("track_details")
   contextPlaylist = el.getAttribute("track_playlist")
   activeQueue = el.getAttribute("active_queue")
+  otherPerson = el.getAttribute("other")
 
   // TRACK TO ALBUM/ARTIST
 
@@ -279,7 +280,7 @@ async function trackContext(e, el) {
     await copyText(`https://r0hin.github.io/eonsound/preview?type=track&id=${id}`)
   }
 
-  if (contextPlaylist) {
+  if (contextPlaylist && otherPerson !== 'true' && otherPerson !== true) {
     // We know this track is in a playlist. Offer button to remove it
     $('#trackdeletecontent').html(`
       <div class="context_divider"></div>
