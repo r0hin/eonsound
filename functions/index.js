@@ -72,28 +72,6 @@ exports.createAccount = functions.https.onCall(async (data, context) => {
       map: admin.firestore.FieldValue.arrayUnion(uid),
     });
 
-  await db.collection("follow").doc(uid).collection("followers").doc("a").set({
-    status: false,
-  });
-
-  await db.collection("follow").doc(uid).collection("following").doc("a").set({
-    status: false,
-  });
-
-  await db.collection("follow").doc(uid).collection("requested").doc("a").set({
-    status: false,
-  });
-
-  await db.collection("follow").doc(uid).collection("requesting").doc("a").set({
-    status: false,
-  });
-
-  await db.collection("follow").doc(uid).set({
-    following: 0,
-    followers: 0,
-    requested: 0,
-    requesting: 0,
-  });
 
   await db
     .collection("users")

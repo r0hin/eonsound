@@ -693,6 +693,13 @@ sortable.on('sortable:sorted', (sortData) => {
 function visualQ_build() {
   $('#queueItems').empty()
   
+  if (musicQueue.length == 0) {
+    $('#upnexttitle').addClass('hidden')
+  }
+  else {
+    $('#upnexttitle').removeClass('hidden')
+  }
+
   if (musicActive.none !== 'none') {
     document.getElementById('queueNow').innerHTML = `
     <div class="Song animated fadeInUp song" track_details="${musicActive.id}">
@@ -739,5 +746,11 @@ async function playSongsAtQueueIndex(index) {
 function removeFromQueueByIndex(index) {
   musicQueue.splice(index, 1)
   visualQ_build()
-}
 
+
+  $('#showQueue').addClass('hidden')
+  if (musicQueue.length > 1) {
+    // Check if hide queue btn
+    $('#showQueue').removeClass('hidden')
+  }
+}

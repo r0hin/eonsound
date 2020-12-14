@@ -473,7 +473,7 @@ async function removeFriend(uid) {
   removeFriend({ uid: uid, url: cacheuser.url, username: cacheuser.username })
 
 
-  Snackbar.show({text: `Successfully removed ${cacheUserFriends[match].u} from your friends list.`, pos: 'top-center'})
+  Snackbar.show({text: `Updated friends list.`, pos: 'top-center'})
 }
 
 async function showUserPlaylists(uid) {

@@ -23,7 +23,7 @@ firebase.auth().onAuthStateChanged(function (user) {
       return;
     }
 
-    appContent();
+    appContent(false);
 
   } else {
     window.location.replace("welcome.html");
@@ -38,7 +38,7 @@ async function sendVerification(el) {
   $("#sentEmail").removeClass("hidden");
 }
 
-async function appContent() {
+async function appContent(first) {
   if (window.location.href.includes('firebaseapp')) {
     // Production version: show browse
     if (!localStorage.getItem('firstTimeOpen')) {
@@ -70,8 +70,15 @@ async function appContent() {
   loadUserPlaylists(cacheuser.playlistsPreview);
   loadLibrary()
 
-  $("#userpfp1").get(0).src = cacheuser.url;
-  $("#userpfp2").get(0).src = cacheuser.url;
+  if (first) {
+    $("#userpfp1").get(0).src = 'https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/app%2Fdefault.png?alt=media';
+    $("#userpfp2").get(0).src = 'https://firebasestorage.googleapis.com/v0/b/eonsound.appspot.com/o/app%2Fdefault.png?alt=media'
+  }
+  else {
+    $("#userpfp1").get(0).src = cacheuser.url;
+    $("#userpfp2").get(0).src = cacheuser.url;
+  }
+
   $("#usercard").imagesLoaded(function () {
     $("#usercard").removeClass("hidden");
   })
@@ -94,8 +101,6 @@ async function createUser() {
     return;
   }
 
-  toggleloader();
-
   name = $("#namebox").val();
   username = $("#usernamebox").val().toLowerCase();
 
@@ -103,15 +108,16 @@ async function createUser() {
     displayName: name,
   });
 
+  toggleloader();
+  $("#finish_profile").removeClass("fadeIn");
+  $("#finish_profile").addClass("fadeOut");
+
   var createAccount = firebase.functions().httpsCallable("createAccount");
   createAccount({ username: username, displayname: name }).then((result) => {
     if (result.data) {
       toggleloader(); showcomplete();
       window.setTimeout(() => {
-        appContent();
-
-        $("#finish_profile").removeClass("fadeIn");
-        $("#finish_profile").addClass("fadeOut");
+        appContent(true);
         window.setTimeout(() => {
           $("#finish_profile").addClass("hidden");
         }, 800);

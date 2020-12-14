@@ -206,6 +206,11 @@ async function addTrackToPlaylist(playlistID) {
   if (!prepareTrackPlaylistTrack.url) {
     prepareTrackPlaylistTrack.url = await downloadSong(prepareTrackPlaylistTrack.id, prepareTrackPlaylistTrack.spotifyURL, prepareTrackPlaylistTrack.name)
   }
+
+  if (prepareTrackPlaylistTrack.url == 'no') {
+    alert('Could not add to playlist because the audio URL returned is invalid. \n\nThis track cannot be added to a playlist or played. Our apologies.')
+    return;
+  }
   
   // ADD TRACK TO PLAYLIST
   await db.collection('users').doc(user.uid).collection('library').doc(playlistID).update({
