@@ -356,13 +356,13 @@ async function playlistRecommendConfirm(id, focus) {
 
   for (let i = 0; i < rec.tracks.length; i++) {
     // Tracks
-    await track(rec.tracks[i].id, rec.tracks[i], rec.tracks[i].id + 'rec', id + 'recommendationslist', id + 'reclist')
+    await albumSong(rec.tracks[i].id, rec.tracks[i], rec.tracks[i].id + 'rec', id + 'recommendationslist', i, id + 'reclist', rec.tracks[i].album.images[0].url)
     $(`#${rec.tracks[i].id}rec`).imagesLoaded(() => {
       $(`#${rec.tracks[i].id}rec`).removeClass('hidden')
     })
     
   }
 
-  queueData[id + 'reclist']
+  queueData[id + 'reclist'] = rec.tracks
 
 }

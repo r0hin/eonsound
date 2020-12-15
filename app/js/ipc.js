@@ -1,5 +1,5 @@
 window.targetAppVersion = '150'
-window.activeWebVersion = '1.5.14'
+window.activeWebVersion = '1.6.0'
 
 try {
   eval(`window.ipc = require('electron').ipcRenderer`)

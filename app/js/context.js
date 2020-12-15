@@ -242,6 +242,7 @@ async function trackContext(e, el) {
     window.prepare_library_changes = data
 
     $('#playlistSelect').modal('toggle')
+    initButtonsText()
   };
 
   // ADD or remove LIBRARY
