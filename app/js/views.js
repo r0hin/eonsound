@@ -418,10 +418,18 @@ async function openUserPlaylist(id) {
     </div>
     <br><br>
     <div class="songList ${playlistId}playlistSongs animated fadeIn" id="${playlistId}playlistSongs"></div>
-    <br><br><br>
+    <center id="${playlistId}recommend" class="animated fadeIn hidden">
+      <br>
+      <button onclick="playlistRecommend('${playlistId}')" class="btn-contained-primary recommendbtn"> <i class="bx bx-brain"></i> Generate Recommendations </button>
+    </center>
+    <br><br>
   `
   document.getElementById('userplaylist_view').appendChild(f)
   $(`#${id}UserPlaylistView`).removeClass('hidden')
+
+  if (nopenPlaylist.songs.length) {
+    $(`#${playlistId}recommend`).removeClass('hidden')
+  }
 
   for (let j = 0; j < nopenPlaylist.songs.length; j++) {
     const openPlaylistSong = nopenPlaylist.songs[j];

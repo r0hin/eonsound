@@ -177,6 +177,7 @@ async function trackContext(e, el) {
   positionMenu(e, menu)
 
   id = el.getAttribute("track_details")
+  contextArtist = el.getAttribute("track_artist")
   contextPlaylist = el.getAttribute("track_playlist")
   activeQueue = el.getAttribute("active_queue")
   otherPerson = el.getAttribute("other")
@@ -185,14 +186,18 @@ async function trackContext(e, el) {
 
   document.getElementById('tracktoartist').onclick = async () => {
     // Get artist from track
+    if (contextArtist) {
+      openArtist(contextArtist)
+    }
+
     if (musicData[id]) { 
       data = musicData[id]  
     }
     else {
       data = await goFetch(`tracks/${id}`)
       window.musicData[id] = data
-      openArtist(data.artists[0].id)
     }
+    openArtist(data.artists[0].id)
     
   }
 

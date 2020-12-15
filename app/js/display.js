@@ -143,14 +143,14 @@ function refreshTheme() {
     injectLight()
     $('#navimg').attr('src', 'assets/text-only-dark.png')
     $('#navimg').removeClass('hidden')
-    partone = '--bg-primary: #f9f9f9;  --bg-secondary: #fff; --bg-tertiary: #ededed; --bg-quaternary: #e7e7e7;'
+    partone = '--bg-primary: #f9f9f9;  --bg-secondary: #fff; --bg-tertiary: #ededed; --bg-quaternary: #e7e7e7; --glass: rgba(255, 255, 255, 0.3);'
     partthree = '--content-primary: black; --content-secondary: #0f0f0f; --content-tertiary: #3b3b3b; --contrast-primary: white; --glow: rgba(125, 125, 125, 0.2);'
   }
   else if (light == 'dark') {
     injectDark()
     $('#navimg').attr('src', 'assets/text-only-light.png')
     $('#navimg').removeClass('hidden')
-    partone = '--bg-primary: #181c3a; --bg-secondary: #090d28; --bg-tertiary: #1b263b; --bg-quaternary: #2F2E36;'
+    partone = '--bg-primary: #181c3a; --bg-secondary: #090d28; --bg-tertiary: #1b263b; --bg-quaternary: #2F2E36; --glass: rgba(0, 0, 0, 0.3);'
     partthree = '--content-primary: white; --content-secondary: #c8c8c8; --content-tertiary: #5c5c5c; --contrast-primary: black; --glow: rgba(125, 125, 125, 0.2);'
   }
 
@@ -209,6 +209,26 @@ function switchDark() {
 function switchLight() {
   localStorage.setItem('es_theme_light', 'light')
   refreshTheme()
+}
+
+function checkTutorialSysTeme() {
+  if (!cacheUserTutorial.includes('autotheme')) {
+    // Show tutorial
+    showTutorial('autotheme')
+    $('#tutorial').html(`
+      <div class="card">
+        <div class="card-body">
+          <h4>Themes</h4>
+          <p>Change EonSound's color scheme by selecting a theme from your account page. If your theme is auto, it will update depending on your OS theme.</p>
+          <br><br>
+          <button onclick="hideTutorial()" class="btn-contained-primary">Continue</button>
+          <br>
+          <small>This message will only be shown once.</small>
+        </div>
+      </div>
+    `)
+    initButtonsContained()
+  } 
 }
 
 async function switchAuto(skipMSG) {

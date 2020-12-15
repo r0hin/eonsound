@@ -262,6 +262,8 @@ async function removeTrackFromPlaylist(songID, playlistID) {
 
   // Check if playlist is empty:
   if (cacheUserPlaylistData[playlistID].songs.length == 0) {
+    $(`#${playlistID}recommend`).addClass('hidden')
+
     Snackbar.show({
       pos: 'top-center',
       text: 'This playlist is now empty.',
@@ -272,5 +274,95 @@ async function removeTrackFromPlaylist(songID, playlistID) {
   else {
     Snackbar.show({text: "Song removed from playlist.", pos: 'top-center'})
   }
+
+}
+
+function playlistRecommend(id) {
+
+  if (!cacheUserTutorial.includes('recommendations')) {
+    // Show tutorial
+    showTutorial('recommendations')
+    $('#tutorial').html(`
+      <div class="card">
+        <div class="card-body">
+          <h4>Recommendations</h4>
+          <p>EonSound now supports recommended content. Select the button below your playlist content to generate more tracks based on your current artists and tracks.</p>
+          <p>You can choose whether to focus more on tracks based on your playlists' artists versus your playlists' tracks.</p>
+          <br><br>
+          <button onclick="hideTutorial()" class="btn-contained-primary">Continue</button>
+          <br>
+          <small>This message will only be shown once.</small>
+        </div>
+      </div>
+    `)
+    initButtonsContained()
+  } 
+
+  $(`#${id}recommend`).html(`
+    <p class="animated fadeInUp">Which type of current content would you like to focus on more?</p>
+    <button onclick="playlistRecommendConfirm('${id}', 'artists')" class="btn-text-primary animated fadeIn">Artists</button> 
+    <button onclick="playlistRecommendConfirm('${id}', 'tracks')" class="btn-text-primary animated fadeIn">Tracks</button>
+  `)
+  initButtonsText()
+}
+
+async function playlistRecommendConfirm(id, focus) {
+  $(`#${id}recommend`).html(`
+    <br>
+    <div class="progress">
+      <div class="progress-bar progress-bar-indeterminate" role="progressbar"></div>
+    </div>
+    <p>Fetching recommendations...</p>
+  `)
+  console.log('Recommending songs from playlist of id', id);
+
+  // Analyze existing tracks and artists via queue:
+  var recommendationDataset = shuffled(queueData[id])
+  var recommendationStringA = '' // artists
+  var recommendationStringB = '' // tracks
+
+  for (let i = 0; i < 3; i++) {
+    if (recommendationDataset[i]) {
+      if (i == 2) {
+        // Final option, find next focus factor
+        if (focus == 'artist') {
+          var recommendationStringA = recommendationStringA + recommendationDataset[i].artistID
+        }
+        else {
+          var recommendationStringB = recommendationStringB + recommendationDataset[i].id
+        }
+      }
+      else {
+        var recommendationStringA = recommendationStringA + recommendationDataset[i].artistID + ','
+        var recommendationStringB = recommendationStringB + recommendationDataset[i].id + ','
+      }
+    } 
+  }
+  
+  // Filter trailing commas
+  if (recommendationStringA[recommendationStringA.length - 1] == ',') {
+    recommendationStringA = recommendationStringA.substring(0, recommendationStringA.length - 1).replace(/,/g, '%2C')
+  }
+  if (recommendationStringB[recommendationStringB.length - 1] == ',') {
+    recommendationStringB = recommendationStringB.substring(0, recommendationStringB.length - 1).replace(/,/g, '%2C')
+  }
+
+  rec = await goFetch(`recommendations?limit=12&seed_artists=${recommendationStringA}&seed_tracks=${recommendationStringB}&market=US`)
+
+  $(`#${id}recommend`).html(`
+    <br> <h4 class="textleft">Recommendations</h4>
+    <div class="reclist" id="${id}recommendationslist"></div>
+  `)
+
+  for (let i = 0; i < rec.tracks.length; i++) {
+    // Tracks
+    await track(rec.tracks[i].id, rec.tracks[i], rec.tracks[i].id + 'rec', id + 'recommendationslist', id + 'reclist')
+    $(`#${rec.tracks[i].id}rec`).imagesLoaded(() => {
+      $(`#${rec.tracks[i].id}rec`).removeClass('hidden')
+    })
+    
+  }
+
+  queueData[id + 'reclist']
 
 }

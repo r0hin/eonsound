@@ -178,7 +178,6 @@ function otherUserBPlaylist(id, data, objectID, destinationID, owner) {
 
 function track(id, data, objectID, destinationID, playlist) {
   return new Promise((resolve, reject) => {
-    console.log(data);
     o = document.createElement('div')
     if (playlist == 'tracks') {
       desintationSpecific = ' trackLibraryItem'
@@ -371,7 +370,6 @@ function shuffleSongs(Id) {
 
 async function downloadSong(trackID, spotifyURL, trackName) {
   return new Promise(async (resolve, reject) => {
-
 
     if (!cacheUserTutorial.includes('downloadSong')) {
       // Show tutorial
@@ -707,7 +705,6 @@ Array.prototype.move = function (from, to) {
 sortable.on('sortable:sorted', (sortData) => {
   // Rebuild queue from visualqbuild items
   musicQueue.move(sortData.data.oldIndex, sortData.data.newIndex)
-  console.log('rebulid queue');
 });
 
 function visualQ_build() {

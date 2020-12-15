@@ -198,6 +198,7 @@ async function addTrackToPlaylist(playlistID) {
       id: prepareTrackPlaylistTrack.id,
       art: prepareTrackPlaylistTrack.album.images[0].url,
       artists: artistToString(prepareTrackPlaylistTrack.artists),
+      artistID: prepareTrackPlaylistTrack.artists[0].id,
       length: prepareTrackPlaylistTrack.duration_ms
     }
   }
@@ -236,6 +237,8 @@ async function addTrackToPlaylist(playlistID) {
       queueData[playlistID].push(prepareTrackPlaylistTrack)
     }
   }
+
+  $(`#${playlistID}recommend`).removeClass('hidden')
 
   Snackbar.show({pos: 'top-center',text: "Added '" + prepareTrackPlaylistTrack.name + "' to a playlist."})
 }

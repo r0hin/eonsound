@@ -469,7 +469,6 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   position: fixed;
   width: 100%; height: 100%;
   z-index: 75000;
-  background-color: var(--glass);
   backdrop-filter: blur(5px);
 }
 
@@ -479,4 +478,13 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
   left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   min-width: 300px; max-width: 50%;
+}
+
+.textleft {
+  width: 100%;
+  text-align: left;
+}
+
+.reclist {
+  text-align: left;
 }
