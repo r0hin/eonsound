@@ -439,3 +439,22 @@ function calcTime(offset) {
   var nd = new Date(utc + (3600000*offset));
   return `${nd.toLocaleString()}`
 }
+
+async function showTutorial(tutorialID) {
+  $('#tutorial').removeClass("hidden")
+  $('#tutorial').removeClass("fadeOutDown")
+  $('#tutorial').addClass("fadeInUp")
+
+  cacheUserTutorial.push(tutorialID)
+  await db.collection('users').doc(user.uid).update({
+    tutorial: firebase.firestore.FieldValue.arrayUnion(tutorialID)
+  })
+}
+
+function hideTutorial() {
+  $('#tutorial').removeClass("fadeInUp")
+  $('#tutorial').addClass("fadeOutDown")
+  window.setTimeout(() => {
+    $('#tutorial').addClass("hidden")
+  }, 450)
+}

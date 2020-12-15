@@ -148,7 +148,7 @@ exports.requestSong = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).htt
   });
 
   body = await res.json();
-  name = body.name;
+  name = body.name.replace(/([^\w\s+*:;,.()/\\]+)/gi, '');
   artist = body.artists[0].name;
 
   res = await fetch(`http://eonsound.herokuapp.com/search?artist=${artist}&name=${name}`)

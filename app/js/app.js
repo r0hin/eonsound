@@ -65,6 +65,10 @@ async function appContent(first) {
     return;
   }
 
+  window.cacheUserTutorial = doc.data().tutorial
+  if (!doc.data().tutorial) {
+    cacheUserTutorial = []
+  }
   window.cacheuser = doc.data();
   window.cacheUserFriendsMap = {[user.uid]: cacheuser.url}
   loadUserPlaylists(cacheuser.playlistsPreview);

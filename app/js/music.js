@@ -371,6 +371,26 @@ function shuffleSongs(Id) {
 
 async function downloadSong(trackID, spotifyURL, trackName) {
   return new Promise(async (resolve, reject) => {
+
+
+    if (!cacheUserTutorial.includes('downloadSong')) {
+      // Show tutorial
+      showTutorial('downloadSong')
+      $('#tutorial').html(`
+        <div class="card">
+          <div class="card-body">
+            <h4>Downloading</h4>
+            <p>Playing a song for the first time will take slightly longer as we download it. All subsequent playback will be lightning fast. No device storage is used.</p>
+            <br><br>
+            <button onclick="hideTutorial()" class="btn-contained-primary">Continue</button>
+            <br>
+            <small>This message will only be shown once.</small>
+          </div>
+        </div>
+      `)
+      initButtonsContained()
+    }
+
     var requestSong = await firebase.functions().httpsCallable("requestSong");
     try {
       downloadedTrack = await requestSong({ trackID: trackID, trackURL: spotifyURL});
