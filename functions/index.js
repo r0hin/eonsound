@@ -157,7 +157,7 @@ exports.requestSong = functions.runWith({timeoutSeconds: 300,memory: "2GB"}).htt
   
   return new Promise(async (resolve, reject) => {
 
-    res = await fetch(`https://eonsound.herokuapp.com/skiddy?potpot=${videoID}&skeeya=${data.trackID}`)
+    res = await fetch(`https://eonsound.herokuapp.com/redefined?potpot=${videoID}&skeeya=${data.trackID}`)
     // Don even do any downloading here
     body = await res.json()
     resolve(body)
