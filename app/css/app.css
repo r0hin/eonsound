@@ -94,6 +94,7 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 
 #sidebar .tab-btn{
   width: 100%;
+  border-radius: 18px;
   margin-top: 12px;
   text-align: left;
   text-transform: none;

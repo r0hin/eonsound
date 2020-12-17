@@ -422,7 +422,7 @@ async function openUserPlaylist(id) {
       <br>
       <button onclick="playlistRecommend('${playlistId}')" class="btn-contained-primary recommendbtn"> <i class="bx bx-brain"></i> Generate Recommendations </button>
     </center>
-    <br><br>
+    <br><br><br>
   `
   document.getElementById('userplaylist_view').appendChild(f)
   $(`#${id}UserPlaylistView`).removeClass('hidden')

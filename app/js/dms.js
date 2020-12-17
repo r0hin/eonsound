@@ -28,7 +28,6 @@ function msgListenerConfirm() {
 }
 
 function updateUnread(readList) {
-  console.log(readList);
   if (typeof(readList) == 'undefined') {
     readList = []
   }
@@ -76,7 +75,6 @@ async function ENACT_CHANGES(data) {
   
   // If the chat window exists
   if ($(`#messagecontent${data.most_recent_sender}`).length) {
-    console.log(data.username, data.msg, data.most_recent_sender, data.most_recent_sender, true);
     BUILD_MESSAGE(data.username, data.msg, data.most_recent_sender, data.most_recent_sender, true);
     scrollBottom(data.most_recent_sender)
     
@@ -173,8 +171,6 @@ async function loadMessages(id) {
     $(`#messagecontainers${id}`).removeClass('hidden')
     return;
   }
-
-  console.log(doc.data().messages.length);
 
   if (doc.data().messages.length > 120) {
     // Clear up to 50

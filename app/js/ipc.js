@@ -1,5 +1,6 @@
 window.targetAppVersion = '150'
-window.activeWebVersion = '1.6.0'
+window.activeWebVersion = '1.6.2'
+$('#version').html(activeWebVersion)
 
 try {
   eval(`window.ipc = require('electron').ipcRenderer`)
@@ -52,7 +53,6 @@ window.setTimeout(() => {
     ipc.send('app_version');
     ipc.on('app_version', (event, arg) => {
       ipc.removeAllListeners('app_version');
-      $('#version').html(activeWebVersion)
       var ver = arg.version.replace('.', "");
       ver = ver.replace('.', '');ver = ver.replace('.', '');ver = ver.replace('.', '');localAppVersion = ver.replace('.', '')
       if (targetAppVersion > localAppVersion) {
