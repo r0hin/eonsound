@@ -316,53 +316,55 @@ async function playlistRecommendConfirm(id, focus) {
   `)
   console.log('Recommending songs from playlist of id', id);
 
-  // Analyze existing tracks and artists via queue:
-  var recommendationDataset = shuffled(queueData[id])
-  var recommendationStringA = '' // artists
-  var recommendationStringB = '' // tracks
+  window.setTimeout(async () => {
+    // Delay to make it seem like its doing stuff and because that progress bar looks nice.
+    // Analyze existing tracks and artists via queue:
+    var recommendationDataset = shuffled(queueData[id])
+    var recommendationStringA = '' // artists
+    var recommendationStringB = '' // tracks
 
-  for (let i = 0; i < 3; i++) {
-    if (recommendationDataset[i]) {
-      if (i == 2) {
-        // Final option, find next focus factor
-        if (focus == 'artist') {
-          var recommendationStringA = recommendationStringA + recommendationDataset[i].artistID
+    for (let i = 0; i < 3; i++) {
+      if (recommendationDataset[i]) {
+        if (i == 2) {
+          // Final option, find next focus factor
+          if (focus == 'artist') {
+            var recommendationStringA = recommendationStringA + recommendationDataset[i].artistID
+          }
+          else {
+            var recommendationStringB = recommendationStringB + recommendationDataset[i].id
+          }
         }
         else {
-          var recommendationStringB = recommendationStringB + recommendationDataset[i].id
+          var recommendationStringA = recommendationStringA + recommendationDataset[i].artistID + ','
+          var recommendationStringB = recommendationStringB + recommendationDataset[i].id + ','
         }
-      }
-      else {
-        var recommendationStringA = recommendationStringA + recommendationDataset[i].artistID + ','
-        var recommendationStringB = recommendationStringB + recommendationDataset[i].id + ','
-      }
-    } 
-  }
-  
-  // Filter trailing commas
-  if (recommendationStringA[recommendationStringA.length - 1] == ',') {
-    recommendationStringA = recommendationStringA.substring(0, recommendationStringA.length - 1).replace(/,/g, '%2C')
-  }
-  if (recommendationStringB[recommendationStringB.length - 1] == ',') {
-    recommendationStringB = recommendationStringB.substring(0, recommendationStringB.length - 1).replace(/,/g, '%2C')
-  }
-
-  rec = await goFetch(`recommendations?limit=12&seed_artists=${recommendationStringA}&seed_tracks=${recommendationStringB}&market=US`)
-
-  $(`#${id}recommend`).html(`
-    <br> <h4 class="textleft">Recommendations</h4>
-    <div class="reclist" id="${id}recommendationslist"></div>
-  `)
-
-  for (let i = 0; i < rec.tracks.length; i++) {
-    // Tracks
-    await albumSong(rec.tracks[i].id, rec.tracks[i], rec.tracks[i].id + 'rec', id + 'recommendationslist', i, id + 'reclist', rec.tracks[i].album.images[0].url)
-    $(`#${rec.tracks[i].id}rec`).imagesLoaded(() => {
-      $(`#${rec.tracks[i].id}rec`).removeClass('hidden')
-    })
+      } 
+    }
     
-  }
+    // Filter trailing commas
+    if (recommendationStringA[recommendationStringA.length - 1] == ',') {
+      recommendationStringA = recommendationStringA.substring(0, recommendationStringA.length - 1).replace(/,/g, '%2C')
+    }
+    if (recommendationStringB[recommendationStringB.length - 1] == ',') {
+      recommendationStringB = recommendationStringB.substring(0, recommendationStringB.length - 1).replace(/,/g, '%2C')
+    }
 
-  queueData[id + 'reclist'] = rec.tracks
+    rec = await goFetch(`recommendations?limit=12&seed_artists=${recommendationStringA}&seed_tracks=${recommendationStringB}&market=US`)
 
+    $(`#${id}recommend`).html(`
+      <br> <h4 class="textleft">Recommendations</h4>
+      <div class="reclist" id="${id}recommendationslist"></div>
+    `)
+
+    for (let i = 0; i < rec.tracks.length; i++) {
+      // Tracks
+      await albumSong(rec.tracks[i].id, rec.tracks[i], rec.tracks[i].id + 'rec', id + 'recommendationslist', i, id + 'reclist', rec.tracks[i].album.images[0].url)
+      $(`#${rec.tracks[i].id}rec`).imagesLoaded(() => {
+        $(`#${rec.tracks[i].id}rec`).removeClass('hidden')
+      })
+      
+    }
+
+    queueData[id + 'reclist'] = rec.tracks
+  }, 1200);
 }
