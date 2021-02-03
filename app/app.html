@@ -482,7 +482,7 @@
       <h2 class="tab-title">New Releases</h2>
       <div id="browse_new" class="horiz_search"></div>
 
-      <h2 class="tab-title">Banger Vibes</h2>
+      <h2 class="tab-title">Hot Playlists</h2>
       <div id="browse_play" class="horiz_search"></div>
 
       <h2 class="tab-title">Categories</h2>
@@ -570,10 +570,8 @@
             </div>
             <div class="east-select-overflow"></div>
           </div>
-          <br>
-          <center>
-            <button onclick="saveDefaultVolume()" class="btn-text-primary">Save</button>
-          </center>
+          <br><br>
+          <button onclick="saveDefaultVolume()" class="btn-text-primary">Save</button>
         </div>
         <div class="col-sm">
 
@@ -582,6 +580,16 @@
             <br>
             <button onclick="preparenpicchange()" class="btn-outlined-primary">Change Profile Photo</button>
           </center>
+
+          <br><br>
+          <h2 class="tab-title">Auth Management</h2>
+          <p>Google account linking is made for features such as <b>Export To Groovy</b>.</p>
+          <button id="googleSignIn" class="btn-contained-primary hidden" onclick="googleAuthSignIn()">Sign In</button>
+          <div id="googleSignOut" class="hidden">
+            <p>Account already linked. <a href="#" onclick="googleAuthSignOut()">Sign Out</a>.</p>  
+            <br><br>
+            <button onclick="revokeAccess()" class="btn-text-danger danger">Revoke Access</button>
+          </div>
 
         </div>
       </div>
@@ -813,6 +821,8 @@
   <!-- Library --> <script src="js/library.js"></script>
   <!-- Playlists --> <script src="js/playlists.js"></script>
   <!-- Context Menu --> <script src="js/context.js"></script>
+
+  <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"> </script>
 
   <script> refreshTheme(); window.setTimeout(( ) => { $('#loading').addClass('fadeOut'); window.setTimeout(() => { $('#loading').addClass('hidden') }, 500) }, 500)</script>
 

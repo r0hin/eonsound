@@ -408,6 +408,15 @@ async function openUserPlaylist(id) {
       <button onclick="renameUserPlaylist('${id}')" class="animated fadeInUp btn-text-primary">
         <i class='bx bx-pencil'></i>
       </button>
+      <div class="dropdown">
+      <button data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="animated fadeInUp btn-text-primary">
+      <i class='bx bx-export'></i>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a onclick="exportToJSON('${id}')" class="dr-item" href="#">Export to JSON</a>
+        <a onclick="exportToGroovy('${id}')" class="dr-item" href="#">Export to Groovy</a>
+      </div>
+    </div>
     </center>
 
     <br>
@@ -440,33 +449,7 @@ async function openUserPlaylist(id) {
   });
   
   sortablePlaylist.on('sortable:sorted', (sortData) => {
-
-
-    // redo queue buttons
-    
-    if (sortData.data.oldIndex == sortData.data.newIndex) {
-      return;
-    }
-    cacheUserPlaylistData[playlistId].songs.move(sortData.data.oldIndex, sortData.data.newIndex)
-    if (queueData[playlistId]) {
-      queueData[playlistId].move(sortData.data.oldIndex, sortData.data.newIndex)
-    }
-    try {
-      window.clearTimeout(sortTimer)
-    } catch(error) {}; 
-    sortTimer = window.setTimeout(async () => {
-      $(`#${playlistId}playlistSongs`).children().each((index, item) => {
-        item.onclick = () => {
-          playSongsAtIndex(index, playlistId)
-        }
-      })
-      await db.collection('users').doc(user.uid).collection('library').doc(playlistId).update({
-        last_updated: firebase.firestore.FieldValue.serverTimestamp(),
-        songs: cacheUserPlaylistData[playlistId].songs
-      }); 
-      cacheUserPlaylistData[playlistId].last_updated = new Date().toDateString(); 
-      Snackbar.show({pos: 'top-center',text: 'Playlist order updated.'})
-    }, 1200)
+    sortPlaylistCorrectly(sortData, playlistId)
   });
 
   queueData[playlistId] = nopenPlaylist.songs
@@ -475,8 +458,36 @@ async function openUserPlaylist(id) {
   })
   initButtonsContained()
   initButtonsText()
+  initButtonsDropdown()
 
   activeLoading = false
+}
+
+function sortPlaylistCorrectly(sortData, playlistId) {
+  // redo queue buttons
+  if (sortData.data.oldIndex == sortData.data.newIndex) {
+    return;
+  }
+  cacheUserPlaylistData[playlistId].songs.move(sortData.data.oldIndex, sortData.data.newIndex)
+  if (queueData[playlistId]) {
+    queueData[playlistId].move(sortData.data.oldIndex, sortData.data.newIndex)
+  }
+  try {
+    window.clearTimeout(sortTimer)
+  } catch(error) {}; 
+  sortTimer = window.setTimeout(async () => {
+    $(`#${playlistId}playlistSongs`).children().each((index, item) => {
+      item.onclick = () => {
+        playSongsAtIndex(index, playlistId)
+      }
+    })
+    await db.collection('users').doc(user.uid).collection('library').doc(playlistId).update({
+      last_updated: firebase.firestore.FieldValue.serverTimestamp(),
+      songs: cacheUserPlaylistData[playlistId].songs
+    }); 
+    cacheUserPlaylistData[playlistId].last_updated = new Date().toDateString(); 
+    Snackbar.show({pos: 'top-center',text: 'Playlist order updated.'})
+  }, 1200)
 }
 
 async function openArtist(id) {

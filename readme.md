@@ -12,12 +12,12 @@
     ·
     <a href="https://github.com/r0hin/eonsound/issues">Bugs & Features</a>
     ·
-    <a href="https://zoonk.surf/i?s=vTnhtXO9HstKoh8sTIlI">Support Me :)</a>
+    <a href="https://r0h.in/zoonk/i.html?s=vTnhtXO9HstKoh8sTIlI">Support Me :)</a>
 
 </p>
 
 ## About
-EonSound is an open-source music player built with the Spotify API, Firebase, Electron and web technologies. This was intended to be created as a school project but feel free to contribute to it if you like it! You can also help me out by <a href="https://github.com/r0hin/echo/issues">creating an issue</a> if you have new ideas or find an issue. Support development <a href="https://zoonk.surf/i?s=vTnhtXO9HstKoh8sTIlI">here</a> - anything helps :) .
+EonSound is an open-source music player built with the Spotify API, Firebase, Electron and web technologies. This was intended to be created as a school project but feel free to contribute to it if you like it! You can also help me out by <a href="https://github.com/r0hin/echo/issues">creating an issue</a> if you have new ideas or find an issue. Support development <a href="https://r0h.in/zoonk/i.html?s=vTnhtXO9HstKoh8sTIlI">here</a> - anything helps :) .
 
 ## Contributions
 Feel free to contribute via a pull request.

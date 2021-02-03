@@ -2,6 +2,9 @@
 // Manages user playlists - adding things, modifying it, displaying it, etc.
 // Will include code for managing other users' playlists.
 
+var GoogleAuth;
+var SCOPE = 'https://www.googleapis.com/auth/youtube';
+
 const colorThief = new ColorThief();
 window.colorThief = new ColorThief();
 window.cacheUserPlaylists = {}
@@ -367,4 +370,80 @@ async function playlistRecommendConfirm(id, focus) {
 
     queueData[id + 'reclist'] = rec.tracks
   }, 1200);
+}
+
+async function exportToJSON(id) {
+  console.log('Export to JSON', id)
+  // Replace song URLs
+  var exportData = cacheUserPlaylistData[id]
+  
+  for (let i = 0; i < cacheUserPlaylistData[id].songs.length; i++) {
+    exportData.songs[i].url = 'via EonSound!';
+  }
+
+  try {
+    await navigator.clipboard.writeText(JSON.stringify(exportData))
+    Snackbar.show({pos: 'top-center',text: "Exported JSON is copied to clipboard."})    
+  } catch (error) {
+    Snackbar.show({pos: 'top-center',text: "Exported JSON printed to console."})
+    console.log(JSON.stringify(exportData))
+  }
+}
+
+function exportToGroovy(id) {
+  // Connect with gapi
+  console.log('Export to Groovy', id)
+}
+
+function handleClientLoad() {
+  console.log('Hello!')
+  gapi.load('client:auth2')
+  window.setTimeout(() => {
+    initClient();
+  }, 2500)
+}
+
+// secret: KGPCvEd91qlMgw_14Gm57IgX
+
+function initClient() {
+  gapi.client.init({
+    'apiKey': 'AIzaSyBXANZjJZTX2vZ-YUy0cMsATKtOuJ5F-A4',
+    'clientId': '824179683788-uc5aktq1rmvbbinfir63c0c7clnl0r5i.apps.googleusercontent.com',
+    'scope': SCOPE,
+    'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
+  }).then(function () {
+    GoogleAuth = gapi.auth2.getAuthInstance();
+    updateSigninStatus(GoogleAuth.isSignedIn.ee)
+  })
+}
+
+function updateSigninStatus(bool) {
+  if (bool) {
+    $('#googleSignIn').addClass('hidden')
+    $('#googleSignOut').removeClass('hidden')
+  } else {
+    $('#googleSignIn').removeClass('hidden')
+    $('#googleSignOut').addClass('hidden')
+  }
+}
+
+function googleAuthSignIn() {
+  if (!GoogleAuth.isSignedIn.get()) {
+    GoogleAuth.signIn().then(() => {
+      updateSigninStatus(true)
+    });
+  }
+}
+function googleAuthSignOut() {
+  if (GoogleAuth.isSignedIn.get()) {
+    GoogleAuth.signOut().then(() => {
+      updateSigninStatus(false)
+    });
+  }
+}
+
+function revokeAccess() {
+  GoogleAuth.disconnect().then(() => {
+    updateSigninStatus(false)
+  });
 }

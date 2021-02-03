@@ -399,6 +399,9 @@ To contain all the main styling used throughout the app such as icons, tabs, vie
 .btn-text {
   color: var(--button-primary) !important;
 }
+.btn-text.btn-danger {
+  color: var(--danger) !important;
+}
 .btn-text:hover {
   background-color: var(--ripple-secondary) !important;
 }
