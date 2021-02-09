@@ -1,0 +1,54 @@
+body {
+  padding: 24px;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 28px;
+  text-transform: uppercase;
+  float: left;
+}
+
+h2 {
+  font-weight: 700;
+  font-size: 19px;
+  text-transform: uppercase;
+  float: left;
+}
+
+h1 .chip {
+  margin-left: 12px;
+  background-color: var(--eon-primary);
+  color: white;
+}
+
+.nav {
+  float: right;
+  margin: 0 12px 0 12px;
+}
+
+.nav i {
+  margin-right: 12px;
+}
+
+.searchbox {
+  padding: 12px 36px 24px 36px;
+  width: 100%;
+}
+
+#trending_searches, #theSearchResults {
+  margin-top: 24px;
+}
+
+#trending_searches button {
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.songactions {
+  display: none !important;
+}
+
+#player .plyr {
+  /* width: calc(100% - 190px) !important; */
+}

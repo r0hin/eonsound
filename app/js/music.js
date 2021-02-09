@@ -694,18 +694,22 @@ function skipForward() {
   endedSong();
 }
 
-const sortable = new Sortable.default(document.querySelectorAll('#queueItems'), {
-  draggable: '.Song'
-});
-
-Array.prototype.move = function (from, to) {
-  this.splice(to, 0, this.splice(from, 1)[0]);
-};
-
-sortable.on('sortable:sorted', (sortData) => {
-  // Rebuild queue from visualqbuild items
-  musicQueue.move(sortData.data.oldIndex, sortData.data.newIndex)
-});
+try {
+  const sortable = new Sortable.default(document.querySelectorAll('#queueItems'), {
+    draggable: '.Song'
+  });
+  
+  Array.prototype.move = function (from, to) {
+    this.splice(to, 0, this.splice(from, 1)[0]);
+  };
+  
+  sortable.on('sortable:sorted', (sortData) => {
+    // Rebuild queue from visualqbuild items
+    musicQueue.move(sortData.data.oldIndex, sortData.data.newIndex)
+  }); 
+} catch (error) {
+  console.log('Probably on forums.')
+}
 
 function visualQ_build() {
   $('#queueItems').empty()
@@ -770,4 +774,12 @@ function removeFromQueueByIndex(index) {
     // Check if hide queue btn
     $('#showQueue').removeClass('hidden')
   }
+}
+
+function bitForward() {
+  player.forward(10)
+}
+
+function bitBackward() {
+  player.rewind(10)
 }

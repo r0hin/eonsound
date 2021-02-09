@@ -108,7 +108,7 @@ body {
   transform: translate(0, -50%);
   display: flex;
   justify-content: center;
-  width: calc(100% - 490px);
+  width: calc(100% - 420px);
   transition: all 1s !important;
 }
 

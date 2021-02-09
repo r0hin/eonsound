@@ -20,7 +20,11 @@ $("#main_player").bind("ended", function () {
 });
 
 // Input enter key listeners
-document.getElementById("searchbox1").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),document.getElementById("sbuton").click())}),document.getElementById("partyfield1").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),document.getElementById("gobtnjoin").click())}),document.getElementById("newmsgbox").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),sendMessage(document.getElementById("newmsgbox").value),$("#newmsgbox").val(""))});
+try {
+  document.getElementById("searchbox1").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),document.getElementById("sbuton").click())}),document.getElementById("partyfield1").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),document.getElementById("gobtnjoin").click())}),document.getElementById("newmsgbox").addEventListener("keyup",function(e){13===e.keyCode&&(e.preventDefault(),sendMessage(document.getElementById("newmsgbox").value),$("#newmsgbox").val(""))});
+} catch (error) {
+  console.log('Prob Discussion')
+}
 
 function artistToString(artists) {
   if (artists.length == 1) {
@@ -72,6 +76,12 @@ firebase.auth().onAuthStateChanged(async function (user) {
     cacheuser = doc.data()
 
     left()
+
+    try {
+      initDiscussions()
+    } catch (error) {
+      console.log('Not discussionsP')
+    }
 
   } else {
     window.location.replace("welcome.html");
@@ -311,6 +321,13 @@ async function queueSong(data, skipMsg) {
 
 async function loadSong(data) {
   return new Promise(async (resolve, reject) => {
+
+    try {
+      openDiscussion(data.id)
+    } catch (error) {
+      console.log('Not discussions')
+    }
+
     url = data.url
     showPlayerLive()
     $('#queueProgress').removeClass('zoomOut')
@@ -360,7 +377,34 @@ async function loadSong(data) {
     $('#playing_album_cover').removeClass('zoomOut')
     $('#playing_album_cover').removeClass('hidden')
     $('#playing_album_cover').addClass('zoomIn')
-    calculatePlayerWidths()
+    window.setTimeout(() => {
+
+      textWidth = $('#playing_track_details').width()
+
+      // + 32 - padding
+      // + 50 - album image
+      songActionWidth = textWidth + 32 + 50
+      // + 185 - song action width
+      // + 24 - padding
+      contentWidth = songActionWidth + 110 + 24
+      playerWidth = 'calc(100% - ' + contentWidth + 'px)'
+    
+      $('#InjectedWidth').get(0).innerHTML = `
+      .songactions {
+        left: ${songActionWidth}px !important;
+        transition: all 1s !important;
+      }
+    
+      #player .plyr {
+        width: ${playerWidth} !important;
+        transition: all 1s !important;
+      }
+      `
+    }, 1250)
+
+    try {
+      confirmSongPlayed()
+    } catch (error) {}
 
     // TE STATUS PLAYING SOOOOOOOOOOOOOOONG
     console.log({
@@ -468,7 +512,8 @@ async function visualQ_build(skipMsg) {
     })
   }  
 
-  $('#queueItems').empty()
+  try {
+    $('#queueItems').empty()
 
   document.getElementById('queueNow').innerHTML = `
     <div class="userSong animated fadeInUp song" track_details="${musicActive.id}">
@@ -503,6 +548,9 @@ async function visualQ_build(skipMsg) {
     `
     
     document.getElementById('queueItems').appendChild(p)
+    } 
+  } catch (error) {
+    console.log('Discusisons')
   }
 
 }
@@ -576,30 +624,6 @@ function hidePlayer() {
   $('#InjectedPlayer').get(0).innerHTML = ``
   $('#player').addClass('fadeOutDown')
   $('#player').removeClass('fadeInUp')
-}
-
-function calculatePlayerWidths() {
-  textWidth = $('#playing_track_details').width()
-
-  // + 32 - padding
-  // + 50 - album image
-  songActionWidth = textWidth + 32 + 50
-  // + 185 - song action width
-  // + 24 - padding
-  contentWidth = songActionWidth + 110 + 24
-  playerWidth = 'calc(100% - ' + contentWidth + 'px)'
-
-  $('#InjectedWidth').get(0).innerHTML = `
-  .songactions {
-    left: ${songActionWidth}px !important;
-    transition: all 1s !important;
-  }
-
-  #player .plyr {
-    width: ${playerWidth} !important;
-    transition: all 1s !important;
-  }
-  `
 }
 
 function showLoader() {

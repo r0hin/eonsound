@@ -1,5 +1,5 @@
-window.targetAppVersion = '150'
-window.activeWebVersion = '1.6.21'
+window.targetAppVersion = '160'
+window.activeWebVersion = '1.7.0'
 $('#version').html(activeWebVersion)
 
 try {

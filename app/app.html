@@ -198,7 +198,7 @@
         <div class="card-body">
           <center>
             <h1>🎉 New Update 🎉</h1>
-            <p>We <b>strongly</b> recommend updating as not doing so may corrupt your data. But if you know what you're doing and you must skip, <a href="#" onclick="hideUpdate()">you can</a>.</p>
+            <p>We <b>strongly</b> recommend updating. If you know what you're doing, <a href="#" onclick="hideUpdate()">you can skip</a>.</p>
             <br><br>
             <button onclick="openUpdate()" class="btn-contained-primary close-btn">View Latest Release</button>  
           </center>
@@ -220,6 +220,10 @@
 
     <button class="animated fadeInUp slow btn-text-primary" data-toggle="tooltip" data-placement="bottom" title="Listening Parties" id="listeningpartybtn" onclick="window.location.replace('live.html')">
       <i class='bx bx-group' ></i>
+    </button>
+
+    <button class="animated fadeInUp slow btn-text-primary" data-toggle="tooltip" data-placement="bottom" title="Music Discussions" id="musicdiscussionbtn" onclick="window.location.replace('discussions.html')">
+      <i class='bx bx-chat'></i>
     </button>
 
     <button onclick="tabe('support')" data-toggle="tooltip" data-placement="bottom" title="Get Support" class="animated fadeInUp slow btn-text-primary animated">
@@ -250,6 +254,9 @@
         <div class="dropdown-menu menu">
           <a id="playingaddplaylistbtn" data-toggle="modal" data-target="#playlistSelect" class="dr-item">Add to Playlist</a>
           <a id="addLibrary0" class="dr-item">Add to Library</a>
+          <div class="dropdown-divider"></div>
+          <a onclick="bitForward()" class="dr-item">+10 Seconds</a>
+          <a onclick="bitBackward()" class="dr-item">-10 Seconds</a>
           <div class="dropdown-divider"></div>
           <a id="goAlbum0" class="dr-item">Go to Album</a>
           <a id="goArtist0" class="dr-item">Go to Artist</a>
@@ -312,7 +319,7 @@
       <img id="userpfp1" alt="Loading...">
       <p id="username1"></p>
       <button onclick="tabe('account')" class="btn-text-primary iconbtn">
-        <i class='bx bxs-user-pin' ></i>
+        <i class='bx bxs-cog' ></i>
       </button>
     </div>
   </div>
@@ -520,7 +527,8 @@
 
     </div>
     <div class="tab hidden animated fadeIn fastest" id="account">
-      <h2 class="tab-title">Account</h2>
+      <h2 class="tab-title">Settings & Account</h2>
+      <h3>Theme</h3>
       <div class="row">
         <div class="col-sm">
           <div class="dropdown">
@@ -543,12 +551,12 @@
               <a onclick="localStorage.setItem('es_theme_color', 'lime');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Lime</a>
               <a onclick="localStorage.setItem('es_theme_color', 'aqua');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Aqua</a>
               <a onclick="localStorage.setItem('es_theme_color', 'purple');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Purple</a>
-              <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Pink</a>
+              <a onclick="localStorage.setItem('es_theme_color', 'hotpink');refreshTheme(); Snackbar.show({pos: 'top-center',text: 'Updated Theme.'})" class="dr-item">Hot Pink</a>
             </div>
           </div>
 
           <br><br>
-          <h2 class="tab-title">App</h2>
+          <h3>Music</h3>
           <p id="defaultvolumetext"></p>
           <div class="east-select">
             <span class="east-select-ico"></span> 
@@ -582,7 +590,7 @@
           </center>
 
           <br><br>
-          <h2 class="tab-title">Auth Management</h2>
+          <h3>Auth Management</h3>
           <p>Google account linking is made for features such as <b>Export To Groovy</b>.</p>
           <button id="googleSignIn" class="btn-contained-primary hidden" onclick="googleAuthSignIn()">Sign In</button>
           <div id="googleSignOut" class="hidden">

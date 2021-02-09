@@ -1,7 +1,7 @@
 <p align="center">
     <img width="240" src="./app/assets/eonsound.png">
     <br><br>
-    <img src="https://img.shields.io/badge/version-1.6.x-e218f5?style=for-the-badge" />
+    <img src="https://img.shields.io/badge/version-1.7.x-e218f5?style=for-the-badge" />
     <img src="https://img.shields.io/github/issues/r0hin/eonsound?style=for-the-badge" />
     <img src="https://img.shields.io/github/stars/r0hin/eonsound?style=for-the-badge" />
     <img src="https://img.shields.io/badge/hotel%3f-trivago-e21w8s?style=for-the-badge" />
