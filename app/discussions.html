@@ -95,10 +95,10 @@
         <input class="form-control" id="discussionsearchbox" placeholder="Search Query" type="text">
       </div>
       
-      <div id="trending_searches">
-        <button class="chip chip-action" type="button">Trending Search #1</button>
-        <button class="chip chip-action" type="button">Trending Search #2</button>
-        <button class="chip chip-action" type="button">Trending Search #3</button>
+      <div id="trending_searches" class="hidden animated fadeInUp">
+        <button id="ts_0" class="chip chip-action" type="button"></button>
+        <button id="ts_1" class="chip chip-action" type="button"></button>
+        <button id="ts_2" class="chip chip-action" type="button"></button>
       </div>
 
       <div id="theSearchResults" class="hidden">
@@ -106,6 +106,26 @@
       </div>
 
     </div>
+  </div>
+  <br><br>
+  <div id="theForumPanel" class="hidden animated fadeIn">
+    <div class="header" id="header">
+      <h1 id="songName"></h1>
+    </div>
+  
+    <br><br>
+    
+    <div class="messaging_area">
+      <div class="floating-label textfield-box">
+        <label for="msgbox">Write Something</label>
+        <input class="form-control" id="msgbox" placeholder="What are your thoughts about this song?" type="text">
+      </div>
+    </div>
+
+    <div id="forum">
+    
+    </div>
+
   </div>
 
   <!--=== JavaScript ===-->
@@ -129,10 +149,10 @@
   <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-functions.js"></script>
 
   <!-- JS-->
-  <!-- Discuss --> <script src="js/discuss.js"></script>
   <!-- Fetch --> <script src="js/fetch.js"></script>
   <!-- Live --> <script src="js/live.js"></script>
   <!-- Display --> <script src="js/display.js"></script>
+  <!-- Discuss --> <script src="js/discuss.js"></script>
 
   <script> refreshTheme(); window.setTimeout(( ) => { $('#loading').addClass('fadeOut'); window.setTimeout(() => { $('#loading').addClass('hidden') }, 500) }, 500)</script>
 </body>
