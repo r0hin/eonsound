@@ -8,15 +8,33 @@ try {
 window.musicQueue = [];
 window.musicActive = {none: 'none'};
 window.musicHistory = [];
-window.player = new Plyr("audio", {})
+window.player = new Plyr("audio", {settings: []})
 window.firstLoad = true
 window.activeParty = null
 window.animateMsgs = false
 window.owner = false
+window.ignoreSeek = false
 window.datae = {}
 
 $("#main_player").bind("ended", function () {
   endedSong();
+});
+
+$("#main_player").bind("seeked", async (event) => {
+  if (owner) {
+    if (ignoreSeek) {
+      ignoreSeek = false
+    }
+    await db.collection('parties').doc(activeParty).update({
+      messages: firebase.firestore.FieldValue.arrayUnion({
+        name: cacheuser.name,
+        art: cacheuser.url,
+        content: player.currentTime,
+        eonsound: 'seek',
+        skiddyo: Math.random(100000),
+      }) 
+    })
+  }
 });
 
 // Input enter key listeners
@@ -321,7 +339,6 @@ async function queueSong(data, skipMsg) {
 
 async function loadSong(data) {
   return new Promise(async (resolve, reject) => {
-
     try {
       openDiscussion(data.id)
     } catch (error) {
@@ -618,6 +635,16 @@ function showPlayerLive() {
   $('#player').removeClass('fadeOutDown')
   $('#player').addClass('fadeInUp')
   $('#player').removeClass('hidden')
+
+  if (!owner) {
+    $('.plyr__progress__container').get(0).style.pointerEvents = 'none';
+    $('[data-plyr="play"]').get(0).style.pointerEvents = 'none';
+  }
+  else {
+    $('.plyr__progress__container').get(0).removeAttribute('style');
+    $('[data-plyr="play"]').get(0).removeAttribute('style');
+  }
+  
 }
 
 function hidePlayer() {
@@ -636,6 +663,7 @@ function hideLoader() {
   $('#loader').removeClass('fadeInRight')
   $('#loader').addClass('fadeOutRight')
 }
+
 
 async function sendMessage(val) {
 
@@ -687,6 +715,18 @@ function buildMessages(data) {
       <h5>New Track</h5>
       <p>${msg.content.name}</p>
    `
+    }
+
+    if (msg.eonsound == 'seek') {
+      if (!owner && !firstLoad && latest) {
+        player.restart()
+        player.forward(parseFloat(msg.content)) 
+      }
+      b.classList.add('SysMsg')
+      b.innerHTML = `
+      <h5>Seeked</h5>
+      <p>Timestamp: ${msg.content}</p>
+      `
     }
 
 
